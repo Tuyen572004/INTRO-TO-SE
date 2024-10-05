@@ -11,9 +11,9 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:root}
     driverClassName: com.mysql.cj.jdbc.Driver
-  #  data:
-#    mongodb:
-#      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db}
+  data:
+    mongodb:
+      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db}
   jpa:
     show-sql: true
 
@@ -38,5 +38,5 @@ app:
     password: ${ADMIN_PASSWORD}
   role:
     admin:
-      name: ROLE_ADMIN
+      name: ADMIN
       description: "Admin has all authorization"
