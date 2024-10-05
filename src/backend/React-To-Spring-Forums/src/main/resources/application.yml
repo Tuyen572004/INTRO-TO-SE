@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: React-To-Spring-Forums
+  datasource:
+    url: ${IDENTITY_SERVICE_DB_URL:jdbc:mysql://localhost:3306/identity_service}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driverClassName: com.mysql.cj.jdbc.Driver
+  #  data:
+#    mongodb:
+#      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db}
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+
+jwt:
+  accessSignerKey: ${ACCESS_SIGNER_KEY}
+  refreshSignerKey: ${REFRESH_SIGNER_KEY}
+  valid-duration: ${VALID_DURATION:3600} # in second
+  refreshable-duration: ${REFRESHABLE_DURATION:360000} # in second
+
+app:
+  init-admin-account:
+    username: ${ADMIN_USERNAME}
+    password: ${ADMIN_PASSWORD}
+  role:
+    admin:
+      name: ROLE_ADMIN
+      description: "Admin has all authorization"
