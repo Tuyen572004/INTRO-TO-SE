@@ -18,9 +18,12 @@ public enum ErrorCode {
     REQUIRED_EMAIL(2003, HttpStatus.BAD_REQUEST, "Email is required"),
 //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),
+    USER_PROFILE_EXISTED(3002, HttpStatus.BAD_REQUEST, "User profile existed"),
 //    Not Found Error 4xxx
     USER_NOT_FOUND(4001, HttpStatus.NOT_FOUND, "User not found"),
     ROLE_NOT_FOUND(4002, HttpStatus.NOT_FOUND, "Role not found"),
+    USER_PROFILE_NOT_FOUND(4003, HttpStatus.NOT_FOUND, "User profile not found"),
+    PERMISSION_NOT_FOUND(4004, HttpStatus.NOT_FOUND, "Permission not found"),
 //    Unauthorized	Client	5xxx (Unauthenticated error)
 //    Forbidden	Client	6xxx (Unauthorized error)
     UNAUTHORIZED(6001, HttpStatus.FORBIDDEN, "Don't have permission"),

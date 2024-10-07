@@ -20,21 +20,23 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @NonFinal
-    String[] PUBLIC_POST_ENDPOINTS = {};
+    String[] PUBLIC_POST_ENDPOINTS = {""};
 
     @NonFinal
-    String[] PUBLIC_GET_ENDPOINTS = {};
+    String[] PUBLIC_GET_ENDPOINTS = {""};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> {
             configurer
-                    .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS)
-                    .permitAll()
+//                    .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
+//                    .permitAll()
+//                    .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS)
+//                    .permitAll()
+//                    .anyRequest()
+//                    .authenticated();
                     .anyRequest()
-                    .authenticated();
+                    .permitAll();
         });
 
         http.csrf(AbstractHttpConfigurer::disable);

@@ -13,9 +13,10 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
   data:
     mongodb:
-      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db}
+      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db?authSource=admin}
   jpa:
     show-sql: true
+    open-in-view: true
 
 logging:
   level:
@@ -40,3 +41,16 @@ app:
     admin:
       name: ADMIN
       description: "Admin has all authorization"
+  controller:
+    user:
+      response:
+        delete:
+          success: "User has been deleted"
+    role:
+      response:
+        delete:
+          success: "Role has been deleted"
+    permission:
+        response:
+          delete:
+            success: "Permission has been deleted"

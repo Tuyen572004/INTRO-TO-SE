@@ -24,4 +24,11 @@ public class UserCreationRequest {
     String email;
 
     String role;
+
+    // Profile
+    String firstName;
+
+    String lastName;
+
+    String address;
 }
