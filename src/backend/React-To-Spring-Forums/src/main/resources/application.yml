@@ -54,3 +54,14 @@ app:
         response:
           delete:
             success: "Permission has been deleted"
+
+open:
+  api:
+    title: "React To Spring Forums API"
+    version: "v1.0.0"
+    description: "API for React To Spring Forums"
+    server:
+      url: "http://localhost:8080/api"
+      description: "Local Server."
+    group:
+      package-to-scan: "com.react_to_spring.React_To_Spring_Forums.controller"
