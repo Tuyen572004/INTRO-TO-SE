@@ -29,6 +29,15 @@ public class UserProfileController {
                 .build();
     }
 
+    @GetMapping("/my-profile")
+    @Operation(summary = "Get my profile",
+            description = "Get my profile")
+    public ApiResponse<UserProfileResponse> getMyProfile() {
+        return ApiResponse.<UserProfileResponse>builder()
+                .data(userProfileService.getMyProfile())
+                .build();
+    }
+
     @PutMapping
     @Operation(summary = "Update user profile",
             description = "Update user profile by providing user ID and new information: first name, last name, address, profile image URL")

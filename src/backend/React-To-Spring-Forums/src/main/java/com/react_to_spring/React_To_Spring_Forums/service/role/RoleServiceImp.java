@@ -1,5 +1,6 @@
 package com.react_to_spring.React_To_Spring_Forums.service.role;
 
+import com.react_to_spring.React_To_Spring_Forums.dto.request.role.AddPermissionsRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.role.RoleCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.role.RoleUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PermissionResponse;
@@ -61,10 +62,10 @@ public class RoleServiceImp implements RoleService{
     }
 
     @Override
-    public RoleResponse addPermissions(String name, List<String> permissions) {
+    public RoleResponse addPermissions(String name, AddPermissionsRequest request) {
 
         Role role = roleRepository.findById(name).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-        List<Permission> permissionList = permissionRepository.findAllById(permissions);
+        List<Permission> permissionList = permissionRepository.findAllById(request.getPermissions());
 
         Set<Permission> permissionSet = new HashSet<>(role.getPermissions());
 

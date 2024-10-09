@@ -22,6 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +45,8 @@ public class UserServiceImp implements UserService{
     RoleMapper roleMapper;
     UserProfilerMapper userProfilerMapper;
 
+    PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
     public UserResponse createUser(UserCreationRequest request) {
@@ -54,6 +60,7 @@ public class UserServiceImp implements UserService{
 
         User user = userMapper.toUser(request);
         user.setRole(role);
+        user.setUsername(passwordEncoder.encode(user.getPassword()));
 
         user = userRepository.save(user);
 
@@ -70,6 +77,17 @@ public class UserServiceImp implements UserService{
     @Override
     public UserResponse getUserById(String id) {
         User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        return buildUserResponse(user);
+    }
+
+    @Override
+    @PostAuthorize("returnObject.id == authentication.name")
+    public UserResponse getMyAccount() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return buildUserResponse(user);

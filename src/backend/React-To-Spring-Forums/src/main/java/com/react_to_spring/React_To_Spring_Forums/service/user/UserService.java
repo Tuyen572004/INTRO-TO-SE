@@ -12,6 +12,8 @@ public interface UserService {
 
     UserResponse getUserById(String id);
 
+    UserResponse getMyAccount();
+
     PageResponse<UserResponse> getUsers(int page, int size);
 
     List<UserResponse> getAllUsers();

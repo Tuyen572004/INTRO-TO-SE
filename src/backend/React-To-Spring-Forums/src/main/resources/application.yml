@@ -3,6 +3,9 @@ server:
   servlet:
     context-path: /api
 
+client:
+  url: "http://localhost:3000"
+
 spring:
   application:
     name: React-To-Spring-Forums
@@ -54,6 +57,12 @@ app:
         response:
           delete:
             success: "Permission has been deleted"
+    authentication:
+      response:
+        logout:
+            success: "Logout successfully"
+        change-password:
+          success: "Password has been changed"
 
 open:
   api:

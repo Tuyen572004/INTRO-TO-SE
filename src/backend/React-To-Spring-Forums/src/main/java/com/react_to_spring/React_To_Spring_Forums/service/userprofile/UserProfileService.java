@@ -10,6 +10,8 @@ public interface UserProfileService {
 
     UserProfileResponse getUserProfileByUserId(String userId);
 
+    UserProfileResponse getMyProfile();
+
     PageResponse<UserProfileResponse> getUserProfiles(int page, int size);
 
     UserProfileResponse updateUserProfile(String userId, UserProfileUpdateRequest request);

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,9 +47,19 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/my-account")
+    @Operation(summary = "Get information of my account",
+            description = "Get information of my account")
+    public ApiResponse<UserResponse> getMyAccount() {
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getMyAccount())
+                .build();
+    }
+
     @GetMapping("/pagination")
     @Operation(summary = "Get a list of users with pagination",
             description = "Get a list of users with pagination by providing the page number and the size of the page")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<PageResponse<UserResponse>> getUsers(@RequestParam("page") int page, @RequestParam("size") int size) {
         return ApiResponse.<PageResponse<UserResponse>>builder()
                 .data(userService.getUsers(page, size))
@@ -58,6 +69,7 @@ public class UserController {
     @GetMapping("/all")
     @Operation(summary = "Get all users",
             description = "Get all users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<List<UserResponse>> getAllUsers() {
         return ApiResponse.<List<UserResponse>>builder()
                 .data(userService.getAllUsers())
@@ -67,6 +79,7 @@ public class UserController {
     @DeleteMapping()
     @Operation(summary = "Delete a user",
             description = "Delete a user by providing the user ID")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<Void> deleteUser(@RequestParam("id") String id) {
         userService.deleteUser(id);
         return ApiResponse.<Void>builder()

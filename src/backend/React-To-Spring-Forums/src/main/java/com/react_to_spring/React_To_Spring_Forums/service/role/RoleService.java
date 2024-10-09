@@ -1,5 +1,6 @@
 package com.react_to_spring.React_To_Spring_Forums.service.role;
 
+import com.react_to_spring.React_To_Spring_Forums.dto.request.role.AddPermissionsRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.role.RoleCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.role.RoleUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.RoleResponse;
@@ -11,7 +12,7 @@ public interface RoleService {
 
     RoleResponse updateRole(String name, RoleUpdateRequest request);
 
-    RoleResponse addPermissions(String name, List<String> permissions);
+    RoleResponse addPermissions(String name, AddPermissionsRequest request);
 
     List<RoleResponse> getAllRoles();
 

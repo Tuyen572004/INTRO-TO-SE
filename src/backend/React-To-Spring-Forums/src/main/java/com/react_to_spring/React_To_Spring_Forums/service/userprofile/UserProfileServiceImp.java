@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +32,17 @@ public class UserProfileServiceImp implements UserProfileService{
     UserProfileRepository userProfileRepository;
 
     UserProfilerMapper userProfilerMapper;
+
+    @Override
+    @PostAuthorize("returnObject.userId == authentication.name")
+    public UserProfileResponse getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserProfile userProfile = userProfileRepository.findByUserId(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+
+        return userProfilerMapper.toUserProfileResponse(userProfile);
+    }
 
     @Override
     public UserProfileResponse createUserProfile(UserProfileCreationRequest request) {

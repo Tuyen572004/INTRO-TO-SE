@@ -1,6 +1,7 @@
 package com.react_to_spring.React_To_Spring_Forums.dto.request.user;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class UserCreationRequest {
     String username;
 
     @Size(min = 8, message = "INVALID_PASSWORD")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*(){}\\[\\]!~`|])(?=.*\\d).*$", message = "INVALID_PASSWORD")
     String password;
 
     @NotNull(message = "REQUIRED_EMAIL")
