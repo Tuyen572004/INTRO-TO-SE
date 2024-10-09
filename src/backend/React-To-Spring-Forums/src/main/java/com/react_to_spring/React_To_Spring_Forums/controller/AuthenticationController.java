@@ -7,6 +7,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.IntrospectRespons
 import com.react_to_spring.React_To_Spring_Forums.service.authentication.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -68,7 +69,7 @@ public class AuthenticationController {
     @PatchMapping("/change-password")
     @Operation(summary = "Change password",
             description = "Change password of user with old password and new password")
-    public ApiResponse<Void> changePassword(@RequestBody ChangePasswordRequest request) {
+    public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authenticationService.changePassword(request);
         return ApiResponse.<Void>builder().message(CHANGE_PASSWORD_SUCCESS_MESSAGE).build();
     }

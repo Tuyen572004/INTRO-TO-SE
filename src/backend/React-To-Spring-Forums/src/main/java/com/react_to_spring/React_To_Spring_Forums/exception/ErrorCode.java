@@ -17,6 +17,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(2002, HttpStatus.BAD_REQUEST, "Password should be at least {} characters, " +
             "contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
     REQUIRED_EMAIL(2003, HttpStatus.BAD_REQUEST, "Email is required"),
+    SAME_PASSWORD(2004, HttpStatus.BAD_REQUEST, "New password must be different from the old password"),
 //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),
     USER_PROFILE_EXISTED(3002, HttpStatus.BAD_REQUEST, "User profile existed"),

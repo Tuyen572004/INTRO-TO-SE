@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
             String errorMsg = exception.getFieldError().getDefaultMessage();
             errorCode = ErrorCode.valueOf(errorMsg);
 
-            var constraintViolation =
+            ConstraintViolation constraintViolation =
                     exception.getAllErrors().stream().findFirst().get().unwrap(ConstraintViolation.class);
 
             attributes = constraintViolation.getConstraintDescriptor().getAttributes();

@@ -54,3 +54,4 @@ CREATE TABLE `verify_codes` (
   CONSTRAINT `fk_verify_codes_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+SET FOREIGN_KEY_CHECKS=0;

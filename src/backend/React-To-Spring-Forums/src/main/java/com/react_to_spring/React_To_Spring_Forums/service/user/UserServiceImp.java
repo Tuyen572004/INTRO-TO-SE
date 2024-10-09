@@ -60,7 +60,7 @@ public class UserServiceImp implements UserService{
 
         User user = userMapper.toUser(request);
         user.setRole(role);
-        user.setUsername(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user = userRepository.save(user);
 

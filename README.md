@@ -7,4 +7,9 @@ A forums where you can find a lot of interesting topics.
 - [Features](#ii-features)
 
 ## I. Tech Stack
+- **Languages**: JavaScript, Java, HTML, CSS
+- **Frameworks & Libraries**: ReactJS, Bootstrap, Redux, Spring Boot
+- **Database**: MySQL, MongoDB
+- **Tools**: Git, GitHub, Postman, VS Code, IntelliJ IDEA
+- **API Document**: Swagger
 ## II. Features

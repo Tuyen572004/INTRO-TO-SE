@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
@@ -40,9 +41,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
     InvalidatedTokenRepository invalidatedTokenRepository;
     UserRepository userRepository;
+    VerifyCodeRepository verifyCodeRepository;
 
     PasswordEncoder passwordEncoder;
-    VerifyCodeRepository verifyCodeRepository;
 
     @NonFinal
     @Value("${jwt.accessSignerKey}")
@@ -98,8 +99,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
             SignedJWT signedJWT = SignedJWT.parse(request.getToken());
             String acId = signedJWT.getJWTClaimsSet().getJWTID();
             String rfId = signedJWT.getJWTClaimsSet().getClaim("rfId").toString();
-            LocalDateTime expirationTime = LocalDateTime.from(signedJWT.getJWTClaimsSet().
-                    getExpirationTime().toInstant());
+
+            Instant expirationInstant = signedJWT.getJWTClaimsSet().getExpirationTime().toInstant();
+            LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
             expirationTime = expirationTime.plusSeconds(REFRESHABLE_DURATION - VALID_DURATION);
 
             invalidatedTokenRepository.save(InvalidatedToken.builder()
@@ -122,6 +124,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
             throw new AppException(ErrorCode.INCORRECT_PASSWORD);
         }
 
+        if (request.getOldPassword().equals(request.getNewPassword())) {
+            throw new AppException(ErrorCode.SAME_PASSWORD);
+        }
+
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
@@ -133,9 +139,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
         try {
             String acId = signedJWT.getJWTClaimsSet().getClaim("acId").toString();
             String rfId = signedJWT.getJWTClaimsSet().getJWTID();
-            LocalDateTime expirationTime = LocalDateTime.from(signedJWT.getJWTClaimsSet()
-                    .getExpirationTime().toInstant());
-             expirationTime = expirationTime.plusSeconds(REFRESHABLE_DURATION - VALID_DURATION);
+
+            Instant expirationInstant = signedJWT.getJWTClaimsSet().getExpirationTime().toInstant();
+            LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
+            expirationTime = expirationTime.plusSeconds(REFRESHABLE_DURATION - VALID_DURATION);
 
             invalidatedTokenRepository.save(InvalidatedToken.builder()
                     .accessId(acId)
@@ -153,8 +160,11 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     private AuthenticationResponse buildAuthenticationResponse(User user) {
-        String accessToken = generateToken(user, VALID_DURATION, UUID.randomUUID().toString(), UUID.randomUUID().toString(), SIGNER_KEY);
-        String refreshToken = generateToken(user, REFRESHABLE_DURATION, UUID.randomUUID().toString(), UUID.randomUUID().toString(), REFRESH_SIGNER_KEY);
+        String acId = UUID.randomUUID().toString();
+        String rfId = UUID.randomUUID().toString();
+
+        String accessToken = generateToken(user, VALID_DURATION, acId, rfId, SIGNER_KEY);
+        String refreshToken = generateToken(user, REFRESHABLE_DURATION, rfId, acId, REFRESH_SIGNER_KEY);
 
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
@@ -183,7 +193,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 throw new AppException(ErrorCode.INVALID_TOKEN);
             }
 
-            if (invalidatedTokenRepository.existsById(id)) {
+            if (invalidatedTokenRepository.existsByAccessIdOrRefreshId(id)) {
                 throw new AppException(ErrorCode.INVALID_TOKEN);
             }
 

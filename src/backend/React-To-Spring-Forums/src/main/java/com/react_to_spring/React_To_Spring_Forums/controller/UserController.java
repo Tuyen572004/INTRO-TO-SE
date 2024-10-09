@@ -7,6 +7,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.UserResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,7 +33,7 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Create a new user",
             description = "Create a new user's account and user's profile with the provided details")
-    public ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
+    public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .data(userService.createUser(request))
                 .build();
