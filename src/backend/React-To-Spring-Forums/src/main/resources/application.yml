@@ -3,6 +3,9 @@ server:
   servlet:
     context-path: /api
 
+client:
+  url: "http://localhost:3000"
+
 spring:
   application:
     name: React-To-Spring-Forums
@@ -11,11 +14,12 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:root}
     driverClassName: com.mysql.cj.jdbc.Driver
-  #  data:
-#    mongodb:
-#      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db}
+  data:
+    mongodb:
+      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db?authSource=admin}
   jpa:
     show-sql: true
+    open-in-view: true
 
 logging:
   level:
@@ -38,5 +42,35 @@ app:
     password: ${ADMIN_PASSWORD}
   role:
     admin:
-      name: ROLE_ADMIN
+      name: ADMIN
       description: "Admin has all authorization"
+  controller:
+    user:
+      response:
+        delete:
+          success: "User has been deleted"
+    role:
+      response:
+        delete:
+          success: "Role has been deleted"
+    permission:
+        response:
+          delete:
+            success: "Permission has been deleted"
+    authentication:
+      response:
+        logout:
+            success: "Logout successfully"
+        change-password:
+          success: "Password has been changed"
+
+open:
+  api:
+    title: "React To Spring Forums API"
+    version: "v1.0.0"
+    description: "API for React To Spring Forums"
+    server:
+      url: "http://localhost:8080/api"
+      description: "Local Server."
+    group:
+      package-to-scan: "com.react_to_spring.React_To_Spring_Forums.controller"

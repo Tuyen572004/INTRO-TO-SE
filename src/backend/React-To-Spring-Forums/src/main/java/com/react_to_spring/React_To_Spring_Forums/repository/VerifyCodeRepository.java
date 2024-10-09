@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VerifyCodeRepository extends JpaRepository<VerifyCode, String> {
+    boolean existsByUserId(String userId);
 }

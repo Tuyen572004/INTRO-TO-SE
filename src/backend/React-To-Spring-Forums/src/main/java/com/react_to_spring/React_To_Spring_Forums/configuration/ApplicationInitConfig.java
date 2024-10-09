@@ -13,6 +13,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -21,6 +22,8 @@ public class ApplicationInitConfig {
 
     UserRepository userRepository;
     RoleRepository roleRepository;
+
+    PasswordEncoder passwordEncoder;
 
     @NonFinal
     @Value("${app.init-admin-account.username}")
@@ -53,7 +56,7 @@ public class ApplicationInitConfig {
 
                 User admin = User.builder()
                         .username(ADMIN_USERNAME)
-                        .password(ADMIN_PASSWORD)
+                        .password(passwordEncoder.encode(ADMIN_PASSWORD))
                         .role(adminRole)
                         .build();
 
