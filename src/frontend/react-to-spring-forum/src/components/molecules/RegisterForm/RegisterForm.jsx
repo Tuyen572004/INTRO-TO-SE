@@ -1,6 +1,6 @@
 import s from "./style.module.css";
-import Input from "../Input/Input";
-import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
+import Input from "../../atoms/Input/Input";
+import ButtonPrimary from "../../atoms/ButtonPrimary/ButtonPrimary";
 import { useState } from "react";
 const RegisterForm = () => {
   const [username, setUsername] = useState("");

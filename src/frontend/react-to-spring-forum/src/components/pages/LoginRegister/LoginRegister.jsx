@@ -1,5 +1,5 @@
-import LoginRegisterForm from "../../components/LoginRegister/LoginRegister";
-const Login = () => {
+import LoginRegisterForm from "../../organisms/LoginRegisterForm/LoginRegisterForm";
+const LoginRegister = () => {
   return (
     <>
       <div className="d-flex align-items-center justify-content-center">
@@ -9,4 +9,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginRegister;

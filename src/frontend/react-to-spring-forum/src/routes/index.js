@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom"
-import LayoutDefault from "../layouts/LayoutDefault";
-import Login from "../pages/Login/Login";
-import Dashboard from "../pages/Dashboard/Dashboard";
+import LayoutDefault from "../components/templates/LayoutDefault";
+import LoginRegister from "../components/organisms/LoginRegisterForm/LoginRegisterForm"
+import Dashboard from "../components/pages/Dashboard/Dashboard"
 
 export const router = createBrowserRouter([
 	{
 		path: "login",
 		index: true,
-		element: <Login />
+		element: <LoginRegister />
 	}
 	,
 	{

@@ -1,5 +1,5 @@
-import LoginForm from "../LoginForm/LoginForm";
-import RegisterForm from "../RegisterForm/RegisterForm";
+import LoginForm from "../../molecules/LoginForm/LoginForm";
+import RegisterForm from "../../molecules/RegisterForm/RegisterForm";
 import s from "./style.module.css";
 
 const LoginRegisterForm = () => {
