@@ -1,9 +1,9 @@
 import s from "./style.module.css";
 
-const Newsfeed = (props) => {
+const Newsfeed = ({ children }) => {
   return (
     <div className={s.container}>
-      <div className={s.newsfeed}> Newsfeed</div>
+      <div className={s.newsfeed}>{children}</div>
     </div>
   );
 };

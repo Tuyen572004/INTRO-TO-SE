@@ -8,6 +8,7 @@
 }
 
 .container>* {
-	font-size: 2rem;
+	font-size: 1.7rem;
 	margin: 1rem;
+	color: #d3d3d3
 }
