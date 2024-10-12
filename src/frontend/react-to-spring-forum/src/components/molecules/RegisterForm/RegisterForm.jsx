@@ -1,8 +1,9 @@
 import s from "./style.module.css";
 import Input from "../../atoms/Input/Input";
-import ButtonPrimary from "../../atoms/ButtonPrimary/ButtonPrimary";
+import ButtonPrimary from "../../atoms/PrimaryButton/PrimaryButton";
 import { useState } from "react";
-const RegisterForm = () => {
+import { Link } from "react-router-dom";
+const RegisterForm = ({ isNotLogIn }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPaswword] = useState("");
@@ -12,8 +13,12 @@ const RegisterForm = () => {
     console.log("submited", username, email, password);
   };
   return (
-    <>
+    <div
+      className={`${s.container} ${isNotLogIn ? `${s.is_not_log_in}` : ""}`}
+      id="register_form"
+    >
       <form onSubmit={submit} className={s.container_form} action="">
+        <h1>Register here</h1>
         <Input placeholder="Username" onTextChange={setUsername} />
         <Input placeholder="Email" onTextChange={setEmail} />
         <Input
@@ -21,9 +26,14 @@ const RegisterForm = () => {
           placeholder="Password"
           onTextChange={setPaswword}
         />
+        <div className={s.content}>
+          <span>
+            or <Link>log in</Link> your account
+          </span>
+        </div>
         <ButtonPrimary type="submit" title={"Register"}></ButtonPrimary>
       </form>
-    </>
+    </div>
   );
 };
 

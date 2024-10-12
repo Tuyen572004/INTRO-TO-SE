@@ -1,11 +1,10 @@
 import LoginRegisterForm from "../../organisms/LoginRegisterForm/LoginRegisterForm";
+import s from "./style.module.css";
 const LoginRegister = () => {
   return (
-    <>
-      <div className="d-flex align-items-center justify-content-center">
-        <LoginRegisterForm />
-      </div>
-    </>
+    <div className={s.container}>
+      <LoginRegisterForm />
+    </div>
   );
 };
 
