@@ -6,12 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostResponse {
+    String id;
+    String userId;
+    String author;
+    String authorAvatar;
     String title;
     String content;
     String imageURL;
