@@ -8,9 +8,7 @@ const LoginForm = ({ isNotLogIn }) => {
   const [password, setPassword] = useState("");
   const submit = (e) => {
     e.preventDefault();
-    console.log("submited", username, password);
   };
-  console.log(username, password);
   return (
     <div
       className={`${s.container} ${isNotLogIn ? `${s.is_not_log_in}` : ""}`}

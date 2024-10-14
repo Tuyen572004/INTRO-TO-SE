@@ -23,7 +23,6 @@ const Overlay = ({ isNotLogIn, toggle }) => {
           <GhostButton
             title={"Login"}
             onClick={() => {
-              console.log("SEt false");
               toggle(false);
             }}
           />
@@ -39,7 +38,6 @@ const Overlay = ({ isNotLogIn, toggle }) => {
           <GhostButton
             title={"Register"}
             onClick={() => {
-              console.log("Set true");
               toggle(true);
             }}
           />
