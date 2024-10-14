@@ -1,0 +1,14 @@
+.container {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 60vw;
+	height: 60vh;
+	box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+	border-radius: 20px;
+	overflow: hidden;
+	background: url("../../../assets/login-register.gif");
+	background-repeat: no-repeat;
+	background-size: cover;
+}
