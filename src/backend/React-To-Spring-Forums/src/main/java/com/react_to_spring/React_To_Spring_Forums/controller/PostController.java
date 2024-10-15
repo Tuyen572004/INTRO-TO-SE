@@ -34,16 +34,22 @@ public class PostController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a post",
+            description = "Create a post by providing user ID and information: title, content, and image")
     public void createPost(@RequestBody PostCreationRequest postCreationRequest) {
         postService.createPost(postCreationRequest);
     }
 
     @PutMapping
+    @Operation(summary = "Update a post",
+            description = "Update a post by providing post ID and new information: title, content, image")
     public void updatePost(@RequestBody PostUpdateRequest postUpdateRequest) {
         postService.updatePost(postUpdateRequest);
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a post",
+            description = "Delete a post by providing post ID")
     public void deletePost(@PathVariable(name = "id") String postId) {
         postService.deletePostById(postId);
     }

@@ -4,7 +4,6 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostCreationR
 import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
-import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
