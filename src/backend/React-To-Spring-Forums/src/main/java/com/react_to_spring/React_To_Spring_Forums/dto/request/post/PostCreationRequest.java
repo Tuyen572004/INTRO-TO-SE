@@ -24,10 +24,4 @@ public class PostCreationRequest {
 
     @JsonProperty("image_url")
     String imageURL;
-
-    @JsonProperty("created_date")
-    Date createdDate;
-
-    @JsonProperty("react_counts")
-    Integer reactCounts;
 }

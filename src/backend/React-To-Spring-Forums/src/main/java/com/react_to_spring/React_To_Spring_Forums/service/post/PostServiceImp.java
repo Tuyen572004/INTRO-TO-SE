@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,11 +66,14 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PostResponse createPost(PostCreationRequest postCreationRequest) {
-        if (userRepository.existsById(postCreationRequest.getUserId())) {
+        if (!userRepository.existsById(postCreationRequest.getUserId())) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
 
         Post post = postMapper.toPost(postCreationRequest);
+        Date currentTime = new Date();
+        post.setCreatedDate(currentTime);
+
         post = postRepository.save(post);
 
         return postMapper.toPostResponse(post);
