@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     @NonFinal
     String[] PUBLIC_POST_ENDPOINTS = {
-            "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh", "/posts", "/comments",
+            "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh",
     };
 
     @NonFinal
@@ -36,15 +36,6 @@ public class SecurityConfig {
             "/v3/api-docs/**", "/swagger-ui/**", "/posts", "/user-profiles", "/comments",
     };
 
-    @NonFinal
-    String[] PUBLIC_PUT_ENDPOINTS = {
-            "/posts", "/comments",
-    };
-
-    @NonFinal
-    String[] PUBLIC_DELETE_ENDPOINTS = {
-            "/posts/{id}", "/comments/{id}",
-    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -58,10 +49,6 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS)
-                    .permitAll()
-                    .requestMatchers(HttpMethod.PUT, PUBLIC_PUT_ENDPOINTS)
-                    .permitAll()
-                    .requestMatchers(HttpMethod.DELETE, PUBLIC_DELETE_ENDPOINTS)
                     .permitAll()
                     .anyRequest()
                     .authenticated();
