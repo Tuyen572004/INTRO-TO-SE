@@ -45,9 +45,6 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable(name = "id") String postId) {
-        /*
-            Đoạn này phải xóa những comment và react liên quan đến post này
-         */
         postService.deletePostById(postId);
     }
 }

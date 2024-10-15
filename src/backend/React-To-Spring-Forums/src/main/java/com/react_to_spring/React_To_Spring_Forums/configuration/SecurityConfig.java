@@ -28,22 +28,22 @@ public class SecurityConfig {
 
     @NonFinal
     String[] PUBLIC_POST_ENDPOINTS = {
-            "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh", "/posts",
+            "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh", "/posts", "/comments",
     };
 
     @NonFinal
     String[] PUBLIC_GET_ENDPOINTS = {
-            "/v3/api-docs/**", "/swagger-ui/**", "/posts", "/user-profiles",
+            "/v3/api-docs/**", "/swagger-ui/**", "/posts", "/user-profiles", "/comments",
     };
 
     @NonFinal
     String[] PUBLIC_PUT_ENDPOINTS = {
-            "/posts",
+            "/posts", "/comments",
     };
 
     @NonFinal
     String[] PUBLIC_DELETE_ENDPOINTS = {
-            "/posts/{id}",
+            "/posts/{id}", "/comments/{id}",
     };
 
     @Bean

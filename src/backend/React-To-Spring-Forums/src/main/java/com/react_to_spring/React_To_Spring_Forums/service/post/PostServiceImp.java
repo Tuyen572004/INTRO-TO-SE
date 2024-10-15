@@ -96,6 +96,9 @@ public class PostServiceImp implements PostService {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
 
+        /*
+            Đoạn này phải xóa những comment và react liên quan đến post này
+         */
         postRepository.deleteById(id);
     }
 }

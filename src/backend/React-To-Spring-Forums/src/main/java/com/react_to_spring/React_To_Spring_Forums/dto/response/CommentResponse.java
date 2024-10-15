@@ -6,20 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostResponse {
+public class CommentResponse {
     String id;
     String userId;
     String author;
     String authorAvatar;
-    String title;
     String content;
     String imageURL;
-    Date createdDate;
-    Integer reactCounts;
+    Timestamp createdDate;
 }
