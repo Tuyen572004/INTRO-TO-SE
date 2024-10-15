@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 @Getter
@@ -19,5 +20,5 @@ public class CommentResponse {
     String authorAvatar;
     String content;
     String imageURL;
-    Timestamp createdDate;
+    Date createdDate;
 }

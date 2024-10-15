@@ -15,7 +15,7 @@ import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -72,7 +72,7 @@ public class CommentServiceImp implements CommentService{
         }
 
         Comment comment = commentMapper.toComment(commentCreationRequest);
-        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        Date currentTime = new Date();
         comment.setCreatedDate(currentTime);
         comment = commentRepository.save(comment);
 

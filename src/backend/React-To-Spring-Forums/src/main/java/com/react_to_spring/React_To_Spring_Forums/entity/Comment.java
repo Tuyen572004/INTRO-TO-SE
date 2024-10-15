@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Document("comments")
@@ -33,5 +32,5 @@ public class Comment {
     String imageUrl;
 
     @Field(name = "created_date")
-    Timestamp createdDate;
+    Date createdDate;
 }
