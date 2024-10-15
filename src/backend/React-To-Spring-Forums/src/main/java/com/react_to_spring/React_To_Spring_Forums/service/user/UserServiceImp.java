@@ -55,11 +55,18 @@ public class UserServiceImp implements UserService{
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        Role role = roleRepository.findById(request.getRole())
-                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-
         User user = userMapper.toUser(request);
+
+        Role role;
+        if (request.getRole() != null) {
+            role = roleRepository.findById(request.getRole())
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        } else {
+            role = roleRepository.findById("USER")
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        }
         user.setRole(role);
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user = userRepository.save(user);
