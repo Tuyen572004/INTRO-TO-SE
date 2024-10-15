@@ -9,6 +9,7 @@ import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
+import com.react_to_spring.React_To_Spring_Forums.repository.CommentRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
@@ -34,6 +35,9 @@ public class PostServiceImp implements PostService {
 
     @Autowired
     private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Override
     public List<PostResponse> getAllPosts(String title) {
@@ -96,8 +100,9 @@ public class PostServiceImp implements PostService {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
 
+        commentRepository.deleteAllByPostId(id);
         /*
-            Đoạn này phải xóa những comment và react liên quan đến post này
+            Đoạn này phải xóa những react liên quan đến post này
          */
         postRepository.deleteById(id);
     }
