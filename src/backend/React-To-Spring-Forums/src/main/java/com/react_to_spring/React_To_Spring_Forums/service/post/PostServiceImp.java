@@ -106,3 +106,4 @@ public class PostServiceImp implements PostService {
         postRepository.deleteById(id);
     }
 }
+
