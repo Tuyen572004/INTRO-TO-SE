@@ -3,6 +3,7 @@ package com.react_to_spring.React_To_Spring_Forums.service.comment;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.comment.CommentCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.comment.CommentUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.CommentResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Comment;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
@@ -13,6 +14,9 @@ import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -46,19 +50,34 @@ public class CommentServiceImp implements CommentService{
 
         List<CommentResponse> commentResponses = new ArrayList<>();
         for (Comment item : comments) {
-            CommentResponse comment = commentMapper.toCommentResponse(item);
-
-            Optional<UserProfile> userProfile = userProfileRepository.findByUserId(item.getUserId());
-            if (userProfile.isEmpty()) continue;
-            userProfile.ifPresent(value -> {
-                comment.setAuthor(value.getFirstName() + " " + value.getLastName());
-                comment.setAuthorAvatar(value.getProfileImgUrl());
-            });
-
+            CommentResponse comment = builderCommentResponse(item);
+            if (comment == null) continue;
             commentResponses.add(comment);
         }
 
         return commentResponses;
+    }
+
+    @Override
+    public PageResponse<CommentResponse> getComments(String postId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<Comment> comments = commentRepository.findAllByPostId(postId, pageable);
+        List<CommentResponse> commentResponses = new ArrayList<>();
+
+        for (var item : comments.getContent()) {
+            CommentResponse comment = builderCommentResponse(item);
+            if (comment == null) continue;
+            commentResponses.add(comment);
+        }
+
+        return PageResponse.<CommentResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements(comments.getTotalElements())
+                .totalPages(comments.getTotalPages())
+                .data(commentResponses)
+                .build();
     }
 
     @Override
@@ -98,4 +117,18 @@ public class CommentServiceImp implements CommentService{
 
         commentRepository.deleteById(commentId);
     }
+
+    CommentResponse builderCommentResponse(Comment comment) {
+        CommentResponse commentResponse = commentMapper.toCommentResponse(comment);
+
+        Optional<UserProfile> userProfile = userProfileRepository.findByUserId(comment.getUserId());
+        if (userProfile.isEmpty()) return null;
+        userProfile.ifPresent(value -> {
+            commentResponse.setAuthor(value.getFirstName() + " " + value.getLastName());
+            commentResponse.setAuthorAvatar(value.getProfileImgUrl());
+        });
+
+        return commentResponse;
+    }
+
 }

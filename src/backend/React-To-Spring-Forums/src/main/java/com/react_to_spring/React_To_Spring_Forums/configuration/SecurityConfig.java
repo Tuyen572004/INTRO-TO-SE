@@ -33,7 +33,7 @@ public class SecurityConfig {
 
     @NonFinal
     String[] PUBLIC_GET_ENDPOINTS = {
-            "/v3/api-docs/**", "/swagger-ui/**", "/posts", "/user-profiles", "/comments",
+            "/v3/api-docs/**", "/swagger-ui/**", "/posts", "/user-profiles", "/comments", "/posts/pagination", "/comments/pagination"
     };
 
 

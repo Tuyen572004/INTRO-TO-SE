@@ -2,6 +2,7 @@ package com.react_to_spring.React_To_Spring_Forums.service.post;
 
 import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateRequest;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
@@ -13,6 +14,9 @@ import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,25 +51,36 @@ public class PostServiceImp implements PostService {
 
         List<PostResponse> postResponses = new ArrayList<>();
         for (Post item : posts) {
-            PostResponse postResponse = postMapper.toPostResponse(item);
-
-            Optional<UserProfile> userProfile = userProfileRepository.findByUserId(item.getUserId());
-            if (userProfile.isEmpty()) continue;
-            userProfile.ifPresent(value -> {
-                postResponse.setAuthor(value.getFirstName() + " " + value.getLastName());
-                postResponse.setAuthorAvatar(value.getProfileImgUrl());
-            });
-
-            /*
-                Đoạn này còn phải lấy số lượng reacts liên quan đến bài post.
-                Tạm thời cứ gán cứng react_counts là số lượng có sẵn bên db. Sau họp để thống nhất dữ liệu trả ra.
-             */
-
+            PostResponse postResponse = builderPostResponse(item);
+            if (postResponse == null) continue;
             postResponses.add(postResponse);
         }
 
         return postResponses;
     }
+
+    @Override
+    public PageResponse<PostResponse> getPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<Post> posts = postRepository.findAll(pageable);
+        List<PostResponse> postResponses = new ArrayList<>();
+
+        for (Post item : posts.getContent()) {
+            PostResponse postResponse = builderPostResponse(item);
+            if (postResponse == null) continue;
+            postResponses.add(postResponse);
+        }
+
+        return PageResponse.<PostResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
+
 
     @Override
     public PostResponse createPost(PostCreationRequest postCreationRequest) {
@@ -104,6 +119,23 @@ public class PostServiceImp implements PostService {
             Đoạn này phải xóa những react liên quan đến post này
          */
         postRepository.deleteById(id);
+    }
+
+
+    PostResponse builderPostResponse(Post post) {
+        PostResponse postResponse = postMapper.toPostResponse(post);
+
+        Optional<UserProfile> userProfile = userProfileRepository.findByUserId(post.getUserId());
+        if (userProfile.isEmpty()) return null;
+        userProfile.ifPresent(value -> {
+            postResponse.setAuthor(value.getFirstName() + " " + value.getLastName());
+            postResponse.setAuthorAvatar(value.getProfileImgUrl());
+        });
+            /*
+                Đoạn này còn phải lấy số lượng reacts liên quan đến bài post.
+                Tạm thời cứ gán cứng react_counts là số lượng có sẵn bên db. Sau họp để thống nhất dữ liệu trả ra.
+             */
+        return postResponse;
     }
 }
 

@@ -4,6 +4,7 @@ package com.react_to_spring.React_To_Spring_Forums.controller;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.comment.CommentCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.comment.CommentUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.CommentResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.comment.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +31,15 @@ public class CommentController {
             description = "Get all comments by post ID")
     List<CommentResponse> getAllComments(@RequestParam(name = "post_id", required = false) String postId) {
         return commentService.getAllComments(postId);
+    }
+
+    @GetMapping("/pagination")
+    @Operation(summary = "Get all comments with pagination",
+            description = "Get all comments by post ID with pagination")
+    PageResponse<CommentResponse> getAllCommentsWithPagination(@RequestParam(name = "post_id", required = false) String postId,
+                                                               @RequestParam(name = "page") int page,
+                                                               @RequestParam(name = "size") int size) {
+        return commentService.getComments(postId, page, size);
     }
 
     @PostMapping

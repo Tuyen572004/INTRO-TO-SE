@@ -3,6 +3,7 @@ package com.react_to_spring.React_To_Spring_Forums.controller;
 
 import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateRequest;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,12 +26,20 @@ public class PostController {
     @Autowired
     PostService postService;
 
-
     @GetMapping
     @Operation(summary = "Get all posts by title",
             description = "The results will include information about the post and the user who created it")
     public List<PostResponse> getAllPostsByTitle(@RequestParam(name = "title") String title){
         return postService.getAllPosts(title);
+    }
+
+
+    @GetMapping("/pagination")
+    @Operation(summary = "Get all posts",
+            description = "The results will include information about the post and the user who created it")
+    public PageResponse<PostResponse> getPosts(@RequestParam(value = "page") Integer page,
+                                               @RequestParam("size") Integer size) {
+        return postService.getPosts(page, size);
     }
 
     @PostMapping
