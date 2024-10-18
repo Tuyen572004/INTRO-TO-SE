@@ -96,7 +96,7 @@ public class CommentServiceImp implements CommentService{
         comment.setCreatedDate(currentTime);
         comment = commentRepository.save(comment);
 
-        return commentMapper.toCommentResponse(comment);
+        return builderCommentResponse(comment);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class CommentServiceImp implements CommentService{
         commentMapper.updateComment(comment, commentUpdateRequest);
         comment = commentRepository.save(comment);
 
-        return commentMapper.toCommentResponse(comment);
+        return builderCommentResponse(comment);
     }
 
     @Override

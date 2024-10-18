@@ -93,10 +93,9 @@ public class PostServiceImp implements PostService {
         Post post = postMapper.toPost(postCreationRequest);
         Date currentTime = new Date();
         post.setCreatedDate(currentTime);
-
         post = postRepository.save(post);
 
-        return postMapper.toPostResponse(post);
+        return builderPostResponse(post);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class PostServiceImp implements PostService {
         postMapper.updatePost(post, postUpdateRequest);
         post = postRepository.save(post);
 
-        return postMapper.toPostResponse(post);
+        return builderPostResponse(post);
     }
 
     @Override

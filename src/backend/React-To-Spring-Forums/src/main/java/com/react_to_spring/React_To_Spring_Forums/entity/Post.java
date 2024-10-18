@@ -29,7 +29,7 @@ public class Post {
     String content;
 
     @Field(name = "image_url")
-    String imageURL;
+    String imageUrl;
 
     @Field(name = "created_date")
     Date createdDate;

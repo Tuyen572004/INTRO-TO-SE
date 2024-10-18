@@ -19,7 +19,7 @@ public class PostResponse {
     String authorAvatar;
     String title;
     String content;
-    String imageURL;
+    String imageUrl;
     Date createdDate;
     Integer reactCounts;
 }

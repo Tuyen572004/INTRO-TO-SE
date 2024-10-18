@@ -19,6 +19,6 @@ public class CommentResponse {
     String author;
     String authorAvatar;
     String content;
-    String imageURL;
+    String imageUrl;
     Date createdDate;
 }
