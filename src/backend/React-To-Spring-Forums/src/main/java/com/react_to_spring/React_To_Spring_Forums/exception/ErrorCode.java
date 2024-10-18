@@ -18,6 +18,8 @@ public enum ErrorCode {
             "contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
     REQUIRED_EMAIL(2003, HttpStatus.BAD_REQUEST, "Email is required"),
     SAME_PASSWORD(2004, HttpStatus.BAD_REQUEST, "New password must be different from the old password"),
+    TITLE_IS_EMPTY(2005, HttpStatus.FORBIDDEN, "Title is empty"),
+    CONTENT_IS_EMPTY(2006, HttpStatus.FORBIDDEN, "Content is empty"),
 //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),
     USER_PROFILE_EXISTED(3002, HttpStatus.BAD_REQUEST, "User profile existed"),
@@ -36,9 +38,6 @@ public enum ErrorCode {
     UNAUTHENTICATED(5005, HttpStatus.UNAUTHORIZED, "Authentication failed"),
 //    Forbidden	Client	6xxx (Unauthorized error)
     UNAUTHORIZED(6001, HttpStatus.FORBIDDEN, "Don't have permission"),
-//  Bad Request 7xxx
-    TITLE_IS_EMPTY(7001, HttpStatus.FORBIDDEN, "Title is empty"),
-    CONTENT_IS_EMPTY(7002, HttpStatus.FORBIDDEN, "Content is empty"),
     ;
     final Integer code;
     final HttpStatus status;
