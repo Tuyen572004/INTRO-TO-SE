@@ -36,6 +36,9 @@ public enum ErrorCode {
     UNAUTHENTICATED(5005, HttpStatus.UNAUTHORIZED, "Authentication failed"),
 //    Forbidden	Client	6xxx (Unauthorized error)
     UNAUTHORIZED(6001, HttpStatus.FORBIDDEN, "Don't have permission"),
+//  Bad Request 7xxx
+    TITLE_IS_EMPTY(7001, HttpStatus.FORBIDDEN, "Title is empty"),
+    CONTENT_IS_EMPTY(7002, HttpStatus.FORBIDDEN, "Content is empty"),
     ;
     final Integer code;
     final HttpStatus status;

@@ -35,11 +35,12 @@ public class PostController {
 
 
     @GetMapping("/pagination")
-    @Operation(summary = "Get all posts",
+    @Operation(summary = "Get all posts with pagination",
             description = "The results will include information about the post and the user who created it")
-    public PageResponse<PostResponse> getPosts(@RequestParam(value = "page") Integer page,
-                                               @RequestParam("size") Integer size) {
-        return postService.getPosts(page, size);
+    public PageResponse<PostResponse> getPosts(@RequestParam(name = "title") String title,
+                                               @RequestParam(value = "page") int page,
+                                               @RequestParam("size") int size) {
+        return postService.getPosts(title, page, size);
     }
 
     @PostMapping

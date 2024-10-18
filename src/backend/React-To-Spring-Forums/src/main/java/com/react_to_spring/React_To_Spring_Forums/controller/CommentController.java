@@ -28,14 +28,14 @@ public class CommentController {
 
     @GetMapping
     @Operation(summary = "Get all comments",
-            description = "Get all comments by post ID")
+            description = "The results will include information about the comment and the user who created it")
     List<CommentResponse> getAllComments(@RequestParam(name = "post_id", required = false) String postId) {
         return commentService.getAllComments(postId);
     }
 
     @GetMapping("/pagination")
     @Operation(summary = "Get all comments with pagination",
-            description = "Get all comments by post ID with pagination")
+            description = "The results will include information about the comment and the user who created it")
     PageResponse<CommentResponse> getAllCommentsWithPagination(@RequestParam(name = "post_id", required = false) String postId,
                                                                @RequestParam(name = "page") int page,
                                                                @RequestParam(name = "size") int size) {

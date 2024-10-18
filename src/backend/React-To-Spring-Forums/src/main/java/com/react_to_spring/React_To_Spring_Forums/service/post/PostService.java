@@ -10,7 +10,7 @@ import java.util.List;
 public interface PostService {
     List<PostResponse> getAllPosts(String title);
 
-    PageResponse<PostResponse> getPosts(int page, int size);
+    PageResponse<PostResponse> getPosts(String title, int page, int size);
 
     PostResponse createPost(PostCreationRequest postCreationRequest);
 
