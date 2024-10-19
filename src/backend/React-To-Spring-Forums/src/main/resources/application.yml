@@ -33,8 +33,8 @@ logging:
 jwt:
   accessSignerKey: ${ACCESS_SIGNER_KEY}
   refreshSignerKey: ${REFRESH_SIGNER_KEY}
-  valid-duration: ${VALID_DURATION:3600} # in second
-  refreshable-duration: ${REFRESHABLE_DURATION:360000} # in second
+  valid-duration: ${VALID_DURATION} # in second
+  refreshable-duration: ${REFRESHABLE_DURATION} # in second
 
 app:
   init-admin-account:
@@ -54,13 +54,13 @@ app:
         delete:
           success: "Role has been deleted"
     permission:
-        response:
-          delete:
-            success: "Permission has been deleted"
+      response:
+        delete:
+          success: "Permission has been deleted"
     authentication:
       response:
         logout:
-            success: "Logout successfully"
+          success: "Logout successfully"
         change-password:
           success: "Password has been changed"
 
