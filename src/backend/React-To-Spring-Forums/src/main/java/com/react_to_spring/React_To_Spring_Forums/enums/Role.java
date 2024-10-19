@@ -7,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 public enum Role {
     USER("USER"),
     ADMIN("ADMIN"),
-    ;
+;
 
     String name;
 

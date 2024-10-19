@@ -10,13 +10,13 @@ spring:
   application:
     name: React-To-Spring-Forums
   datasource:
-    url: ${IDENTITY_SERVICE_DB_URL:jdbc:mysql://localhost:3306/identity_service}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
+    url: ${IDENTITY_SERVICE_DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driverClassName: com.mysql.cj.jdbc.Driver
   data:
     mongodb:
-      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb://root:root@localhost:27017/react-to-spring-forums-db?authSource=admin}
+      uri: ${REACT_TO_SPRING_FORUMS_DB_URL}
   jpa:
     show-sql: true
     open-in-view: true
@@ -33,8 +33,8 @@ logging:
 jwt:
   accessSignerKey: ${ACCESS_SIGNER_KEY}
   refreshSignerKey: ${REFRESH_SIGNER_KEY}
-  valid-duration: ${VALID_DURATION:3600} # in second
-  refreshable-duration: ${REFRESHABLE_DURATION:360000} # in second
+  valid-duration: ${VALID_DURATION} # in second
+  refreshable-duration: ${REFRESHABLE_DURATION} # in second
 
 app:
   init-admin-account:
@@ -54,13 +54,13 @@ app:
         delete:
           success: "Role has been deleted"
     permission:
-        response:
-          delete:
-            success: "Permission has been deleted"
+      response:
+        delete:
+          success: "Permission has been deleted"
     authentication:
       response:
         logout:
-            success: "Logout successfully"
+          success: "Logout successfully"
         change-password:
           success: "Password has been changed"
 

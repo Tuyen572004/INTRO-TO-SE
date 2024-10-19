@@ -26,6 +26,8 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(4002, HttpStatus.NOT_FOUND, "Role not found"),
     USER_PROFILE_NOT_FOUND(4003, HttpStatus.NOT_FOUND, "User profile not found"),
     PERMISSION_NOT_FOUND(4004, HttpStatus.NOT_FOUND, "Permission not found"),
+    POST_NOT_FOUND(4005, HttpStatus.NOT_FOUND, "Post not found"),
+    REACT_NOT_FOUND(4006, HttpStatus.NOT_FOUND, "React not found"),
 //    Unauthorized	Client	5xxx (Unauthenticated error)
     INVALID_TOKEN(5001, HttpStatus.UNAUTHORIZED, "Invalid token"),
     INVALID_USERNAME_PASSWORD(5002, HttpStatus.UNAUTHORIZED, "Invalid username or password"),
