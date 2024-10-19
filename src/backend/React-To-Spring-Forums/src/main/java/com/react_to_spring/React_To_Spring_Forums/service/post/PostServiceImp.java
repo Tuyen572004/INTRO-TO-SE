@@ -20,8 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +91,8 @@ public class PostServiceImp implements PostService {
         }
 
         Post post = postMapper.toPost(postCreationRequest);
-        Date currentTime = new Date();
+        LocalDateTime currentTime = LocalDateTime.now();
+        System.out.println(currentTime);
         post.setCreatedDate(currentTime);
         post = postRepository.save(post);
 

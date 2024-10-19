@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,6 +20,6 @@ public class PostResponse {
     String title;
     String content;
     String imageUrl;
-    Date createdDate;
+    LocalDateTime createdDate;
     Integer reactCounts;
 }

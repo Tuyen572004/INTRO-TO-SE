@@ -20,9 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -92,7 +92,7 @@ public class CommentServiceImp implements CommentService{
         }
 
         Comment comment = commentMapper.toComment(commentCreationRequest);
-        Date currentTime = new Date();
+        LocalDateTime currentTime = LocalDateTime.now();
         comment.setCreatedDate(currentTime);
         comment = commentRepository.save(comment);
 
