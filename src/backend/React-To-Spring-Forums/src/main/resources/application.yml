@@ -10,13 +10,13 @@ spring:
   application:
     name: React-To-Spring-Forums
   datasource:
-    url: ${IDENTITY_SERVICE_DB_URL:jdbc:mysql://localhost:3306/identity_service}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
+    url: ${IDENTITY_SERVICE_DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driverClassName: com.mysql.cj.jdbc.Driver
   data:
     mongodb:
-      uri: ${REACT_TO_SPRING_FORUMS_DB_URL:mongodb+srv://root:root@reacttospring.rhg23.mongodb.net/react-to-spring-forums-db?retryWrites=true&w=majority}
+      uri: ${REACT_TO_SPRING_FORUMS_DB_URL}
   jpa:
     show-sql: true
     open-in-view: true
@@ -31,15 +31,15 @@ logging:
               MongoTemplate: DEBUG
 
 jwt:
-  accessSignerKey: ${ACCESS_SIGNER_KEY:N2d5cmwxaGZrbjQ2MTBvYXNodWNlYTUwYTlxemFvNnA0M2NkMzB4M281dXF1Y21zdGxiZTQ0eXVhamxvczYzd284OTFsb3ZlZWxsYmRxa2lkZ2I4OGZqOHR4d2RzamF4eXN3ZmJrc3FvbnFydHdvOXdxMXBjYzE0dGJweDNnbDM=}
-  refreshSignerKey: ${REFRESH_SIGNER_KEY:a2M5OXR2Z3JuMmc3bnF6cTIwZ2JhZjBoZjlscWJiNTltc2E4ejVyeTFhZ2VvYjd2am43cHB5NHVobndtMHFoYnZ1NHg2eXAxY2dsenV3ZHFqd29vNzRobm4xMGNhMzJyMjJnNXFzZ3llbGh3a3Q5NWs1andxbWlyMzhmbTY0OXc=}
+  accessSignerKey: ${ACCESS_SIGNER_KEY}
+  refreshSignerKey: ${REFRESH_SIGNER_KEY}
   valid-duration: ${VALID_DURATION:3600} # in second
   refreshable-duration: ${REFRESHABLE_DURATION:360000} # in second
 
 app:
   init-admin-account:
-    username: ${ADMIN_USERNAME:admin}
-    password: ${ADMIN_PASSWORD:admin123}
+    username: ${ADMIN_USERNAME}
+    password: ${ADMIN_PASSWORD}
   role:
     admin:
       name: ADMIN
