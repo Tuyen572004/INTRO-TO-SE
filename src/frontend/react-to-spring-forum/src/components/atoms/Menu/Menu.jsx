@@ -7,11 +7,21 @@ import s from "./style.module.css";
 const Menu = ({ toggleIsPostPopup }) => {
   return (
     <div className={s.container}>
-      <GrHomeOption />
-      <FiSearch />
-      <FaPlus onClick={() => toggleIsPostPopup()} />
-      <FaRegHeart />
-      <FaUser />
+      <div className={s.home}>
+        <GrHomeOption />
+      </div>
+      <div className={s.search}>
+        <FiSearch />
+      </div>
+      <div className={s.post}>
+        <FaPlus onClick={() => toggleIsPostPopup()} />
+      </div>
+      <div className={s.heart}>
+        <FaRegHeart />
+      </div>
+      <div className={s.user}>
+        <FaUser />
+      </div>
     </div>
   );
 };
