@@ -4,12 +4,12 @@ import { FiSearch } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import s from "./style.module.css";
-const Menu = () => {
+const Menu = ({ toggleIsPostPopup }) => {
   return (
     <div className={s.container}>
       <GrHomeOption />
       <FiSearch />
-      <FaPlus />
+      <FaPlus onClick={() => toggleIsPostPopup()} />
       <FaRegHeart />
       <FaUser />
     </div>

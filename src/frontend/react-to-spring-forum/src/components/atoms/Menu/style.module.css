@@ -10,5 +10,10 @@
 .container>* {
 	font-size: 1.7rem;
 	margin: 1rem;
-	color: #d3d3d3
+	color: #d3d3d3;
+
+}
+
+.container>*:hover {
+	background-color: #d3d3d3;
 }

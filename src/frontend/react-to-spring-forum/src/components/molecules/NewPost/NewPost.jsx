@@ -1,5 +1,5 @@
 import s from "./style.module.css";
-const NewPost = () => {
+const NewPost = ({ toggleIsPostPopup }) => {
   return (
     <div className={s.container}>
       <div className={s.new_post}>
@@ -9,8 +9,12 @@ const NewPost = () => {
             alt="huper"
           />
         </div>
-        <div className={s.new}>What's new?</div>
-        <div className={s.post_button}>Post</div>
+        <div className={s.new} onClick={() => toggleIsPostPopup()}>
+          What's new?
+        </div>
+        <div className={s.post_button} onClick={() => toggleIsPostPopup()}>
+          Post
+        </div>
       </div>
     </div>
   );
