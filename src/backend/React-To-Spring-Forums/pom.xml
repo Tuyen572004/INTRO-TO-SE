@@ -95,9 +95,10 @@
 			<artifactId>spring-dotenv</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
-	<dependencyManagement>
+
+    <dependencyManagement>
 		<dependencies>
 			<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
 			<dependency>
