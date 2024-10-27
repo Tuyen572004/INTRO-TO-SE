@@ -14,6 +14,7 @@ import com.react_to_spring.React_To_Spring_Forums.mapper.UserProfilerMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.RoleRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.userprofile.UserProfileService;
+import com.react_to_spring.React_To_Spring_Forums.service.verifycode.VerifyCodeService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Slf4j
 @Service
@@ -46,6 +48,9 @@ public class UserServiceImp implements UserService{
     UserProfilerMapper userProfilerMapper;
 
     PasswordEncoder passwordEncoder;
+
+    VerifyCodeService verifyCodeService;
+
 
     @Override
     @Transactional
@@ -71,13 +76,14 @@ public class UserServiceImp implements UserService{
 
         user = userRepository.save(user);
 
+        verifyCodeService.sendVerifyLink(user);
+
         UserProfileCreationRequest userProfileCreationRequest = userProfilerMapper.toUserProfileCreationRequest(request);
         userProfileCreationRequest.setUserId(user.getId());
 
         userProfileService.createUserProfile(userProfileCreationRequest);
 
-        // DEBT: 2021-07-21
-        // Send verification email
+
         return buildUserResponse(user);
     }
 
