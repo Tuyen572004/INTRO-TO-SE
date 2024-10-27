@@ -7,6 +7,7 @@ import com.react_to_spring.React_To_Spring_Forums.entity.React;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.ReactMapper;
+import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.ReactRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -26,7 +27,7 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ReactServiceImpl implements ReactService {
     UserRepository userRepository;
-    // PostRepository postRepository;
+    PostRepository postRepository;
     ReactMapper reactMapper;
     ReactRepository reactRepository;
 
@@ -36,9 +37,9 @@ public class ReactServiceImpl implements ReactService {
         if(!userRepository.existsById(request.getUserId())) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
-//        if(!postRepository.existsById(request.getPostId())) {
-//            throw new AppException(ErrorCode.POST_NOT_FOUND);
-//        }
+        if(!postRepository.existsById(request.getPostId())) {
+            throw new AppException(ErrorCode.POST_NOT_FOUND);
+        }
         React react = reactMapper.toReact(request);
         react = reactRepository.save(react);
         return reactMapper.toReactResponse(react);
@@ -46,9 +47,9 @@ public class ReactServiceImpl implements ReactService {
 
     @Override
     public List<ReactResponse> getReactsByPostId(String postId) {
-        //        if(!postRepository.existsById(postId)) {
-//            throw new AppException(ErrorCode.POST_NOT_FOUND);
-//        }
+        if(!postRepository.existsById(postId)) {
+            throw new AppException(ErrorCode.POST_NOT_FOUND);
+        }
         List<React> reacts = reactRepository.findAllByPostId(postId);
         List<ReactResponse> reactResponses = new ArrayList<>();
         for(React react : reacts) {
@@ -62,9 +63,9 @@ public class ReactServiceImpl implements ReactService {
         if(!userRepository.existsById(userId)) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
-//        if(!postRepository.existsById(postId)) {
-//            throw new AppException(ErrorCode.POST_NOT_FOUND);
-//        }
+        if(!postRepository.existsById(postId)) {
+            throw new AppException(ErrorCode.POST_NOT_FOUND);
+        }
         Optional<React> react = reactRepository.findByPostIdAndUserId(postId, userId);
 
         return reactMapper.toReactResponse(react.get());
@@ -84,9 +85,9 @@ public class ReactServiceImpl implements ReactService {
     @Override
     @Transactional
     public void deleteReactsByPostId(String postId) {
-//        if(!postRepository.existsById(postId)) {
-//            throw new AppException(ErrorCode.POST_NOT_FOUND);
-//        }
+        if(!postRepository.existsById(postId)) {
+            throw new AppException(ErrorCode.POST_NOT_FOUND);
+        }
         reactRepository.deleteAllByPostId(postId);
     }
 

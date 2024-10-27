@@ -5,14 +5,12 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateReq
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
+import com.react_to_spring.React_To_Spring_Forums.entity.React;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
-import com.react_to_spring.React_To_Spring_Forums.repository.CommentRepository;
-import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
-import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
-import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.*;
 import com.react_to_spring.React_To_Spring_Forums.utils.CheckData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +40,9 @@ public class PostServiceImp implements PostService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private ReactRepository reactRepository;
 
     @Override
     public List<PostResponse> getAllPosts(String title) {
@@ -119,7 +120,7 @@ public class PostServiceImp implements PostService {
         }
 
         commentRepository.deleteAllByPostId(id);
-        //    Đoạn này phải xóa những react liên quan đến post này
+        reactRepository.deleteAllByPostId(id);
 
         postRepository.deleteById(id);
     }
@@ -134,10 +135,10 @@ public class PostServiceImp implements PostService {
             postResponse.setAuthor(value.getFirstName() + " " + value.getLastName());
             postResponse.setAuthorAvatar(value.getProfileImgUrl());
         });
-        /*
-            Đoạn này còn phải lấy số lượng reacts liên quan đến bài post.
-            Tạm thời cứ gán cứng react_counts là số lượng có sẵn bên db. Sau họp để thống nhất dữ liệu trả ra.
-        */
+
+        List<React> reacts = reactRepository.findAllByPostId(post.getId());
+        postResponse.setReactCounts(reacts.size());
+
         return postResponse;
     }
 }
