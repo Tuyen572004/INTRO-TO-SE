@@ -15,6 +15,7 @@ import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.repository.InvalidatedTokenRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.VerifyCodeRepository;
+import com.react_to_spring.React_To_Spring_Forums.service.verifycode.VerifyCodeService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -61,6 +62,8 @@ public class AuthenticationServiceImp implements AuthenticationService {
     @Value("${jwt.refreshable-duration}")
     long REFRESHABLE_DURATION;
 
+    VerifyCodeService verifyCodeService;
+
     @Override
     public IntrospectResponse introspect(IntrospectRequest request) {
 
@@ -79,6 +82,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+
+        System.out.println(request.getUsername());
+        System.out.println(request.getPassword());
+
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_USERNAME_PASSWORD));
 
@@ -126,6 +133,11 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
         if (request.getOldPassword().equals(request.getNewPassword())) {
             throw new AppException(ErrorCode.SAME_PASSWORD);
+        }
+
+        // verify code
+        if(!verifyCodeService.verifyCode(user.getId(), request.getVerificationCode())) { // expire
+             throw new AppException(ErrorCode.VERIFY_CODE_EXPIRED);
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));

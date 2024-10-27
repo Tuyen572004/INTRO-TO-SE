@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 public class VerifyCode {
 
     @Id
-    String verify_code;
+    String verifyCode;
 
     @Column(name = "expiration_time")
-    LocalDateTime expiration_time;
+    LocalDateTime expirationTime;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.MERGE, CascadeType.PERSIST,
@@ -28,4 +28,6 @@ public class VerifyCode {
     })
     @JoinColumn(name = "user_id")
     User user;
+
+
 }
