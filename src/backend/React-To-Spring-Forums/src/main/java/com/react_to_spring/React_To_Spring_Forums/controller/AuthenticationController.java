@@ -68,7 +68,7 @@ public class AuthenticationController {
 
     @PatchMapping("/change-password")
     @Operation(summary = "Change password",
-            description = "Change password of user with old password and new password")
+            description = "Change password of user with old password, new password, verification code (sent via email after clicking sent code)")
     public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authenticationService.changePassword(request);
         return ApiResponse.<Void>builder().message(CHANGE_PASSWORD_SUCCESS_MESSAGE).build();

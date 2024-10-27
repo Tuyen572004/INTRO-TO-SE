@@ -63,6 +63,22 @@ app:
           success: "Logout successfully"
         change-password:
           success: "Password has been changed"
+  email:
+    verification:
+      expiration: 5 # in minute
+      reset-password:
+        length: 6
+    host: ${EMAIL_BASE_URL}
+    API-key: ${EMAIL_API_KEY}
+    endpoint: ${EMAIL_ENDPOINT}
+    subject: "React To Spring Forums"
+    sender:
+      email: ${SENDER_EMAIL}
+      name : ${SENDER_NAME}
+
+
+
+
 
 open:
   api:

@@ -17,4 +17,7 @@ public class ChangePasswordRequest {
     @Size(min = 8, message = "INVALID_PASSWORD")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*(){}\\[\\]!~`|])(?=.*\\d).*$", message = "INVALID_PASSWORD")
     String newPassword;
+
+    String verificationCode;
+
 }
