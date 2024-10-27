@@ -7,7 +7,6 @@ const PostForm = ({ toggleIsPostPopup }) => {
       <div className={s.container}>
         <div className={s.header}>
           <div className={s.avatar}>
-            {" "}
             <img
               src="https://api.dicebear.com/5.x/bottts/svg?seed=huper"
               alt="huper"

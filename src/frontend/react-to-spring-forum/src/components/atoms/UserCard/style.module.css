@@ -1,0 +1,62 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	border-bottom: 1px solid #D9D9D9;
+	box-sizing: border-box;
+	position: absolute;
+	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+	border-radius: 16px;
+	background: white;
+	left: 5vw;
+	top: 5vh;
+	width: 20vw;
+	height: 25vh;
+	z-index: 2;
+}
+
+.user_information {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
+
+}
+
+.inner_user_information {}
+
+.username {
+	font-size: large;
+	font-weight: bold;
+}
+
+.name {}
+
+.avatar {
+	height: 50px;
+	width: 50px;
+	border-radius: 100%;
+	border: 1px solid #D9D9D9;
+}
+
+.inner_avatar {}
+
+.description {
+	font-size: small;
+}
+
+.total_follower {
+	font-size: smaller;
+}
+
+.follow_button {
+	color: white;
+	font-weight: 700;
+	padding: 5px 10px;
+	border: 1px solid #D9D9D9;
+	border-radius: 10px;
+	height: 35px;
+	width: 100%;
+	text-align: center;
+	background-color: black;
+}
