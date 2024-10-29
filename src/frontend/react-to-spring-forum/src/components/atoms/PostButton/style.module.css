@@ -1,0 +1,17 @@
+.post_button {
+	position: absolute;
+	height: 4vw;
+	width: 5vw;
+	top: 90vh;
+	right: 2vw;
+	border: 1px solid #D9D9D9;
+	border-radius: 15px;
+	background-color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.post_button>* {
+	font-size: 2rem;
+}

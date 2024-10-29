@@ -1,0 +1,24 @@
+.container {
+	display: flex;
+	height: 10vh;
+	align-items: center;
+	justify-content: center;
+}
+
+.container>* {
+	margin: 10px;
+}
+
+.title {
+	font-weight: 500;
+}
+
+.more {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 1.5vw;
+	width: 1.5vw;
+	background-color: white;
+	border-radius: 100%;
+}

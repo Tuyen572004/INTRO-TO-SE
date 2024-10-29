@@ -1,0 +1,29 @@
+.container {
+	width: 10vw;
+	height: 10vh;
+	display: flex;
+}
+
+/* .logo {
+	width: 50px;
+	height: 50px;
+}
+
+.logo>* {
+	height: 100%;
+	width: 100%;
+}
+
+/* .bubblegum-sans-regular {
+	font-family: "Bubblegum Sans", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+} */
+.title {
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height: 1em;
+	text-align: center;
+	font-family: "Bubblegum Sans", sans-serif;
+	font-size: large;
+}

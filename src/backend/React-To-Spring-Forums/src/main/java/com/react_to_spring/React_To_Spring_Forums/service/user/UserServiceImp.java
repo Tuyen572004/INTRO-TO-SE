@@ -14,6 +14,7 @@ import com.react_to_spring.React_To_Spring_Forums.mapper.UserProfilerMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.RoleRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.userprofile.UserProfileService;
+import com.react_to_spring.React_To_Spring_Forums.service.verifycode.VerifyCodeService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Slf4j
 @Service
@@ -47,6 +49,9 @@ public class UserServiceImp implements UserService{
 
     PasswordEncoder passwordEncoder;
 
+    VerifyCodeService verifyCodeService;
+
+
     @Override
     @Transactional
     public UserResponse createUser(UserCreationRequest request) {
@@ -55,22 +60,30 @@ public class UserServiceImp implements UserService{
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        Role role = roleRepository.findById(request.getRole())
-                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-
         User user = userMapper.toUser(request);
+
+        Role role;
+        if (request.getRole() != null) {
+            role = roleRepository.findById(request.getRole())
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        } else {
+            role = roleRepository.findById("USER")
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        }
         user.setRole(role);
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user = userRepository.save(user);
+
+        verifyCodeService.sendVerifyLink(user);
 
         UserProfileCreationRequest userProfileCreationRequest = userProfilerMapper.toUserProfileCreationRequest(request);
         userProfileCreationRequest.setUserId(user.getId());
 
         userProfileService.createUserProfile(userProfileCreationRequest);
 
-        // DEBT: 2021-07-21
-        // Send verification email
+
         return buildUserResponse(user);
     }
 
