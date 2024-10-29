@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     @NonFinal
     String[] PUBLIC_POST_ENDPOINTS = {
-            "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh"
+            "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh",
 //            "/posts", "/posts/**", "/comments", "/comments/**", "/reacts", "/reacts/**"
     };
 
@@ -36,7 +36,7 @@ public class SecurityConfig {
     String[] PUBLIC_GET_ENDPOINTS = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/posts", "/posts/**", "/comments", "/comments/**", "/reacts", "/reacts/**"
+            "/posts", "/posts/**", "/comments", "/comments/**", "/reacts", "/reacts/**","/verify**"
     };
 
     @Bean
