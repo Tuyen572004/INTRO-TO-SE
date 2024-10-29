@@ -13,6 +13,8 @@ public enum ErrorCode {
 //    Internal Server Error	Developer error 1xxx
     INVALID_KEY(1001, HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Key"),
     CANNOT_SEND_EMAIL(1002, HttpStatus.INTERNAL_SERVER_ERROR, "Cannot send email"),
+    CONTENT_IS_EMPTY(1003, HttpStatus.INTERNAL_SERVER_ERROR, "Content is empty"),
+    TITLE_IS_EMPTY(1004, HttpStatus.INTERNAL_SERVER_ERROR, "Title is empty"),
 //    Bad Request Client Input Error 2xxx
     INVALID_USERNAME(2001, HttpStatus.BAD_REQUEST, "Username should be at least {} characters"),
     INVALID_PASSWORD(2002, HttpStatus.BAD_REQUEST, "Password should be at least {} characters, " +
@@ -30,6 +32,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(4005, HttpStatus.NOT_FOUND, "Post not found"),
     REACT_NOT_FOUND(4006, HttpStatus.NOT_FOUND, "React not found"),
     VERIFY_CODE_NOT_FOUND(4007, HttpStatus.NOT_FOUND, "Verify code not found"),
+    COMMENT_NOT_FOUND(4008, HttpStatus.NOT_FOUND, "Comment not found"),
 //    Unauthorized	Client	5xxx (Unauthenticated error)
     INVALID_TOKEN(5001, HttpStatus.UNAUTHORIZED, "Invalid token"),
     INVALID_USERNAME_PASSWORD(5002, HttpStatus.UNAUTHORIZED, "Invalid username or password"),
