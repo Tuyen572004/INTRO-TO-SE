@@ -4,12 +4,14 @@ import com.react_to_spring.React_To_Spring_Forums.enums.ReactName;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity(name = "reacts")
-@Table(name = "reacts")
+@Document("reacts")
 @Getter
 @Setter
 @Builder
@@ -17,21 +19,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class React {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
+    @MongoId
     String id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "name")
+    @Field(name = "name")
     ReactName name;
 
-    @Column(name = "user_id")
+    @Field(name = "user_id")
     String userId;
 
-    @Column(name = "post_id")
+    @Field(name = "post_id")
     String postId;
 
-    @Column(name = "created_date")
+    @Field(name = "created_date")
     LocalDateTime createdDate;
 }

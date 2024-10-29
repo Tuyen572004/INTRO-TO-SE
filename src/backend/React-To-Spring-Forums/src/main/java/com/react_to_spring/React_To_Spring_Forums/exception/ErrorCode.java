@@ -13,6 +13,8 @@ public enum ErrorCode {
 //    Internal Server Error	Developer error 1xxx
     INVALID_KEY(1001, HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Key"),
     CANNOT_SEND_EMAIL(1002, HttpStatus.INTERNAL_SERVER_ERROR, "Cannot send email"),
+    CONTENT_IS_EMPTY(1003, HttpStatus.INTERNAL_SERVER_ERROR, "Content is empty"),
+    TITLE_IS_EMPTY(1004, HttpStatus.INTERNAL_SERVER_ERROR, "Title is empty"),
 //    Bad Request Client Input Error 2xxx
     INVALID_USERNAME(2001, HttpStatus.BAD_REQUEST, "Username should be at least {} characters"),
     INVALID_PASSWORD(2002, HttpStatus.BAD_REQUEST, "Password should be at least {} characters, " +
