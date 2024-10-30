@@ -8,9 +8,17 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import java.util.List;
 
 public interface PostService {
-    List<PostResponse> getAllPosts(String title);
+    PostResponse getPostById(String id);
 
-    PageResponse<PostResponse> getPosts(String title, int page, int size);
+    PageResponse<PostResponse> getMyPosts(int page, int size);
+
+    List<PostResponse> getAllPostsByTitle(String title);
+
+    PageResponse<PostResponse> getPostsByTitle(String title, int page, int size);
+
+    List<PostResponse> getAllPostsByUserId(String userId);
+
+    PageResponse<PostResponse> getPostsByUserId(String userId, int page, int size);
 
     PostResponse createPost(PostCreationRequest postCreationRequest);
 

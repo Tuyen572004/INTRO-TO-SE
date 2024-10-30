@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Builder
@@ -21,6 +18,4 @@ public class ReactUpdateRequest {
 
         @NotNull(message = "REQUIRED_REACT_NAME")
         ReactName name;
-
-        LocalDateTime createdDate;
 }
