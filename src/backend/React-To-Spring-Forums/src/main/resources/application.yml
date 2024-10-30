@@ -53,6 +53,10 @@ app:
       response:
         delete:
           success: "Role has been deleted"
+    react:
+      response:
+        delete:
+          success: "React has been deleted"
     permission:
       response:
         delete:

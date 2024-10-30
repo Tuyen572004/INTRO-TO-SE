@@ -9,6 +9,8 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -56,7 +58,7 @@ public class PostController {
     @PostMapping
     @Operation(summary = "Create a post",
             description = "Create a post by providing user ID and information: title, content, and image")
-    public ApiResponse<PostResponse> createPost(@RequestBody PostCreationRequest postCreationRequest) {
+    public ApiResponse<PostResponse> createPost(@Valid @RequestBody PostCreationRequest postCreationRequest) {
         return ApiResponse.<PostResponse>builder()
                 .data(postService.createPost(postCreationRequest))
                 .build();
@@ -65,7 +67,7 @@ public class PostController {
     @PutMapping
     @Operation(summary = "Update a post",
             description = "Update a post by providing post ID and new information: title, content, image")
-    public ApiResponse<PostResponse> updatePost(@RequestBody PostUpdateRequest postUpdateRequest) {
+    public ApiResponse<PostResponse> updatePost(@Valid @RequestBody PostUpdateRequest postUpdateRequest) {
         return ApiResponse.<PostResponse>builder()
                 .data(postService.updatePost(postUpdateRequest))
                 .build();
@@ -74,7 +76,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a post",
             description = "Delete a post by providing post ID")
-    public ApiResponse<Void> deletePost(@PathVariable(name = "id") String postId) {
+    public ApiResponse<Void> deletePost(@PathVariable(name = "id") @NotNull String postId) {
         postService.deletePostById(postId);
         return ApiResponse.<Void>builder()
                 .message(DELETE_SUCCESS)

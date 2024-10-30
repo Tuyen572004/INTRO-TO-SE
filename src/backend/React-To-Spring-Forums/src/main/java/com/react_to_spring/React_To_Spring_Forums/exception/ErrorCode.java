@@ -21,7 +21,14 @@ public enum ErrorCode {
             "contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
     REQUIRED_EMAIL(2003, HttpStatus.BAD_REQUEST, "Email is required"),
     SAME_PASSWORD(2004, HttpStatus.BAD_REQUEST, "New password must be different from the old password"),
-//    Existed Error 3xxx
+    REACT_ALREADY_EXISTS(2005, HttpStatus.BAD_REQUEST , "The user already has a react on the post" ),
+    REQUIRED_POST_ID(2006, HttpStatus.BAD_REQUEST, "Post ID is required"),
+    REQUIRED_USER_ID(2007, HttpStatus.BAD_REQUEST, "User ID is required"),
+    REQUIRED_REACT_ID(2008, HttpStatus.BAD_REQUEST, "React ID is required"),
+    REQUIRED_REACT_NAME(2009, HttpStatus.BAD_REQUEST, "React name is required"),
+    REQUIRED_COMMENT_ID(2010, HttpStatus.BAD_REQUEST, "Comment ID is required"),
+
+    //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),
     USER_PROFILE_EXISTED(3002, HttpStatus.BAD_REQUEST, "User profile existed"),
 //    Not Found Error 4xxx
@@ -41,9 +48,8 @@ public enum ErrorCode {
     UNAUTHENTICATED(5005, HttpStatus.UNAUTHORIZED, "Authentication failed"),
     VERIFY_CODE_EXPIRED(5006, HttpStatus.UNAUTHORIZED, "Code is expired"),
 //    Forbidden	Client	6xxx (Unauthorized error)
-    UNAUTHORIZED(6001, HttpStatus.FORBIDDEN, "Don't have permission"),
+    UNAUTHORIZED(6001, HttpStatus.FORBIDDEN, "Don't have permission");
 
-    ;
 
     final Integer code;
     final HttpStatus status;

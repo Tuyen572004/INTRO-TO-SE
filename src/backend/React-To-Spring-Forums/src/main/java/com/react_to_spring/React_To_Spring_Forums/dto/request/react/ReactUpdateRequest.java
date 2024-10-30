@@ -16,17 +16,11 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReactUpdateRequest {
-        @NotNull(message = "ID is required")
+        @NotNull(message = "REQUIRED_REACT_ID")
         String id;
 
-        @NotNull(message = "Name is required")
+        @NotNull(message = "REQUIRED_REACT_NAME")
         ReactName name;
-
-        @NotNull(message = "User ID is required")
-        String userId;
-
-        @NotNull(message = "Post ID is required")
-        String postId;
 
         LocalDateTime createdDate;
 }
