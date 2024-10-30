@@ -20,4 +20,5 @@ public interface ReactRepository extends MongoRepository<React, String> {
     @Query(value = "{ 'postId' : ?0 }", delete = true)
     void deleteAllByPostId(String postId);
 
+    boolean existsByUserIdAndPostId(String userId, String postId);
 }

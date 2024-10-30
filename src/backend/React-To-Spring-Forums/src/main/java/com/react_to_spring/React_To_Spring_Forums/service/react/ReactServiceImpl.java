@@ -40,6 +40,9 @@ public class ReactServiceImpl implements ReactService {
         if(!postRepository.existsById(request.getPostId())) {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
+        if(reactRepository.existsByUserIdAndPostId(request.getUserId(), request.getPostId())) {
+            throw new AppException(ErrorCode.REACT_ALREADY_EXISTS);
+        }
         React react = reactMapper.toReact(request);
         react = reactRepository.save(react);
         return reactMapper.toReactResponse(react);
