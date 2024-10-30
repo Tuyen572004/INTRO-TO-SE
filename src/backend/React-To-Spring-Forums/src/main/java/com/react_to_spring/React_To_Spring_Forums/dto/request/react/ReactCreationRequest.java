@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Builder
@@ -24,6 +21,4 @@ public class ReactCreationRequest {
 
     @NotNull(message = "REQUIRED_POST_ID")
     String postId;
-
-    LocalDateTime createdDate;
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -21,5 +22,5 @@ public class PostResponse {
     String content;
     String imageUrl;
     LocalDateTime createdDate;
-    Integer reactCounts;
+    Map<String, Integer> reacts;
 }

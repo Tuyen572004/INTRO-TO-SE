@@ -2,6 +2,7 @@ package com.react_to_spring.React_To_Spring_Forums.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -25,6 +26,10 @@ public class Post {
     @Field(name = "title")
     String title;
 
+    @Indexed
+    @Field(name = "titleNoDiacritics")
+    String titleNoDiacritics;
+
     @Field(name = "content")
     String content;
 
@@ -33,7 +38,4 @@ public class Post {
 
     @Field(name = "created_date")
     LocalDateTime createdDate;
-
-    @Field(name = "react_counts")
-    Integer reactCounts;
 }

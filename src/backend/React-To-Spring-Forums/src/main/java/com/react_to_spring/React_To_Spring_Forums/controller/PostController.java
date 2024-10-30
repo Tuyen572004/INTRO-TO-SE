@@ -10,6 +10,7 @@ import com.react_to_spring.React_To_Spring_Forums.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,31 @@ public class PostController {
     @Autowired
     PostService postService;
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get post by ID",
+            description = "The results will include information about the post and the user who created it")
+    public ApiResponse<PostResponse> getPostById(@PathVariable(name = "id") @NotNull String postId) {
+        return ApiResponse.<PostResponse>builder()
+                .data(postService.getPostById(postId))
+                .build();
+    }
+
+    @GetMapping("/my-posts")
+    public ApiResponse<PageResponse<PostResponse>> getMyPosts(
+            @RequestParam(value = "page", required = false, defaultValue = "1") @Min(0) int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        return ApiResponse.<PageResponse<PostResponse>>builder()
+                .data(postService.getMyPosts(page, size))
+                .build();
+    }
+
+
     @GetMapping
     @Operation(summary = "Get all posts by title",
             description = "The results will include information about the post and the user who created it")
     public ApiResponse<List<PostResponse>> getAllPostsByTitle(@RequestParam(name = "title") String title){
         return ApiResponse.<List<PostResponse>>builder()
-                .data(postService.getAllPosts(title))
+                .data(postService.getAllPostsByTitle(title))
                 .build();
     }
 
@@ -47,13 +67,38 @@ public class PostController {
     @GetMapping("/pagination")
     @Operation(summary = "Get all posts with pagination",
             description = "The results will include information about the post and the user who created it")
-    public ApiResponse<PageResponse<PostResponse>> getPosts(@RequestParam(name = "title") String title,
-                                               @RequestParam(value = "page") int page,
-                                               @RequestParam("size") int size) {
+    public ApiResponse<PageResponse<PostResponse>> getPaginatedPostsByTitle(
+            @RequestParam(name = "title") String title,
+            @RequestParam(value = "page", required = false, defaultValue = "1") @Min(0) int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size)
+    {
         return ApiResponse.<PageResponse<PostResponse>>builder()
-                .data(postService.getPosts(title, page, size))
+                .data(postService.getPostsByTitle(title, page, size))
                 .build();
     }
+
+    @GetMapping("/users/{id}")
+    @Operation(summary = "Get all posts by user ID",
+            description = "The results will include information about the post and the user who created it")
+    public ApiResponse<List<PostResponse>> getAllPostsByUserId(@PathVariable(name = "id") @NotNull String userId){
+        return ApiResponse.<List<PostResponse>>builder()
+                .data(postService.getAllPostsByUserId(userId))
+                .build();
+    }
+
+    @GetMapping("/pagination/users/{id}")
+    @Operation(summary = "Get all posts by user ID with pagination",
+            description = "The results will include information about the post and the user who created it")
+    public ApiResponse<PageResponse<PostResponse>> getPaginatedPostsByUserId(
+            @PathVariable(name = "id") @NotNull String userId,
+            @RequestParam(value = "page", required = false, defaultValue = "1") @Min(0) int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size)
+    {
+        return ApiResponse.<PageResponse<PostResponse>>builder()
+                .data(postService.getPostsByUserId(userId, page, size))
+                .build();
+    }
+
 
     @PostMapping
     @Operation(summary = "Create a post",

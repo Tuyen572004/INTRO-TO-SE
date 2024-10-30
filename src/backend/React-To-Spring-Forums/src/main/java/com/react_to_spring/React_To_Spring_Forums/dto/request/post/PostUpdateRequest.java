@@ -7,9 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-
-
 @Setter
 @Getter
 @Builder
@@ -26,5 +23,5 @@ public class PostUpdateRequest {
     String content;
 
     @JsonProperty("image_url")
-    String imageURL;
+    String imageUrl;
 }
