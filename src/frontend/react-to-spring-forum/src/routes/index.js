@@ -34,5 +34,9 @@ export const router = createBrowserRouter([
 				element: <Search />
 			}
 		]
+	},
+	{
+		path: "*",
+		element: <h1>404 NOT FOUND</h1>
 	}
 ]);
