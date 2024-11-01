@@ -11,7 +11,7 @@ import com.react_to_spring.React_To_Spring_Forums.mapper.CommentMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.CommentRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
 import com.react_to_spring.React_To_Spring_Forums.converter.CommentConverter;
-import com.react_to_spring.React_To_Spring_Forums.utils.CheckData;
+import com.react_to_spring.React_To_Spring_Forums.utils.StringUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -61,7 +61,9 @@ public class CommentServiceImp implements CommentService{
 
     @Override
     public CommentResponse createComment(CommentCreationRequest commentCreationRequest) {
-        CheckData.checkContentEmpty(commentCreationRequest.getContent());
+        if (StringUtil.isEmpty(commentCreationRequest.getContent())) {
+            throw new AppException(ErrorCode.CONTENT_IS_EMPTY);
+        }
         if (!postRepository.existsById(commentCreationRequest.getPostId())) {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
@@ -81,7 +83,9 @@ public class CommentServiceImp implements CommentService{
 
     @Override
     public CommentResponse updateComment(CommentUpdateRequest commentUpdateRequest) {
-        CheckData.checkContentEmpty(commentUpdateRequest.getContent());
+        if (StringUtil.isEmpty(commentUpdateRequest.getContent())) {
+            throw new AppException(ErrorCode.CONTENT_IS_EMPTY);
+        }
         Comment comment = commentRepository.findById(commentUpdateRequest.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 

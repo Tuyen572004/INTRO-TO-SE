@@ -10,7 +10,7 @@ import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.*;
 import com.react_to_spring.React_To_Spring_Forums.converter.PostConverter;
-import com.react_to_spring.React_To_Spring_Forums.utils.CheckData;
+import com.react_to_spring.React_To_Spring_Forums.utils.StringUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -119,8 +119,12 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PostResponse createPost(PostCreationRequest postCreationRequest) {
-        CheckData.checkTitleEmpty(postCreationRequest.getTitle());
-        CheckData.checkContentEmpty(postCreationRequest.getContent());
+        if (StringUtil.isEmpty(postCreationRequest.getTitle())) {
+            throw new AppException(ErrorCode.TITLE_IS_EMPTY);
+        }
+        if (StringUtil.isEmpty(postCreationRequest.getContent())) {
+            throw new AppException(ErrorCode.CONTENT_IS_EMPTY);
+        }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
@@ -128,9 +132,9 @@ public class PostServiceImp implements PostService {
         if (!userRepository.existsById(userId)) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
+
         Post post = postMapper.toPost(postCreationRequest);
         LocalDateTime currentTime = LocalDateTime.now();
-
         post.setCreatedDate(currentTime);
         post.setTitleNoDiacritics(postConverter.removeDiacritics(postCreationRequest.getTitle()));
         post.setUserId(userId);
@@ -142,10 +146,21 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PostResponse updatePost(PostUpdateRequest postUpdateRequest) {
-        CheckData.checkTitleEmpty(postUpdateRequest.getTitle());
-        CheckData.checkContentEmpty(postUpdateRequest.getContent());
+        if (StringUtil.isEmpty(postUpdateRequest.getTitle())) {
+            throw new AppException(ErrorCode.TITLE_IS_EMPTY);
+        }
+        if (StringUtil.isEmpty(postUpdateRequest.getContent())) {
+            throw new AppException(ErrorCode.CONTENT_IS_EMPTY);
+        }
+
         Post post = postRepository.findById(postUpdateRequest.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        if (!post.getUserId().equals(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_MATCH);
+        }
 
         postMapper.updatePost(post, postUpdateRequest);
         post.setTitleNoDiacritics(postConverter.removeDiacritics(postUpdateRequest.getTitle()));
