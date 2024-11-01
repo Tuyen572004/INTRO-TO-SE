@@ -7,15 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Setter
 @Getter
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CommentCreationRequest {
-    @JsonProperty("user_id")
-    @NotNull(message = "REQUIRED_USER_ID")
-    String userId;
-
     @JsonProperty("post_id")
     @NotNull(message = "REQUIRED_POST_ID")
     String postId;
@@ -24,5 +22,5 @@ public class CommentCreationRequest {
     String content;
 
     @JsonProperty("image_url")
-    String imageUrl;
+    List<String> imageUrls;
 }

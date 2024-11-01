@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document("posts")
 @Getter
@@ -34,7 +35,7 @@ public class Post {
     String content;
 
     @Field(name = "image_url")
-    String imageUrl;
+    List<String> imageUrls;
 
     @Field(name = "created_date")
     LocalDateTime createdDate;

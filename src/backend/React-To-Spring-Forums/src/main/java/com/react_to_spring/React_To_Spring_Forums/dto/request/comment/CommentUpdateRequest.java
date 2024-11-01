@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Setter
 @Getter
 @Builder
@@ -20,5 +22,5 @@ public class CommentUpdateRequest {
     String content;
 
     @JsonProperty("image_url")
-    String imageUrl;
+    List<String> imageUrls;
 }

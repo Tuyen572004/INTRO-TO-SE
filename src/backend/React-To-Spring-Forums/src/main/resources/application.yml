@@ -53,6 +53,22 @@ app:
       response:
         delete:
           success: "Role has been deleted"
+    post:
+      response:
+        delete:
+          success: "Post has been deleted"
+        update:
+          success: "Post has been updated"
+        create:
+          success: "Post has been created"
+    comment:
+      response:
+        delete:
+          success: "Comment has been deleted"
+        update:
+          success: "Comment has been updated"
+        create:
+          success: "Comment has been created"
     react:
       response:
         delete:

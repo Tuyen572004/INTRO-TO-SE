@@ -15,6 +15,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,19 +37,20 @@ public class ReactServiceImpl implements ReactService {
     @Override
     @Transactional
     public ReactResponse createReact(ReactCreationRequest request) {
-        if(!userRepository.existsById(request.getUserId())) {
-            throw new AppException(ErrorCode.USER_NOT_FOUND);
-        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
         if(!postRepository.existsById(request.getPostId())) {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
-        if(reactRepository.existsByUserIdAndPostId(request.getUserId(), request.getPostId())) {
+        if(reactRepository.existsByUserIdAndPostId(userId, request.getPostId())) {
             throw new AppException(ErrorCode.REACT_ALREADY_EXISTS);
         }
 
         React react = reactMapper.toReact(request);
         LocalDateTime currentTime = LocalDateTime.now();
         react.setCreatedDate(currentTime);
+        react.setUserId(userId);
 
         react = reactRepository.save(react);
         return reactMapper.toReactResponse(react);
@@ -77,8 +80,8 @@ public class ReactServiceImpl implements ReactService {
         Optional<React> react = reactRepository.findByPostIdAndUserId(postId, userId);
 
         return reactMapper.toReactResponse(react.get());
-
     }
+
 
     @Override
     @Transactional

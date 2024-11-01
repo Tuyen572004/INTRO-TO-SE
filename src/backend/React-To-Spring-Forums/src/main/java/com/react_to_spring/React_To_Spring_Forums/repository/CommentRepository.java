@@ -15,7 +15,6 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
 
     List<Comment> findAllByPostId(String postId);
 
-    // @Query(value = "{ 'postId' : ?0 }")
     Page<Comment> findAllByPostId(String postId, Pageable pageable);
 
     Optional<Comment> findById(String id);
@@ -23,4 +22,6 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
     void deleteById(String id);
 
     void deleteAllByPostId(String postId);
+
+    Integer countByPostId(String postId);
 }

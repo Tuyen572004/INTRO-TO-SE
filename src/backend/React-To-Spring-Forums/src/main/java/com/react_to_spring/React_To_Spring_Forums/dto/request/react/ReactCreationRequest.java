@@ -16,9 +16,6 @@ public class ReactCreationRequest {
     @NotNull(message = "REQUIRED_REACT_NAME")
     ReactName name;
 
-    @NotNull(message = "REQUIRED_USER_ID")
-    String userId;
-
     @NotNull(message = "REQUIRED_POST_ID")
     String postId;
 }

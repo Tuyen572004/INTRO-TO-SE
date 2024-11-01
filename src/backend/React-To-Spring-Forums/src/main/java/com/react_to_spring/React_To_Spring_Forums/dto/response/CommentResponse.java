@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,6 +19,6 @@ public class CommentResponse {
     String author;
     String authorAvatar;
     String content;
-    String imageUrl;
+    List<String> imageUrls;
     LocalDateTime createdDate;
 }

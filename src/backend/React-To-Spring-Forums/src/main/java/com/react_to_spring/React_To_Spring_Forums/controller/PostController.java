@@ -16,7 +16,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +28,17 @@ import java.util.List;
 @Tag(name = "Post Controller", description = "APIs for managing posts")
 public class PostController {
     @NonFinal
-    @Value("Post deleted successfully")
+    @Value("${app.controller.post.response.delete.success}")
     String DELETE_SUCCESS;
 
-    @Autowired
+    @NonFinal
+    @Value("${app.controller.post.response.update.success}")
+    String UPDATE_SUCCESS;
+
+    @NonFinal
+    @Value("${app.controller.post.response.create.success}")
+    String CREATE_SUCCESS;
+
     PostService postService;
 
     @GetMapping("/{id}")
@@ -106,6 +112,7 @@ public class PostController {
     public ApiResponse<PostResponse> createPost(@Valid @RequestBody PostCreationRequest postCreationRequest) {
         return ApiResponse.<PostResponse>builder()
                 .data(postService.createPost(postCreationRequest))
+                .message(CREATE_SUCCESS)
                 .build();
     }
 
@@ -115,6 +122,7 @@ public class PostController {
     public ApiResponse<PostResponse> updatePost(@Valid @RequestBody PostUpdateRequest postUpdateRequest) {
         return ApiResponse.<PostResponse>builder()
                 .data(postService.updatePost(postUpdateRequest))
+                .message(UPDATE_SUCCESS)
                 .build();
     }
 
