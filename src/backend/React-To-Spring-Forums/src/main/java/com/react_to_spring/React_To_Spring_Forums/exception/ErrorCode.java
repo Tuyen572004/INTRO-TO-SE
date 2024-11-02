@@ -27,7 +27,8 @@ public enum ErrorCode {
     REQUIRED_COMMENT_ID(2010, HttpStatus.BAD_REQUEST, "Comment ID is required"),
     CONTENT_IS_EMPTY(2011, HttpStatus.BAD_REQUEST, "Content is empty"),
     TITLE_IS_EMPTY(2012, HttpStatus.BAD_REQUEST, "Title is empty"),
-    USER_NOT_MATCH(2013, HttpStatus.BAD_REQUEST, "Cannot edit other people's posts"),
+    USER_NOT_POST_OWNER(2013, HttpStatus.BAD_REQUEST, "Cannot edit other people's posts"),
+    USER_NOT_COMMENT_OWNER(2014, HttpStatus.BAD_REQUEST, "Cannot edit other people's comments"),
 
     //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),

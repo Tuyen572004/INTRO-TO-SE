@@ -159,7 +159,7 @@ public class PostServiceImp implements PostService {
         String userId = authentication.getName();
 
         if (!post.getUserId().equals(userId)) {
-            throw new AppException(ErrorCode.USER_NOT_MATCH);
+            throw new AppException(ErrorCode.USER_NOT_POST_OWNER);
         }
 
         postMapper.updatePost(post, postUpdateRequest);

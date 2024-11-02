@@ -89,6 +89,12 @@ public class CommentServiceImp implements CommentService{
         Comment comment = commentRepository.findById(commentUpdateRequest.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        if (!comment.getUserId().equals(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_COMMENT_OWNER);
+        }
+
         commentMapper.updateComment(comment, commentUpdateRequest);
         comment = commentRepository.save(comment);
 
