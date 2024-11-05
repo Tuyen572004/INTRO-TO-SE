@@ -83,9 +83,6 @@ public class AuthenticationServiceImp implements AuthenticationService {
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
-        System.out.println(request.getUsername());
-        System.out.println(request.getPassword());
-
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_USERNAME_PASSWORD));
 

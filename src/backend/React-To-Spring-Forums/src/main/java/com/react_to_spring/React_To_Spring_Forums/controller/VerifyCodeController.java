@@ -42,8 +42,8 @@ public class VerifyCodeController {
     @PostMapping()
     @Operation(summary = "Send verification code",
             description = "Send verification code to user's email when user choose send code")
-    public ApiResponse<Object> sendVerifyCode(@RequestBody User user) {
-        verifyCodeService.sendVerifyCode(user);
+    public ApiResponse<Object> sendVerifyCode() {
+        verifyCodeService.sendVerifyCode();
         return ApiResponse.builder()
                 .message("Verification code sent")
                 .build();
