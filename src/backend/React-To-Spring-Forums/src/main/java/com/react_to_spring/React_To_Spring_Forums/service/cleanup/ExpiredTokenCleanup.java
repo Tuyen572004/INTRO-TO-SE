@@ -1,6 +1,7 @@
 package com.react_to_spring.React_To_Spring_Forums.service.cleanup;
 
 import com.react_to_spring.React_To_Spring_Forums.repository.InvalidatedTokenRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +18,7 @@ public class ExpiredTokenCleanup {
     InvalidatedTokenRepository invalidatedTokenRepository;
 
     @Scheduled(fixedDelay = 86400000) // ms
+    @Transactional
     public void cleanupExpiredTokens() {
         invalidatedTokenRepository.deleteAllByExpirationTimeBefore(LocalDateTime.now());
     }
