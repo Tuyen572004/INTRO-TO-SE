@@ -15,7 +15,6 @@ public enum ReactName {
     SAD("SAD"),
     ANGRY("ANGRY"),
     ;
-
     String name;
 
     ReactName(String name) {

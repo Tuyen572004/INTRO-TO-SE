@@ -1,5 +1,6 @@
 package com.react_to_spring.React_To_Spring_Forums.service.verifycode;
 
+import ch.qos.logback.core.LayoutBase;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.VerifyCode;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
@@ -9,6 +10,8 @@ import com.react_to_spring.React_To_Spring_Forums.repository.VerifyCodeRepositor
 import com.react_to_spring.React_To_Spring_Forums.utils.verificationemail.verificationemailservice.VerificationEmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,7 +43,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         // check expiration time
         if (checkExpiration(verifyCode)) {
             verifyCodeRepository.delete(verifyCode);
-            sendVerifyCode(verifyCode.getUser());
+            sendVerifyCode();
 
             return false;
         }
@@ -68,7 +71,11 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     }
 
     @Override
-    public void sendVerifyCode(User user) {
+    public void sendVerifyCode() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         verificationEmailService.sendCode(user);
     }
 

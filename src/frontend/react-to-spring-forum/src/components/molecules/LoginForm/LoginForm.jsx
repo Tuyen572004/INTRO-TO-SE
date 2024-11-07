@@ -2,12 +2,25 @@ import s from "./style.module.css";
 import Input from "../../atoms/Input/Input";
 import ButtonPrimary from "../../atoms/PrimaryButton/PrimaryButton";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthenticationAPI } from "../../../api/AuthenticateAPI";
 const LoginForm = ({ isNotLogIn }) => {
+  const navigator = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
+    const response = await AuthenticationAPI.authenticate({
+      username: username,
+      password: password,
+    });
+
+    console.log(response);
+    if (response.code === "200") {
+      navigator("/");
+    } else {
+      console.log("error");
+    }
   };
   return (
     <div

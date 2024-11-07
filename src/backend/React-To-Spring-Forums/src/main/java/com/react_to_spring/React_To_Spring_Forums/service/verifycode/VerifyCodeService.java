@@ -7,7 +7,7 @@ public interface VerifyCodeService {
 
     boolean verifyLink(String userId, String verificationCode);
 
-    void sendVerifyCode (User user);
+    void sendVerifyCode ();
 
     void sendVerifyLink(User user);
 

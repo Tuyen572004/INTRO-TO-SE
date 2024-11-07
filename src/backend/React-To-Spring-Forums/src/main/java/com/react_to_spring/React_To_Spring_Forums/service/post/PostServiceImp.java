@@ -5,74 +5,108 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateReq
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
-import com.react_to_spring.React_To_Spring_Forums.entity.React;
-import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.*;
-import com.react_to_spring.React_To_Spring_Forums.utils.CheckData;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.react_to_spring.React_To_Spring_Forums.converter.PostConverter;
+import com.react_to_spring.React_To_Spring_Forums.utils.StringUtil;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+
+@Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostServiceImp implements PostService {
 
-    @Autowired
     private PostRepository postRepository;
-
-    @Autowired
     private PostMapper postMapper;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserProfileRepository userProfileRepository;
-
-    @Autowired
     private CommentRepository commentRepository;
-
-    @Autowired
     private ReactRepository reactRepository;
 
+    private PostConverter postConverter;
+
     @Override
-    public List<PostResponse> getAllPosts(String title) {
-        List<Post> posts = postRepository.findAllByTitleContaining(title);
-        if (posts.isEmpty()) {
-            throw new AppException(ErrorCode.POST_NOT_FOUND);
-        }
+    public PostResponse getPostById(String id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
-        List<PostResponse> postResponses = new ArrayList<>();
-        for (Post item : posts) {
-            PostResponse postResponse = builderPostResponse(item);
-            if (postResponse == null) continue;
-            postResponses.add(postResponse);
-        }
-
-        return postResponses;
+        return postConverter.buildPostResponse(post);
     }
 
     @Override
-    public PageResponse<PostResponse> getPosts(String title, int page, int size) {
+    public PageResponse<PostResponse> getMyPosts(int page, int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdDate");
+        String userId = authentication.getName();
+
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<Post> posts = postRepository.findAllByUserId(userId, pageable);
+        List<PostResponse> postResponses = postConverter.convertToPostResponses(posts.getContent());
+
+        return PageResponse.<PostResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
+
+    @Override
+    public List<PostResponse> getAllPostsByTitle(String title) {
+        List<Post> posts = postRepository.findByTitleNoDiacriticsApproximate(postConverter.buildRegex(title));
+        return postConverter.convertToPostResponses(posts);
+    }
+
+    @Override
+    public PageResponse<PostResponse> getPostsByTitle(String title, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Post> posts = postRepository.findByTitleNoDiacriticsApproximate(postConverter.buildRegex(title), pageable);
+        List<PostResponse> postResponses = postConverter.convertToPostResponses(posts.getContent());
 
-        Page<Post> posts = postRepository.findAllByTitleContaining(title, pageable);
-        List<PostResponse> postResponses = new ArrayList<>();
+        return PageResponse.<PostResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
 
-        for (Post item : posts.getContent()) {
-            PostResponse postResponse = builderPostResponse(item);
-            if (postResponse == null) continue;
-            postResponses.add(postResponse);
+    @Override
+    public List<PostResponse> getAllPostsByUserId(String userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
+        List<Post> posts = postRepository.findByUserId(userId);
+
+        return postConverter.convertToPostResponses(posts);
+    }
+
+    @Override
+    public PageResponse<PostResponse> getPostsByUserId(String userId, int page, int size) {
+        if (!userRepository.existsById(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Post> posts = postRepository.findAllByUserId(userId, pageable);
+        List<PostResponse> postResponses = postConverter.convertToPostResponses(posts.getContent());
 
         return PageResponse.<PostResponse>builder()
                 .page(page)
@@ -85,32 +119,54 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PostResponse createPost(PostCreationRequest postCreationRequest) {
-        CheckData.checkTitleEmpty(postCreationRequest.getTitle());
-        CheckData.checkContentEmpty(postCreationRequest.getContent());
-        if (!userRepository.existsById(postCreationRequest.getUserId())) {
+        if (StringUtil.isEmpty(postCreationRequest.getTitle())) {
+            throw new AppException(ErrorCode.TITLE_IS_EMPTY);
+        }
+        if (StringUtil.isEmpty(postCreationRequest.getContent())) {
+            throw new AppException(ErrorCode.CONTENT_IS_EMPTY);
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        if (!userRepository.existsById(userId)) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
 
         Post post = postMapper.toPost(postCreationRequest);
         LocalDateTime currentTime = LocalDateTime.now();
-        System.out.println(currentTime);
         post.setCreatedDate(currentTime);
+        post.setTitleNoDiacritics(postConverter.removeDiacritics(postCreationRequest.getTitle()));
+        post.setUserId(userId);
+
         post = postRepository.save(post);
 
-        return builderPostResponse(post);
+        return postConverter.buildPostResponse(post);
     }
 
     @Override
     public PostResponse updatePost(PostUpdateRequest postUpdateRequest) {
-        CheckData.checkTitleEmpty(postUpdateRequest.getTitle());
-        CheckData.checkContentEmpty(postUpdateRequest.getContent());
+        if (StringUtil.isEmpty(postUpdateRequest.getTitle())) {
+            throw new AppException(ErrorCode.TITLE_IS_EMPTY);
+        }
+        if (StringUtil.isEmpty(postUpdateRequest.getContent())) {
+            throw new AppException(ErrorCode.CONTENT_IS_EMPTY);
+        }
+
         Post post = postRepository.findById(postUpdateRequest.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        if (!post.getUserId().equals(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_POST_OWNER);
+        }
 
         postMapper.updatePost(post, postUpdateRequest);
+        post.setTitleNoDiacritics(postConverter.removeDiacritics(postUpdateRequest.getTitle()));
         post = postRepository.save(post);
 
-        return builderPostResponse(post);
+        return postConverter.buildPostResponse(post);
     }
 
     @Override
@@ -123,23 +179,6 @@ public class PostServiceImp implements PostService {
         reactRepository.deleteAllByPostId(id);
 
         postRepository.deleteById(id);
-    }
-
-
-    PostResponse builderPostResponse(Post post) {
-        PostResponse postResponse = postMapper.toPostResponse(post);
-
-        Optional<UserProfile> userProfile = userProfileRepository.findByUserId(post.getUserId());
-        if (userProfile.isEmpty()) return null;
-        userProfile.ifPresent(value -> {
-            postResponse.setAuthor(value.getFirstName() + " " + value.getLastName());
-            postResponse.setAuthorAvatar(value.getProfileImgUrl());
-        });
-
-        List<React> reacts = reactRepository.findAllByPostId(post.getId());
-        postResponse.setReactCounts(reacts.size());
-
-        return postResponse;
     }
 }
 

@@ -6,16 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class PostCreationRequest {
-    @JsonProperty("user_id")
-    String userId;
-
     @JsonProperty("title")
     String title;
 
@@ -23,5 +20,5 @@ public class PostCreationRequest {
     String content;
 
     @JsonProperty("image_url")
-    String imageURL;
+    List<String> imageUrls;
 }

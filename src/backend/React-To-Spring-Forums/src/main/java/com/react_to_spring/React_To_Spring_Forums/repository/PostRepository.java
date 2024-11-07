@@ -10,17 +10,22 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+
 @Repository
 public interface PostRepository extends MongoRepository<Post, String> {
     boolean existsById(String id);
 
     Optional<Post> findById(String id);
 
-    @Query(value = "{ 'title' : { '$regex' : ?0, '$options' : 'i' } }")
-    List<Post> findAllByTitleContaining(String title);
+    @Query(value = "{ 'titleNoDiacritics' : { '$regex' : ?0, '$options' : 'i' } }")
+    List<Post> findByTitleNoDiacriticsApproximate(String regex);
 
-    @Query(value = "{ 'title' : { '$regex' : ?0, '$options' : 'i' } }")
-    Page<Post> findAllByTitleContaining(String title, Pageable pageable);
+    @Query(value = "{ 'titleNoDiacritics' : { '$regex' : ?0, '$options' : 'i' } }")
+    Page<Post> findByTitleNoDiacriticsApproximate(String title, Pageable pageable);
+
+    List<Post> findByUserId(String userId);
+
+    Page<Post> findAllByUserId(String userId, Pageable pageable);
 
     void deleteById(String id);
 }

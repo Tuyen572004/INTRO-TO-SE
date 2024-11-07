@@ -8,22 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReactCreationRequest {
-    @NotNull(message = "Name is required")
+    @NotNull(message = "REQUIRED_REACT_NAME")
     ReactName name;
 
-    @NotNull(message = "User ID is required")
-    String userId;
-
-    @NotNull(message = "Post ID is required")
+    @NotNull(message = "REQUIRED_POST_ID")
     String postId;
-
-    LocalDateTime createdDate;
 }

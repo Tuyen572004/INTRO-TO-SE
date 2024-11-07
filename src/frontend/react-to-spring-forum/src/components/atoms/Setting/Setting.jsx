@@ -5,8 +5,12 @@ import s from "./style.module.css";
 const Setting = () => {
   return (
     <div className={s.container}>
-      <MdOutlinePushPin />
-      <IoMdOptions />
+      <div className={s.pin}>
+        <MdOutlinePushPin />
+      </div>
+      <div className={s.options}>
+        <IoMdOptions />
+      </div>
     </div>
   );
 };
