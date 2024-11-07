@@ -25,5 +25,5 @@ public class PostUpdateRequest {
     String content;
 
     @JsonProperty("image_url")
-    List<String> imageUrls;
+    List<String> imageList;
 }

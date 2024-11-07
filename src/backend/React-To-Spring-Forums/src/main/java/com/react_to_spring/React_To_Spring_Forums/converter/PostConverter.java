@@ -1,16 +1,22 @@
 package com.react_to_spring.React_To_Spring_Forums.converter;
 
+import com.nimbusds.jose.proc.SecurityContext;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
 import com.react_to_spring.React_To_Spring_Forums.entity.React;
+import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.CommentRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.ReactRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.text.Normalizer;
@@ -25,6 +31,7 @@ import java.util.regex.Pattern;
 public class PostConverter {
 
     PostMapper postMapper;
+    UserRepository userRepository;
     UserProfileRepository userProfileRepository;
     ReactRepository reactRepository;
     CommentRepository commentRepository;
@@ -43,13 +50,20 @@ public class PostConverter {
     public PostResponse buildPostResponse(Post post) {
         PostResponse postResponse = postMapper.toPostResponse(post);
 
-        // get author's name and avatar (url)
+        UserInfoResponse userInfo = UserInfoResponse.builder().name("").username("").avatar("").build();
         Optional<UserProfile> userProfile = userProfileRepository.findByUserId(post.getUserId());
-        if (userProfile.isEmpty()) return null;
+        Optional<User> user = userRepository.findById(post.getUserId());
+
+        // get author's name and avatar (url)
+        if (userProfile.isEmpty() || user.isEmpty()) return null;
         userProfile.ifPresent(value -> {
-            postResponse.setAuthor(value.getFirstName() + " " + value.getLastName());
-            postResponse.setAuthorAvatar(value.getProfileImgUrl());
+            userInfo.setName(value.getFirstName() + " " + value.getLastName());
+            userInfo.setAvatar(value.getProfileImgUrl());
         });
+        user.ifPresent(value -> {
+            userInfo.setUsername(value.getUsername());
+        });
+        postResponse.setUser(userInfo);
 
         // get reacts
         List<React> reacts = reactRepository.findAllByPostId(post.getId());
@@ -58,7 +72,13 @@ public class PostConverter {
             String reactName = react.getName().toString();
             reactMap.put(reactName, reactMap.getOrDefault(reactName, 0) + 1);
         }
-        postResponse.setReacts(reactMap);
+        postResponse.setReactions(reactMap);
+
+        // check if user reacted to this post
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String myUserId = authentication.getName();
+        Boolean isReacted = reactRepository.existsByUserIdAndPostId(myUserId, post.getId());
+        postResponse.setIsReacted(isReacted);
 
         // get comment counts
         postResponse.setCommentCounts(commentRepository.countByPostId(post.getId()));

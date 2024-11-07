@@ -20,5 +20,5 @@ public class PostCreationRequest {
     String content;
 
     @JsonProperty("image_url")
-    List<String> imageUrls;
+    List<String> imageList;
 }

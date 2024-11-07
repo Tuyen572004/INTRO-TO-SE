@@ -16,13 +16,12 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostResponse {
     String id;
-    String userId;
-    String author;
-    String authorAvatar;
+    UserInfoResponse user;
     String title;
     String content;
-    List<String> imageUrls;
+    List<String> imageList;
     LocalDateTime createdDate;
-    Map<String, Integer> reacts;
+    Boolean isReacted;
+    Map<String, Integer> reactions;
     Integer commentCounts;
 }
