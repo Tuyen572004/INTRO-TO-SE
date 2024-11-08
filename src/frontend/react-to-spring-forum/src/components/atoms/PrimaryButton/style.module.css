@@ -1,5 +1,5 @@
 .primary_button {
-	background-color: #E4B1F0;
+	background-color: black;
 	border: 0;
 	border-radius: 10px;
 	height: 50px;
@@ -10,8 +10,7 @@
 }
 
 .primary_button:hover {
-	border: 3px solid #E4B1F0;
+	border: 3px solid black;
 	background-color: white;
-	color: #E4B1F0;
-	;
+	color: black;
 }
