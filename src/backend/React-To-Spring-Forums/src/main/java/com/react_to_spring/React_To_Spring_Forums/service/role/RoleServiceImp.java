@@ -52,8 +52,11 @@ public class RoleServiceImp implements RoleService{
     public RoleResponse updateRole(String name, RoleUpdateRequest request) {
         Role role = roleRepository.findById(name).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         roleMapper.updateRole(role, request);
-        List<Permission> permissions = permissionRepository.findAllById(request.getPermissions());
-        role.setPermissions(permissions);
+
+        if (request.getPermissions() != null) {
+            List<Permission> permissions = permissionRepository.findAllById(request.getPermissions());
+            role.setPermissions(permissions);
+        }
 
         RoleResponse roleResponse = roleMapper.toRoleResponse(roleRepository.save(role));
         roleResponse.setPermissions(buildPermissionResponses(role.getPermissions()));
