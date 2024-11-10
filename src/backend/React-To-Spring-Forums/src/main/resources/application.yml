@@ -96,10 +96,6 @@ app:
       email: ${SENDER_EMAIL}
       name : ${SENDER_NAME}
 
-
-
-
-
 open:
   api:
     title: "React To Spring Forums API"

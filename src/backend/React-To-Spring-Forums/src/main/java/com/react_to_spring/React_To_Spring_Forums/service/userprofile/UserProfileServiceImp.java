@@ -94,10 +94,6 @@ public class UserProfileServiceImp implements UserProfileService{
 
     @Override
     public void deleteUserProfileByUserId(String userId) {
-        if (!userProfileRepository.existsByUserId(userId)) {
-            throw new AppException(ErrorCode.USER_PROFILE_NOT_FOUND);
-        }
-
         userProfileRepository.deleteUserProfileByUserId(userId);
     }
 }

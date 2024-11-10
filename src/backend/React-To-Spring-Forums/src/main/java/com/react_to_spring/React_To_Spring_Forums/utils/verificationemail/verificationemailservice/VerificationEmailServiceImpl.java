@@ -14,11 +14,12 @@ import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
-@Component
+@Service
 @Qualifier("RegistrationVerificationEmailService")
 @RequiredArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE, makeFinal = true)
