@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -52,6 +54,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS)
                     .permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated();
         });
@@ -69,6 +73,8 @@ public class SecurityConfig {
 
     @Bean
     public CorsFilter corsFilter(@Value("${client.url}") String clientUrl) {
+        log.info("Client URL: {}", clientUrl);
+
         CorsConfiguration config = new CorsConfiguration();
 
         config.addAllowedOrigin(clientUrl);
