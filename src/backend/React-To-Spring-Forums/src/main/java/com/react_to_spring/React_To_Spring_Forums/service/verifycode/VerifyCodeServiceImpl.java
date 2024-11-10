@@ -1,6 +1,5 @@
 package com.react_to_spring.React_To_Spring_Forums.service.verifycode;
 
-import ch.qos.logback.core.LayoutBase;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.VerifyCode;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
