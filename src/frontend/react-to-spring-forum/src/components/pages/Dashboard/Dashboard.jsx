@@ -1,7 +1,10 @@
 import React from "react";
 import PostList from "../../organisms/PostList/PostList";
 import s from "./style.module.css";
+import useAuth from "../../../hooks/useAuth";
 const Dashboard = () => {
+  const { auth } = useAuth();
+  console.log(auth);
   const postList = [
     {
       id: 1,
