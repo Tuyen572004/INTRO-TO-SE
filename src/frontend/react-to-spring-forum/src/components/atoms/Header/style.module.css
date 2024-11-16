@@ -1,12 +1,13 @@
 .container {
 	display: flex;
 	height: 10vh;
+	width: 50%;
 	align-items: center;
 	justify-content: center;
 }
 
 .container>* {
-	margin: 10px;
+	margin: 10px 0px;
 }
 
 .title {

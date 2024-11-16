@@ -5,6 +5,16 @@ import { IoCloseSharp } from "react-icons/io5";
 
 const SearchBar = () => {
   const [isExistSearchingContent, setIsExistSearchingContent] = useState(false);
+  const handleFocusSearchBar = () => {
+    const searchBarContainer = document.querySelector("#search_bar_container");
+    searchBarContainer.style.backgroundColor = "white";
+    searchBarContainer.style.border = "2px solid black";
+  };
+  const handleBlurSearchBar = () => {
+    const searchBarContainer = document.querySelector("#search_bar_container");
+    searchBarContainer.style.backgroundColor = "#d3d3d3";
+    searchBarContainer.style.border = "none";
+  };
   const handleSearchInput = (e) => {
     setIsExistSearchingContent(e.target.value.length > 0 ? true : false);
   };
@@ -15,7 +25,7 @@ const SearchBar = () => {
   };
   return (
     <>
-      <div className={s.container}>
+      <div className={s.container} id="search_bar_container">
         <CiSearch />
         <input
           className={s.search_bar}
@@ -23,6 +33,8 @@ const SearchBar = () => {
           type="text"
           placeholder="Search"
           onChange={handleSearchInput}
+          onFocus={handleFocusSearchBar}
+          onBlur={handleBlurSearchBar}
         />
         {isExistSearchingContent && (
           <IoCloseSharp onClick={handleClearSearchInput} />

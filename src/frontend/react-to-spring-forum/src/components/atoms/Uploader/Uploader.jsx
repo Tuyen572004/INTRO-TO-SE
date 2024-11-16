@@ -28,7 +28,8 @@ const Uploader = ({ setImageList }) => {
         data-upload-id="upload-images"
       ></div>
       <label htmlFor="file-upload-with-preview-upload-images">
-        <IoMdImages />
+        <IoMdImages size={1.5 + "rem"} />
+        <span> Upload Images</span>
       </label>
     </>
   );

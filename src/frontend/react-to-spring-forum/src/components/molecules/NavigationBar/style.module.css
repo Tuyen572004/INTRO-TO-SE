@@ -1,6 +1,10 @@
 .container {
-	width: 10vw;
+	width: 5vw;
 	height: 100vh;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	border-radius: 0px 2vw 2vw 0px;
+	padding: 0px 5px;
+	background-color: white;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
