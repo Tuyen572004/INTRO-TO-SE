@@ -2,6 +2,7 @@ import { useState } from "react";
 import Uploader from "../../atoms/Uploader/Uploader";
 import s from "./style.module.css";
 import { RiCloseLargeFill } from "react-icons/ri";
+import { motion } from "framer-motion";
 import axios from "axios";
 
 const PostForm = ({ toggleIsPostPopup }) => {
@@ -25,6 +26,7 @@ const PostForm = ({ toggleIsPostPopup }) => {
       console.error(error);
     }
   };
+
   const handlePost = async () => {
     imageList.forEach(async (image) => {
       const imageUrl = await uploadFile(image);
@@ -35,29 +37,48 @@ const PostForm = ({ toggleIsPostPopup }) => {
   };
 
   return (
-    <div className={s.overlay}>
-      <div className={s.container}>
+    <motion.div
+      className={s.overlay}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <motion.div
+        className={s.container}
+        initial={{ scale: 0.8, y: "-50%", opacity: 0 }}
+        animate={{ scale: 1, y: "0%", opacity: 1 }}
+        exit={{ scale: 0.8, y: "-50%", opacity: 0 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+      >
         <div className={s.header}>
-          <div className={s.avatar}>
-            <img
-              src="https://api.dicebear.com/5.x/bottts/svg?seed=huper"
-              alt="huper"
-            />
-          </div>
-          <div className={s.name}>Huper</div>
+          <h3>What's on your mind?</h3>
         </div>
-        <textarea className={s.content}></textarea>
-        <div className={s.uploader}>
+        <input className={s.title} placeholder="Enter the title..."></input>
+        <textarea
+          className={s.content}
+          placeholder="Enter the content..."
+        ></textarea>
+        <motion.div className={s.uploader} whileTap={{ scale: 0.95 }}>
           <Uploader setImageList={setImageList} />
-        </div>
-        <button className={s.post_button} onClick={handlePost}>
+        </motion.div>
+        <motion.button
+          className={s.post_button}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handlePost}
+        >
           Post
-        </button>
-        <button className={s.close_popup} onClick={() => toggleIsPostPopup()}>
+        </motion.button>
+        <motion.button
+          className={s.close_popup}
+          whileHover={{ rotate: 90 }}
+          onClick={() => toggleIsPostPopup()}
+        >
           <RiCloseLargeFill />
-        </button>
-      </div>
-    </div>
+        </motion.button>
+      </motion.div>
+    </motion.div>
   );
 };
 

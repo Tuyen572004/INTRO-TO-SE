@@ -1,4 +1,6 @@
 import s from "./style.module.css";
+import { motion } from "framer-motion";
+
 const NewPost = ({ toggleIsPostPopup }) => {
   return (
     <div className={s.container}>
@@ -12,9 +14,14 @@ const NewPost = ({ toggleIsPostPopup }) => {
         <div className={s.new} onClick={() => toggleIsPostPopup()}>
           What's new?
         </div>
-        <div className={s.post_button} onClick={() => toggleIsPostPopup()}>
+        <motion.button
+          className={s.post_button}
+          onClick={() => toggleIsPostPopup()}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
           Post
-        </div>
+        </motion.button>
       </div>
     </div>
   );

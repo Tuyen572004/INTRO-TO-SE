@@ -4,13 +4,13 @@ import Overlay from "../../molecules/Overlay/Overlay";
 import s from "./style.module.css";
 import { useState } from "react";
 const LoginRegisterForm = () => {
-  const [isNotLogIn, toggle] = useState(false);
+  const [isNotLogIn, setIsNotLogIn] = useState(false);
 
   return (
     <div className={s.container}>
       <RegisterForm isNotLogIn={isNotLogIn} />
       <LoginForm isNotLogIn={isNotLogIn} />
-      <Overlay isNotLogIn={isNotLogIn} toggle={toggle} />
+      <Overlay isNotLogIn={isNotLogIn} toggle={setIsNotLogIn} />
     </div>
   );
 };

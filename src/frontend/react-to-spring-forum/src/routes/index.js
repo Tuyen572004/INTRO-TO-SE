@@ -5,14 +5,22 @@ import Dashboard from "../components/pages/Dashboard/Dashboard"
 import User from "../components/pages/User/User";
 import Activity from "../components/pages/Activity/Activity";
 import Search from "../components/pages/Search/Search";
+import VerificationSuccess from "../components/pages/Verification/VerificationSuccess";
+import VerificationFailed from "../components/pages/Verification/VerificationFailed";
 
 export const router = createBrowserRouter([
 	{
 		path: "login",
-		index: true,
-		element: <LoginRegister />
-	}
-	,
+		element: <LoginRegister />,
+	},
+	{
+		path: "verification-success",
+		element: <VerificationSuccess />
+	},
+	{
+		path: "verification-failed",
+		element: <VerificationFailed />
+	},
 	{
 		path: "/",
 		element: <LayoutDefault />,

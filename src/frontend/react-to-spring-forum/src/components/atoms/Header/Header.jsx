@@ -1,15 +1,10 @@
-import { MdExpandMore } from "react-icons/md";
 import s from "./style.module.css";
-const Header = ({
-  title = "For you",
-  moreList = ["For you", "Flowing", "Liked", "Saved"],
-}) => {
+import SearchBar from "../../atoms/SearchBar/SearchBar";
+
+const Header = () => {
   return (
     <div className={s.container}>
-      <div className={s.title}>{title}</div>
-      <div className={s.more}>
-        <MdExpandMore />
-      </div>
+      <SearchBar />
     </div>
   );
 };

@@ -1,29 +1,33 @@
-import axios from "axios"
-import config from "./config"
+import Axios from "./Axios.js";
 
 export class AuthenticationAPI {
-	static refreshToken = async (data) => {
-		return (await axios.post(`${config.BASE_URL}/auth/refresh`), {
-			refreshToken: data
-		}).data;
+	static async refreshToken(data) {
+		const response = await Axios.post("/api/auth/refresh", {
+			refreshToken: data,
+		});
+		return response.data;
 	}
 
-	static authenticate = async (data) => {
-		return (await axios.post(`${config.BASE_URL}/auth/authenticate`), {
+	static async authenticate(data) {
+		const response = await Axios.post("/api/auth", {
 			username: data.username,
-			password: data.password
-		})
+			password: data.password,
+		});
+		return response.data;
 	}
 
-	static logout = async (data) => {
-		return (await axios.post(`${config.BASE_URL}/auth/logout`), {
-			token: data.token
-		}).data;
+	static async logout(data) {
+		const response = await Axios.post("/api/auth/logout", {
+			token: data.token,
+		});
+		return response.data;
 	}
-	static changePassword = async (data) => {
-		return (await axios.patch(`${config.BASE_URL}/auth/change-password`), {
+
+	static async changePassword(data) {
+		const response = await Axios.patch("/api/auth/change-password", {
 			oldPassword: data.oldPassword,
-			newPassword: data.newPassword
-		}).data;
+			newPassword: data.newPassword,
+		});
+		return response.data;
 	}
 }

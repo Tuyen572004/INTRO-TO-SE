@@ -14,11 +14,11 @@ export const userSlice = createSlice({
 		},
 	},
 	reducers: {
-		setUser: (currentSlice, action) => {
-			currentSlice.user = action.payload;
+		setUser: (state, action) => {
+			state.user = action.payload;
 		},
-		deleteUser: (currentSlice, action) => {
-			currentSlice.user = null;
+		deleteUser: (state, action) => {
+			state.user = null;
 		},
 	},
 });

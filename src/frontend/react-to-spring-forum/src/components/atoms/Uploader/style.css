@@ -9,5 +9,6 @@
 .custom-file-container .image-preview {
 	height: auto;
 	padding: 0;
-	border-radius: 0;
+	border-radius: 8px 8px 0px 0px;
+	margin-bottom: 5px;
 }
