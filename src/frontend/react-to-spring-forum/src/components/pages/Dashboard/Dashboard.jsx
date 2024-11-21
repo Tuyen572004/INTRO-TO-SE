@@ -16,7 +16,7 @@ const Dashboard = () => {
       title: "Title",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodi",
-      imageList: [
+      imageUrls: [
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/k0aruc0b48wu6k98xyo6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/b0ona3x52yzak3e2vii6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730598769/TutorApp/images/g29qk742gkumihziul7m.png",
@@ -39,7 +39,7 @@ const Dashboard = () => {
       title: "Title",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodi",
-      imageList: [
+      imageUrls: [
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/k0aruc0b48wu6k98xyo6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/b0ona3x52yzak3e2vii6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730598769/TutorApp/images/g29qk742gkumihziul7m.png",
@@ -62,7 +62,7 @@ const Dashboard = () => {
       title: "Title",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodi",
-      imageList: [
+      imageUrls: [
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/k0aruc0b48wu6k98xyo6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/b0ona3x52yzak3e2vii6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730598769/TutorApp/images/g29qk742gkumihziul7m.png",
@@ -85,7 +85,7 @@ const Dashboard = () => {
       title: "Title",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodiLorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium cupiditate culpa error officiis tempora placeat, corrupti modi distinctio sit laboriosam? Porro nemo natus quibusdam ex sapiente sint laborum expedita commodi",
-      imageList: [
+      imageUrls: [
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/k0aruc0b48wu6k98xyo6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730304806/b0ona3x52yzak3e2vii6.png",
         "https://res.cloudinary.com/duf2t1pkp/image/upload/v1730598769/TutorApp/images/g29qk742gkumihziul7m.png",
