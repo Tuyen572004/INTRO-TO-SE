@@ -1,0 +1,18 @@
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	position: absolute;
+	width: 10vw;
+	height: 15vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	top: 0;
+	left: 100%;
+	z-index: 10;
+}

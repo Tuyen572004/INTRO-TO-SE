@@ -8,19 +8,20 @@ import { EffectCoverflow, Pagination } from "swiper/modules";
 import ReactBar from "../ReactionBar/ReactionBar";
 
 const PostItem = ({ post }) => {
+  console.log("PostItem", post);
   return (
     <div className={s.container}>
       <div className={s.header}>
         <div className={s.avatar}>
           <div className={s.inner_avatar}>
-            <img src={post.user.avatar} alt={post.user.name} />
+            <img src={post.user?.avatar} alt={post.user?.name} />
           </div>
         </div>
 
         <div className={s.user_information}>
           <div className={s.inner_user_information}>
-            <div className={s.name}>{post.user.name}</div>
-            <div className={s.username}>{post.user.username}</div>
+            <div className={s.name}>{post.user?.name}</div>
+            <div className={s.username}>{post.user?.username}</div>
           </div>
         </div>
       </div>
@@ -43,14 +44,14 @@ const PostItem = ({ post }) => {
           modules={[EffectCoverflow, Pagination]}
           className="mySwiper"
         >
-          {post.imageList.map((image, index) => (
+          {post.imageUrls?.map((image, index) => (
             <SwiperSlide key={index}>
               <img src={image} alt={post.title} />
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
-      <ReactBar reactions={post.reactions} />
+      <ReactBar reactions={post?.reactions} />
     </div>
   );
 };

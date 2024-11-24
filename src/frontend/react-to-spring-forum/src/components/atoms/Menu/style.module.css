@@ -31,3 +31,7 @@
 .post {
 	color: black;
 }
+
+.message {
+	position: relative;
+}

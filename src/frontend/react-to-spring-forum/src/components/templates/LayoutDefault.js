@@ -11,7 +11,6 @@ const LayoutDefault = () => {
 
 	const toggleIsPostPopup = () => {
 		setIsPostPopup(!isPostPopup);
-		console.log(isPostPopup);
 	};
 
 	return (
