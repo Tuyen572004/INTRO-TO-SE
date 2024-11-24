@@ -27,7 +27,12 @@
 	margin-right: 10px;
 }
 
-.inner_avatar {}
+.avatar .inner_avatar img {
+	height: 50px;
+	width: 50px;
+	border-radius: 100%;
+	object-fit: cover;
+}
 
 .name {
 	font-size: large;
