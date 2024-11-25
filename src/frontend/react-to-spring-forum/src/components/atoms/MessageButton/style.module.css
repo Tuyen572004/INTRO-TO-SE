@@ -1,4 +1,4 @@
-.post_button {
+.message_button {
 	position: absolute;
 	height: 4vw;
 	width: 5vw;
@@ -12,6 +12,6 @@
 	justify-content: center;
 }
 
-.post_button>* {
+.message_button>* {
 	font-size: 2rem;
 }
