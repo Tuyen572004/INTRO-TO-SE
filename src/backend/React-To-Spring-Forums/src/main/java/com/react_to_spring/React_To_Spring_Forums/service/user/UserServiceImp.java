@@ -2,6 +2,7 @@ package com.react_to_spring.React_To_Spring_Forums.service.user;
 
 import com.react_to_spring.React_To_Spring_Forums.dto.request.user.UserCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileCreationRequest;
+import com.react_to_spring.React_To_Spring_Forums.dto.request.verifycode.SendVerificationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Role;
@@ -76,7 +77,9 @@ public class UserServiceImp implements UserService{
 
         user = userRepository.save(user);
 
-        verifyCodeService.sendVerifyLink(user);
+        verifyCodeService.sendVerifyLink(SendVerificationRequest.builder()
+                                                                .email(user.getUsername())
+                                                                .build());
 
         UserProfileCreationRequest userProfileCreationRequest = userProfilerMapper.toUserProfileCreationRequest(request);
         userProfileCreationRequest.setUserId(user.getId());

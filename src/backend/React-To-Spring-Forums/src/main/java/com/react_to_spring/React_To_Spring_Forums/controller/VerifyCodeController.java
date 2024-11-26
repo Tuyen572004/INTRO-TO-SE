@@ -1,5 +1,6 @@
 package com.react_to_spring.React_To_Spring_Forums.controller;
 
+import com.react_to_spring.React_To_Spring_Forums.dto.request.verifycode.SendVerificationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ApiResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
@@ -22,10 +23,10 @@ public class VerifyCodeController {
 
 
     @GetMapping()
-    @Operation(summary = "Verify code",
-            description = "Verify code when user clicks on the link in the email")
-    public ApiResponse<Object> verifyCode(@RequestParam("userId") String userId, @RequestParam("verificationCode") String verficationCode) {
-        if(verifyCodeService.verifyLink(userId, verficationCode)){
+    @Operation(summary = "Verify link",
+            description = "Verify link when user clicks on the link in the email")
+    public ApiResponse<Object> verifyLink(@RequestParam("userId") String userId, @RequestParam("verificationCode") String verficationCode) {
+        if(verifyCodeService.verify(userId, verficationCode)){
             return ApiResponse.builder()
                     .message("Verification successful")
                     .build();
@@ -39,16 +40,25 @@ public class VerifyCodeController {
 
     }
 
-    @PostMapping()
+    @PostMapping("/send-code")
     @Operation(summary = "Send verification code",
-            description = "Send verification code to user's email when user choose send code")
-    public ApiResponse<Object> sendVerifyCode() {
-        verifyCodeService.sendVerifyCode();
+            description = "Send verification code to user's email")
+    public ApiResponse<Object> sendVerifyCode(@RequestBody SendVerificationRequest sendVerificationRequest) {
+        verifyCodeService.sendVerifyCode(sendVerificationRequest);
         return ApiResponse.builder()
                 .message("Verification code sent")
                 .build();
     }
 
+    @PostMapping("/send-link")
+    @Operation(summary = "Send verification link",
+            description = "Send verification link to user's email")
+    public ApiResponse<Object> sendVerifyLink(@RequestBody SendVerificationRequest sendVerificationRequest) {
+        verifyCodeService.sendVerifyLink(sendVerificationRequest);
+        return ApiResponse.builder()
+                .message("Verification code resent")
+                .build();
+    }
 
 
 }

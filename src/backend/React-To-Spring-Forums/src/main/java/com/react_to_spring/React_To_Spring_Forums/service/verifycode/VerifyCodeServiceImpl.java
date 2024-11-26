@@ -1,5 +1,6 @@
 package com.react_to_spring.React_To_Spring_Forums.service.verifycode;
 
+import com.react_to_spring.React_To_Spring_Forums.dto.request.verifycode.SendVerificationRequest;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.VerifyCode;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
@@ -34,16 +35,15 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         return verifyCode.getExpirationTime().isBefore(java.time.LocalDateTime.now());
     }
 
+    // verify both code and link
     @Override
-    public boolean verifyCode(String userId, String verificationCode) {
+    public boolean verify(String userId, String verificationCode) {
         // check existed
         VerifyCode verifyCode = checkExisted(userId, verificationCode);
 
         // check expiration time
         if (checkExpiration(verifyCode)) {
             verifyCodeRepository.delete(verifyCode);
-            sendVerifyCode();
-
             return false;
         }
 
@@ -53,33 +53,16 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     }
 
     @Override
-    public boolean verifyLink(String userId, String verificationCode) {
-        // check existed
-        VerifyCode verifyCode = checkExisted(userId, verificationCode);
-
-        // check expiration time
-        if (checkExpiration(verifyCode)) {
-            verifyCodeRepository.delete(verifyCode);
-            sendVerifyLink(verifyCode.getUser());
-            return false;
-        }
-
-        // all info is correct -> delete the code and return success
-        verifyCodeRepository.delete(verifyCode);
-        return true;
-    }
-
-    @Override
-    public void sendVerifyCode() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
-        User user = userRepository.findById(userId)
+    public void sendVerifyCode(SendVerificationRequest sendVerificationRequest) {
+        User user = userRepository.findByEmail(sendVerificationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         verificationEmailService.sendCode(user);
     }
 
     @Override
-    public void sendVerifyLink(User user) {
+    public void sendVerifyLink(SendVerificationRequest sendVerificationRequest) {
+        User user = userRepository.findByEmail(sendVerificationRequest.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         verificationEmailService.sendRegistration(user);
     }
 

@@ -133,7 +133,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         }
 
         // verify code
-        if(!verifyCodeService.verifyCode(user.getId(), request.getVerificationCode())) { // expire
+        if(!verifyCodeService.verify(user.getId(), request.getVerificationCode())) { // expire
              throw new AppException(ErrorCode.VERIFY_CODE_EXPIRED);
         }
 
