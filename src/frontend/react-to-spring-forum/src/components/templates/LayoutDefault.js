@@ -1,17 +1,21 @@
 import { Outlet } from "react-router-dom";
 import NavigationBar from "../molecules/NavigationBar/NavigationBar";
 import Newsfeed from "../organisms/Newsfeed/Newfeeds";
-import PostButton from "../atoms/PostButton/PostButton";
+import MessageButton from "../atoms/MessageButton/MessageButton";
 import Header from "../atoms/Header/Header";
 import PostForm from "../molecules/PostForm/PostForm";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import MessageWindow from "../organisms/MessageWindow/MessageWindow";
 const LayoutDefault = () => {
 	const [isPostPopup, setIsPostPopup] = useState(false);
+	const [isMessageWindowOpen, setIsMessageWindowOpen] = useState(false);
 
 	const toggleIsPostPopup = () => {
 		setIsPostPopup(!isPostPopup);
-		console.log(isPostPopup);
+	};
+	const toggleIsMessageWindowOpen = () => {
+		setIsMessageWindowOpen(!isMessageWindowOpen);
 	};
 
 	return (
@@ -23,18 +27,16 @@ const LayoutDefault = () => {
 				<div className="d-flex justify-content-center">
 					<Header />
 				</div>
-				<div className="d-flex justify-content-center">
+				<div className="d-flex justify-content-center gap-3">
 					<Newsfeed>
 						<Outlet context={{ toggleIsPostPopup }} />
 					</Newsfeed>
-					{/* <Newsfeed>
-						<Outlet context={{ toggleIsPostPopup }} />
-					</Newsfeed> */}
+					{isMessageWindowOpen && <MessageWindow />}
 				</div>
 
 			</div>
 			<div className="col-1">
-				<PostButton toggleIsPostPopup={toggleIsPostPopup} />
+				<MessageButton toggleIsMessageWindowOpen={toggleIsMessageWindowOpen} />
 			</div>
 			<AnimatePresence>
 				{isPostPopup && <PostForm toggleIsPostPopup={toggleIsPostPopup} />}

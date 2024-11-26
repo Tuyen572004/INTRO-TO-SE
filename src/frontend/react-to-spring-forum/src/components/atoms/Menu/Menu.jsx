@@ -8,10 +8,12 @@ import { motion } from "framer-motion";
 
 import s from "./style.module.css";
 import { useState } from "react";
+import PreviewMessage from "../../organisms/PreviewMessage/PreviewMessage";
 
 const Menu = ({ toggleIsPostPopup }) => {
   const navigate = useNavigate();
   const [active, setActive] = useState("home");
+  const [showPreviewMessage, setShowPreviewMessage] = useState(false);
 
   const iconVariants = {
     hover: { scale: 1.2, transition: { type: "spring", stiffness: 300 } },
@@ -43,6 +45,8 @@ const Menu = ({ toggleIsPostPopup }) => {
 
       <motion.div
         className={`${s.message} ${active === "message" ? s.active : ""}`}
+        onMouseEnter={() => setShowPreviewMessage(true)}
+        onMouseLeave={() => setShowPreviewMessage(false)}
         onClick={() => {
           setActive("message");
           navigate("/message");
@@ -54,6 +58,7 @@ const Menu = ({ toggleIsPostPopup }) => {
       >
         <motion.div variants={iconVariants}>
           <FiMessageSquare />
+          {showPreviewMessage && <PreviewMessage />}
         </motion.div>
       </motion.div>
 

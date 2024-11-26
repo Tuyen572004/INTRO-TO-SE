@@ -7,6 +7,7 @@ import Activity from "../components/pages/Activity/Activity";
 import Search from "../components/pages/Search/Search";
 import VerificationSuccess from "../components/pages/Verification/VerificationSuccess";
 import VerificationFailed from "../components/pages/Verification/VerificationFailed";
+import Message from "../components/pages/Message/Message";
 
 export const router = createBrowserRouter([
 	{
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
 	{
 		path: "verification-failed",
 		element: <VerificationFailed />
+	},
+	{
+		path: "message",
+		element: <Message />
 	},
 	{
 		path: "/",
