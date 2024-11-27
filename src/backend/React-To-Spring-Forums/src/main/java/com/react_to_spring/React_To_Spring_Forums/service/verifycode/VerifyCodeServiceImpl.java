@@ -10,9 +10,15 @@ import com.react_to_spring.React_To_Spring_Forums.repository.VerifyCodeRepositor
 import com.react_to_spring.React_To_Spring_Forums.utils.verificationemail.verificationemailservice.VerificationEmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 
 @Service
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -24,6 +30,18 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     VerificationEmailService verificationEmailService;
 
     UserRepository userRepository;
+
+    @NonFinal
+    @Value("${client.verification-success-page}")
+    String SUCCESS_REDIRECT_URL;
+
+    @NonFinal
+    @Value("${client.verification-fail-page}")
+    String FAIL_REDIRECT_URL;
+
+    @NonFinal
+    @Value("${app.time.EXPIRATION_TIME_KEY}")
+    String EXPIRATION_TIME_KEY;
 
     private VerifyCode checkExisted(String userId, String verificationCode) {
         VerifyCode verifyCode = verifyCodeRepository.findByUserIdAndVerifyCode(userId, verificationCode)
@@ -38,16 +56,13 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     // verify both code and link
     @Override
     public boolean verify(String userId, String verificationCode) {
-        // check existed
         VerifyCode verifyCode = checkExisted(userId, verificationCode);
 
-        // check expiration time
         if (checkExpiration(verifyCode)) {
             verifyCodeRepository.delete(verifyCode);
-            return false;
+            throw new AppException(ErrorCode.VERIFY_CODE_EXPIRED);
         }
 
-        // all info is correct -> delete the code and return success
         verifyCodeRepository.delete(verifyCode);
         return true;
     }
@@ -56,14 +71,58 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     public void sendVerifyCode(SendVerificationRequest sendVerificationRequest) {
         User user = userRepository.findByEmail(sendVerificationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        verificationEmailService.sendCode(user);
+        VerifyCode verifyCode = verificationEmailService.sendCode(user);
+        verifyCodeRepository.save(verifyCode);
     }
 
     @Override
     public void sendVerifyLink(SendVerificationRequest sendVerificationRequest) {
         User user = userRepository.findByEmail(sendVerificationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        verificationEmailService.sendRegistration(user);
+        VerifyCode verifyCode = verificationEmailService.sendRegistration(user);
+        verifyCodeRepository.save(verifyCode);
     }
 
+    @Override
+    public String buildRedirectUrl(boolean success){
+        StringBuilder url = success ? new StringBuilder(SUCCESS_REDIRECT_URL) : new StringBuilder(FAIL_REDIRECT_URL);
+
+        Instant expirationTime = Instant.now().plus(1, ChronoUnit.HOURS);
+        String expirationTimeStr = String.valueOf(expirationTime.toEpochMilli());
+        String hashedExpiration = hashExpirationTime(expirationTimeStr);
+        url.append("/").append(hashedExpiration);
+        return url.toString();
+    }
+
+    @Override
+    public void deleteVerifyCode(String userId, String verificationCode) {
+        VerifyCode verifyCode = checkExisted(userId, verificationCode);
+        verifyCodeRepository.delete(verifyCode);
+    }
+
+
+    // Used : hashExpirationTime
+    // eg : '19820'
+    // i = 0 --> timeStr[0]-'0' = 1 --> secretKey[1] = '#'
+    // i = 1 --> timeStr[1]-'0' = 9 --> secretKey[9] = 'o'
+
+    // decode
+    // i = 0 --> '#' = secretKey[1] --> 1
+    // i = 1 --> 'o' = secretKey[9] --> 9
+
+    private String hashExpirationTime(String timeStr) {
+        try {
+            String secretKey = EXPIRATION_TIME_KEY;
+            StringBuilder hashBuilder = new StringBuilder();
+
+            for (int i = 0; i < timeStr.length(); i++) {
+                hashBuilder.append(secretKey.charAt(timeStr.charAt(i) - '0'));
+            }
+
+
+            return hashBuilder.toString();
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+    }
 }

@@ -75,10 +75,10 @@ public class UserServiceImp implements UserService{
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        user = userRepository.save(user);
+        userRepository.save(user);
 
         verifyCodeService.sendVerifyLink(SendVerificationRequest.builder()
-                                                                .email(user.getUsername())
+                                                                .email(user.getEmail())
                                                                 .build());
 
         UserProfileCreationRequest userProfileCreationRequest = userProfilerMapper.toUserProfileCreationRequest(request);

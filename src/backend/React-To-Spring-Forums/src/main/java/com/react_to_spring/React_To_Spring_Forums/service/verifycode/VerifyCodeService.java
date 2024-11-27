@@ -10,4 +10,7 @@ public interface VerifyCodeService {
 
     void sendVerifyLink(SendVerificationRequest sendVerificationRequest);
 
+    String buildRedirectUrl(boolean success);
+
+    void deleteVerifyCode(String userId, String verificationCode);
 }

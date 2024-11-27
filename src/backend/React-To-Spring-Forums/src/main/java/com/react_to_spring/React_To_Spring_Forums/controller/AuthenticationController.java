@@ -31,6 +31,10 @@ public class AuthenticationController {
     @Value("${app.controller.authentication.response.change-password.success}")
     String CHANGE_PASSWORD_SUCCESS_MESSAGE;
 
+    @NonFinal
+    @Value("${app.controller.authentication.response.change-email.success}")
+    String CHANGE_EMAIL_SUCCESS_MESSAGE;
+
     @PostMapping("/introspect")
     @Operation(summary = "Introspect token",
             description = "Introspect token to see if it is valid or not")
@@ -72,5 +76,13 @@ public class AuthenticationController {
     public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authenticationService.changePassword(request);
         return ApiResponse.<Void>builder().message(CHANGE_PASSWORD_SUCCESS_MESSAGE).build();
+    }
+
+    @PatchMapping("/change-email")
+    @Operation(summary = "Change email",
+            description = "Change email of user with new email, verification code (sent via email after clicking sent code)")
+    public ApiResponse<Void> changeEmail(@Valid @RequestBody ChangeEmailRequest request) {
+        authenticationService.changeEmail(request);
+        return ApiResponse.<Void>builder().message(CHANGE_EMAIL_SUCCESS_MESSAGE).build();
     }
 }

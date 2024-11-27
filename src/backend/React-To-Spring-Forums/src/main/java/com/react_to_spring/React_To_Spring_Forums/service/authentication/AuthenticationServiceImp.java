@@ -132,12 +132,25 @@ public class AuthenticationServiceImp implements AuthenticationService {
             throw new AppException(ErrorCode.SAME_PASSWORD);
         }
 
-        // verify code
-        if(!verifyCodeService.verify(user.getId(), request.getVerificationCode())) { // expire
-             throw new AppException(ErrorCode.VERIFY_CODE_EXPIRED);
-        }
+        verifyCodeService.verify(user.getId(), request.getVerificationCode());
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    @Override
+    public void changeEmail(ChangeEmailRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findById(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.INCORRECT_PASSWORD);
+        }
+
+        verifyCodeService.verify(user.getId(), request.getVerificationCode());
+
+        user.setEmail(request.getNewEmail());
         userRepository.save(user);
     }
 
@@ -167,6 +180,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
     }
+
 
     private AuthenticationResponse buildAuthenticationResponse(User user) {
         String acId = UUID.randomUUID().toString();

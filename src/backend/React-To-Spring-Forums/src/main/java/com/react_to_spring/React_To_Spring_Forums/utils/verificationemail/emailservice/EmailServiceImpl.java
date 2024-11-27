@@ -25,8 +25,6 @@ public class EmailServiceImpl implements EmailService{
 
     @Override
     public EmailResponse sendEmail(EmailRequest emailRequest) {
-//        System.out.println("Sending email...");
-//        System.out.println(emailRequest);
         try {
 
             return emailClient.sendEmail(apiKey, emailRequest);
