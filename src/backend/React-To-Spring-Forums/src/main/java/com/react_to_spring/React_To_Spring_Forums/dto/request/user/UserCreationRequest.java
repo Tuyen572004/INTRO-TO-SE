@@ -15,11 +15,11 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreationRequest {
 
-    @Size(min = 5, message = "INVALID_USERNAME")
+    //@Size(min = 5, message = "INVALID_USERNAME")
     String username;
 
-    @Size(min = 8, message = "INVALID_PASSWORD")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*(){}\\[\\]!~`|])(?=.*\\d).*$", message = "INVALID_PASSWORD")
+//    @Size(min = 8, message = "INVALID_PASSWORD")
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*(){}\\[\\]!~`|])(?=.*\\d).*$", message = "INVALID_PASSWORD")
     String password;
 
     @NotNull(message = "REQUIRED_EMAIL")

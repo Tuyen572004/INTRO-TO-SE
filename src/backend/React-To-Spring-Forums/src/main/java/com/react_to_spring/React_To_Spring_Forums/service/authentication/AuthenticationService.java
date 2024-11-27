@@ -14,4 +14,6 @@ public interface AuthenticationService {
     void changePassword(ChangePasswordRequest request);
 
     AuthenticationResponse refresh(RefreshTokenRequest request);
+
+    void changeEmail(ChangeEmailRequest request);
 }
