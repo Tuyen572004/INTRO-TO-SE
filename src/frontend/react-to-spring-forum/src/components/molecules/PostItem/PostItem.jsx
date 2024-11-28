@@ -42,7 +42,7 @@ const PostItem = ({ post }) => {
           }}
           pagination={true}
           modules={[EffectCoverflow, Pagination]}
-          className="mySwiper"
+          className="post-swiper"
         >
           {post.imageUrls?.map((image, index) => (
             <SwiperSlide key={index}>
