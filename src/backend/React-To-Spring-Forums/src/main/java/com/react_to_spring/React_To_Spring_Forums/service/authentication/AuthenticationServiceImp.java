@@ -10,9 +10,11 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.AuthenticationRes
 import com.react_to_spring.React_To_Spring_Forums.dto.response.IntrospectResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.InvalidatedToken;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.repository.InvalidatedTokenRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.VerifyCodeRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.verifycode.VerifyCodeService;
@@ -43,6 +45,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     InvalidatedTokenRepository invalidatedTokenRepository;
     UserRepository userRepository;
     VerifyCodeRepository verifyCodeRepository;
+    UserProfileRepository userProfileRepository;
 
     PasswordEncoder passwordEncoder;
 
@@ -250,6 +253,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     private JWTClaimsSet buildAccessTokenClaims(User user, long duration, String id, String otherId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+
         return new JWTClaimsSet.Builder()
                 .subject(user.getId())
                 .jwtID(id)
@@ -258,6 +264,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 .expirationTime(new Date(Instant.now().plus(duration, ChronoUnit.SECONDS).toEpochMilli()))
                 .claim("rfId", otherId)
                 .claim("scope", buildScope(user))
+                .claim("firstName", userProfile.getFirstName())
+                .claim("lastName", userProfile.getLastName())
+                .claim("profileImgUrl", userProfile.getProfileImgUrl())
                 .build();
     }
 
