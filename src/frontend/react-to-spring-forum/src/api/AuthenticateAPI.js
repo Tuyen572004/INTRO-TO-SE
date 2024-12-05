@@ -13,6 +13,7 @@ export class AuthenticationAPI {
 			username: data.username,
 			password: data.password,
 		});
+
 		return response.data;
 	}
 
@@ -20,6 +21,7 @@ export class AuthenticationAPI {
 		const response = await Axios.post("/api/auth/logout", {
 			token: data.token,
 		});
+
 		return response.data;
 	}
 

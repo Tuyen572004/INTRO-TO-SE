@@ -11,6 +11,7 @@ export const userSlice = createSlice({
 			totalFollower: 0,
 			facebook: "fb.com/gnuhuas",
 			instagram: "ig.com/wang.xiu.xiong",
+			role: "",
 		},
 	},
 	reducers: {
