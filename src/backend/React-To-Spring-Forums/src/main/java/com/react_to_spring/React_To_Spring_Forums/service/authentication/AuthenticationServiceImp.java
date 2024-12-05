@@ -10,9 +10,11 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.AuthenticationRes
 import com.react_to_spring.React_To_Spring_Forums.dto.response.IntrospectResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.InvalidatedToken;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.repository.InvalidatedTokenRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.VerifyCodeRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.verifycode.VerifyCodeService;
@@ -42,6 +44,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
     InvalidatedTokenRepository invalidatedTokenRepository;
     UserRepository userRepository;
+    UserProfileRepository userProfileRepository;
     VerifyCodeRepository verifyCodeRepository;
 
     PasswordEncoder passwordEncoder;
@@ -250,15 +253,22 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     private JWTClaimsSet buildAccessTokenClaims(User user, long duration, String id, String otherId) {
-        return new JWTClaimsSet.Builder()
-                .subject(user.getId())
-                .jwtID(id)
-                .issuer("React-To-Spring-Team")
-                .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(duration, ChronoUnit.SECONDS).toEpochMilli()))
-                .claim("rfId", otherId)
-                .claim("scope", buildScope(user))
-                .build();
+        UserProfile userProfile = userProfileRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        try {
+            return new JWTClaimsSet.Builder()
+                    .subject(user.getId())
+                    .jwtID(id)
+                    .issuer("React-To-Spring-Team")
+                    .issueTime(new Date())
+                    .expirationTime(new Date(Instant.now().plus(duration, ChronoUnit.SECONDS).toEpochMilli()))
+                    .claim("rfId", otherId)
+                    .claim("scope", buildScope(user))
+                    .claim("user", userProfile)
+                    .build();
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
     }
 
     private JWTClaimsSet buildRefreshTokenClaims(User user, long duration, String id, String otherId) {
