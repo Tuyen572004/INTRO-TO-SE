@@ -22,5 +22,5 @@ public class CommentUpdateRequest {
     String content;
 
     @JsonProperty("image_url")
-    List<String> imageUrls;
+    List<String> imageList;
 }
