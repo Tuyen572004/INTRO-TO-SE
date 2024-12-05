@@ -2,12 +2,11 @@ import s from "./style.module.css";
 import Input from "../../atoms/Input/Input";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
 import { AuthenticationAPI } from "../../../api/AuthenticateAPI";
 import PrimaryButton from "../../atoms/PrimaryButton/PrimaryButton";
+import { jwtDecode } from 'jwt-decode';
 
 const LoginForm = ({ isNotLogIn }) => {
-  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -40,7 +39,12 @@ const LoginForm = ({ isNotLogIn }) => {
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
 
-      setAuth({ username, password, accessToken, refreshToken });
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      const decoded = jwtDecode(accessToken);
+      console.log(decoded);
+
       setUsername("");
       setPassword("");
       setErrorMessage("");
