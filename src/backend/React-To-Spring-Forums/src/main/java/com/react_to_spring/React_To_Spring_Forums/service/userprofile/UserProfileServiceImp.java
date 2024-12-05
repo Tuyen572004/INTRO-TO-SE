@@ -85,6 +85,14 @@ public class UserProfileServiceImp implements UserProfileService{
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
 
+        if (request.getFirstName() != null && request.getFirstName().isEmpty()) {
+            throw new AppException(ErrorCode.FIRST_NAME_IS_EMPTY);
+        }
+
+        if (request.getLastName() != null && request.getLastName().isEmpty()) {
+            throw new AppException(ErrorCode.LAST_NAME_IS_EMPTY);
+        }
+
         userProfilerMapper.updateUserProfile(userProfile, request);
 
         userProfile = userProfileRepository.save(userProfile);
