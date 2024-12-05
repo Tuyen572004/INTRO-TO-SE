@@ -3,17 +3,15 @@ import Uploader from "../../atoms/Uploader/Uploader";
 import s from "./style.module.css";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { motion } from "framer-motion";
-import axios from "axios";
-import Axios from "../../../api/Axios";
-import useAuth from "../../../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { addPost } from "../../../store/postSlice";
+import { PostAPI } from "../../../api/PostAPI";
+import axios from "axios";
 
 const PostForm = ({ toggleIsPostPopup }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageList, setImageList] = useState([]);
-  const { auth } = useAuth();
   const dispatch = useDispatch();
 
   const uploadFile = async (image) => {
@@ -28,7 +26,6 @@ const PostForm = ({ toggleIsPostPopup }) => {
 
       const res = await axios.post(api, data);
       const { secure_url } = res.data;
-      console.log(secure_url);
       return secure_url;
     } catch (error) {
       console.error(error);
@@ -46,15 +43,9 @@ const PostForm = ({ toggleIsPostPopup }) => {
       const uploadedImageUrls = await Promise.all(
         imageList.map((image) => uploadFile(image))
       );
-
       data.image_url = uploadedImageUrls;
 
-      Axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${auth.accessToken}`;
-
-      const response = await Axios.post("/api/posts", data);
-      console.log("Post response:", response);
+      const response = await PostAPI.create(data);
 
       setImageList([]);
       console.log("File upload and post creation success!");
