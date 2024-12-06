@@ -49,4 +49,6 @@
 
 .content {}
 
-.image_list {}
+.image_list {
+	margin-bottom: 15px;
+}

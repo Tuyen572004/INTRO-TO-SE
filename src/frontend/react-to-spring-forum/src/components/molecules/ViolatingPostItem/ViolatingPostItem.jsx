@@ -10,7 +10,7 @@ function ViolatingPostItem({post, onClick}) {
     return (
         <div className={s.violatingPostItem} onClick={() => onClick(post)}>
             <div className={s.postContainer}>
-                <div className={s.avatarContainer}>
+                <div>
                     <img src={post.user.avatar} alt={post.user.name} className={s.avatar}/>
                 </div>
 

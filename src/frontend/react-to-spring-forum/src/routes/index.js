@@ -8,10 +8,11 @@ import Search from "../components/pages/Search/Search";
 import VerificationSuccess from "../components/pages/Verification/VerificationSuccess";
 import VerificationFailed from "../components/pages/Verification/VerificationFailed";
 import Admin from "../components/pages/Admin/Admin";
-import ViolatingPostList from "../components/pages/Admin/ViolatingPost/ViolatingPost";
-import ViolatingUserList from "../components/pages/Admin/ViolatingUser/ViolatingUser";
 import AdminDashboard from "../components/pages/Admin/AdminDashboard/AdminDashboard";
 import Message from "../components/pages/Message/Message";
+import ViolatingUser from "../components/pages/Admin/ViolatingUser/ViolatingUser";
+import ViolatingPost from "../components/pages/Admin/ViolatingPost/ViolatingPost";
+import CommentPost from "../components/organisms/CommentPost/CommentPost";
 
 export const router = createBrowserRouter([
 	{
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
 				element: <Search />,
 			},
 			{
+				path: "posts/:id",
+				element: <CommentPost />,
+			},
+			{
 				path: "admin",
 				element: <Admin />,
 				children: [
@@ -60,11 +65,11 @@ export const router = createBrowserRouter([
 					},
 					{
 						path: "violating-users",
-						element: <ViolatingUserList />,
+						element: <ViolatingUser />
 					},
 					{
 						path: "violating-posts",
-						element: <ViolatingPostList />,
+						element: <ViolatingPost />,
 					}
 				]
 			}
