@@ -11,6 +11,7 @@ import com.react_to_spring.React_To_Spring_Forums.mapper.CommentMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.CommentRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
 import com.react_to_spring.React_To_Spring_Forums.converter.CommentConverter;
+import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
 import com.react_to_spring.React_To_Spring_Forums.utils.StringUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,8 @@ public class CommentServiceImp implements CommentService{
     CommentRepository commentRepository;
     CommentMapper commentMapper;
     CommentConverter commentConverter;
+
+    NotificationService notificationService;
 
     @Override
     public List<CommentResponse> getAllComments(String postId) {
@@ -77,6 +80,8 @@ public class CommentServiceImp implements CommentService{
         comment.setUserId(userId);
 
         comment = commentRepository.save(comment);
+
+        notificationService.sendCommentCreationNotification(userId, comment.getPostId());
 
         return commentConverter.buildCommentResponse(comment);
     }

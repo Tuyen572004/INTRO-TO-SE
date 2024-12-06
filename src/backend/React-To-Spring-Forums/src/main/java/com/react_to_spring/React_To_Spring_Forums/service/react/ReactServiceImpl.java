@@ -4,12 +4,14 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.react.ReactCreatio
 import com.react_to_spring.React_To_Spring_Forums.dto.request.react.ReactUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ReactResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.React;
+import com.react_to_spring.React_To_Spring_Forums.enums.ReactName;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.ReactMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.PostRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.ReactRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
+import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,8 @@ public class ReactServiceImpl implements ReactService {
     ReactMapper reactMapper;
     ReactRepository reactRepository;
 
+    NotificationService notificationService;
+
     @Override
     @Transactional
     public ReactResponse createReact(ReactCreationRequest request) {
@@ -53,6 +57,8 @@ public class ReactServiceImpl implements ReactService {
         react.setUserId(userId);
 
         react = reactRepository.save(react);
+
+        notificationService.sendReactToPostCreationNotification(userId,react.getId(), react.getName().getName());
         return reactMapper.toReactResponse(react);
     }
 
