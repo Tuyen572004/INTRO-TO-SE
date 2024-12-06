@@ -4,43 +4,45 @@ import { CiSearch } from "react-icons/ci";
 import { IoCloseSharp } from "react-icons/io5";
 
 const SearchBar = () => {
-  const [isExistSearchingContent, setIsExistSearchingContent] = useState(false);
-  const handleFocusSearchBar = () => {
-    const searchBarContainer = document.querySelector("#search_bar_container");
-    searchBarContainer.style.backgroundColor = "white";
-    searchBarContainer.style.border = "2px solid black";
-  };
-  const handleBlurSearchBar = () => {
-    const searchBarContainer = document.querySelector("#search_bar_container");
-    searchBarContainer.style.backgroundColor = "#d3d3d3";
-    searchBarContainer.style.border = "none";
-  };
+  const [searchContent, setSearchContent] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+
   const handleSearchInput = (e) => {
-    setIsExistSearchingContent(e.target.value.length > 0 ? true : false);
+    setSearchContent(e.target.value);
   };
-  const handleClearSearchInput = (e) => {
-    const searchBar = document.querySelector("#search_bar");
-    searchBar.value = "";
-    setIsExistSearchingContent(false);
+
+  const handleClearSearchInput = () => {
+    setSearchContent("");
   };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
   return (
-    <>
-      <div className={s.container} id="search_bar_container">
-        <CiSearch />
-        <input
-          className={s.search_bar}
-          id="search_bar"
-          type="text"
-          placeholder="Search"
-          onChange={handleSearchInput}
-          onFocus={handleFocusSearchBar}
-          onBlur={handleBlurSearchBar}
-        />
-        {isExistSearchingContent && (
-          <IoCloseSharp onClick={handleClearSearchInput} />
-        )}
-      </div>
-    </>
+    <div
+      className={s.container}
+      style={{
+        backgroundColor: isFocused ? "white" : "#F5F5F5",
+        border: isFocused ? "1px solid black" : "none",
+      }}
+    >
+      <CiSearch />
+      <input
+        className={s.search_bar}
+        type="text"
+        placeholder="Search"
+        value={searchContent}
+        onChange={handleSearchInput}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      />
+      {searchContent && <IoCloseSharp onClick={handleClearSearchInput} />}
+    </div>
   );
 };
 
