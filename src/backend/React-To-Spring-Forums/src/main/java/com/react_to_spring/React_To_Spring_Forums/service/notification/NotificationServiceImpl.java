@@ -5,6 +5,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Notification;
 import com.react_to_spring.React_To_Spring_Forums.entity.NotificationRecipient;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.enums.NotificationTemplate;
 import com.react_to_spring.React_To_Spring_Forums.enums.ReactName;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
@@ -27,7 +28,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -103,6 +106,7 @@ public class NotificationServiceImpl implements NotificationService{
         notificationRecipient.setReadStatus(true);
     }
 
+
     private void sendNotification(NotificationTemplate template, String userId, String notificationEntityId) {
         // Fetch user details
         String userName = userRepository.findById(userId)
@@ -124,11 +128,15 @@ public class NotificationServiceImpl implements NotificationService{
         // Save notification
         notificationRepository.save(notification);
 
-        List<String> recipientIds = userProfileRepository.findByUserId(userId).get().getFriendIds();
+        List<String> recipientIds = new ArrayList<String>();
+        List<String> friendIds = userProfileRepository.findByUserId(userId).get().getFriendIds();
+        if(friendIds!=null){
+            recipientIds.addAll(friendIds);
+        }
 
         if(template==NotificationTemplate.CREATE_POST){
             // inform admin
-            recipientIds.addAll(userRepository.findByRole("ADMIN").stream().map(User::getId).toList());
+            recipientIds.addAll(userRepository.findByRole_Name("ADMIN").stream().map(User::getId).toList());
         }
 
         sendNotification(notification, recipientIds);

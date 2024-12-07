@@ -23,7 +23,7 @@ public enum NotificationTemplate {
 
     // Overloaded method with only actorName
     public String formatMessage(String actorName) {
-        return formatMessage(actorName); // Default targetName
+        return String.format(template, actorName, action);
     }
 
 }
