@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Uploader from '../../atoms/Uploader/Uploader';
-import useAuth from '../../../hooks/useAuth';
 import './EditPostModal.css';
-import {setAuthToken} from "../../../api/PrivateAxios";
 import {PostAPI} from "../../../api/PostAPI";
+import {postListContext} from "../../pages/Dashboard/Dashboard";
 
 const EditPostModal = ({ show, onHide, post }) => {
-    const { auth } = useAuth();
-
     const [title, setTitle] = useState(post?.title || '');
     const [content, setContent] = useState(post?.content || '');
     const [images, setImages] = useState(post?.imageList || []);
     const [newImages, setNewImages] = useState([]);
+
+    const {posts, setPosts} = useContext(postListContext);
 
     const removeImage = (index, event) => {
         event.preventDefault();
@@ -51,13 +50,12 @@ const EditPostModal = ({ show, onHide, post }) => {
             const uploadedImageUrls = await Promise.all(
                 newImages.map((image) => uploadFile(image))
             );
-
             updatedPost.image_url = [...updatedPost.image_url, ...uploadedImageUrls];
 
-            setAuthToken("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlNDZkZDY1Yi0zMmU0LTRkNTYtOGY3Mi1lNDBhNTc5NWZiYjciLCJzY29wZSI6IlJPTEVfVVNFUiIsImlzcyI6IlJlYWN0LVRvLVNwcmluZy1UZWFtIiwicmZJZCI6IjUxYWQ5NGM1LTRmMjQtNDczMi05NzQ0LWU4ZmU0Y2FhMzU1MCIsImV4cCI6MTczNjg1MDk0MSwiaWF0IjoxNzMzMjUwOTQxLCJqdGkiOiIzZDY4Y2VlMS00MzdkLTQ5NzItYmI4Zi04MjE1NzJiNzNlOTkifQ.1nJdb9HGs-0Zis1Nqdj0HBUI3LW_vmRrA3R7Zo7uV9GGkYxDrdayNAp2u_LlPDGH-WFoM85PnjFvn_lF886mlg")
             const response = await PostAPI.update(updatedPost);
-
             console.log('Post response:', response);
+
+            setPosts(posts.map((p) => (p.id === post.id ? response.data : p)));
         } catch (error) {
             console.error('Error:', error);
         }

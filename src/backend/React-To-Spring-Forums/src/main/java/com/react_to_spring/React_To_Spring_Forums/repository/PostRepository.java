@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface PostRepository extends MongoRepository<Post, String> {
     boolean existsById(String id);
 
-    Optional<Post> findById(String id);
+    Page<Post> getAllBy(Pageable pageable);
 
     @Query(value = "{ 'titleNoDiacritics' : { '$regex' : ?0, '$options' : 'i' } }")
     List<Post> findByTitleNoDiacriticsApproximate(String regex);
