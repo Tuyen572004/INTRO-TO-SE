@@ -1,10 +1,13 @@
 package com.react_to_spring.React_To_Spring_Forums.converter;
 
 import com.react_to_spring.React_To_Spring_Forums.dto.response.CommentResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Comment;
+import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.mapper.CommentMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ public class CommentConverter {
 
     CommentMapper commentMapper;
     UserProfileRepository userProfileRepository;
+    UserRepository userRepository;
 
     public List<CommentResponse> convertToCommentResponses(List<Comment> comments){
         List<CommentResponse> commentResponses = new ArrayList<>();
@@ -37,12 +41,22 @@ public class CommentConverter {
     public CommentResponse buildCommentResponse(Comment comment) {
         CommentResponse commentResponse = commentMapper.toCommentResponse(comment);
 
+        UserInfoResponse userInfo = UserInfoResponse.builder().name("").username("").avatar("").build();
+        userInfo.setId(comment.getUserId());
+
         Optional<UserProfile> userProfile = userProfileRepository.findByUserId(comment.getUserId());
-        if (userProfile.isEmpty()) return null;
+        Optional<User> user = userRepository.findById(comment.getUserId());
+
+        // get author's name and avatar (url)
+        if (userProfile.isEmpty() || user.isEmpty()) return null;
         userProfile.ifPresent(value -> {
-            commentResponse.setAuthor(value.getFirstName() + " " + value.getLastName());
-            commentResponse.setAuthorAvatar(value.getProfileImgUrl());
+            userInfo.setName(value.getFirstName() + " " + value.getLastName());
+            userInfo.setAvatar(value.getProfileImgUrl());
         });
+        user.ifPresent(value -> {
+            userInfo.setUsername(value.getUsername());
+        });
+        commentResponse.setUser(userInfo);
 
         return commentResponse;
     }

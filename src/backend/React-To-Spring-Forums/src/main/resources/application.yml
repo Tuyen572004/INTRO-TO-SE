@@ -103,6 +103,7 @@ app:
   time:
     EXPIRATION_TIME_KEY: ${EXPIRATION_TIME_KEY}
 
+
 open:
   api:
     title: "React To Spring Forums API"

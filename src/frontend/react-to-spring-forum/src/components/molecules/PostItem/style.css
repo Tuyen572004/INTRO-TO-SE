@@ -14,3 +14,7 @@
 	display: block;
 	width: 100%;
 }
+
+.dropdown {
+	flex-shrink: 0;
+}

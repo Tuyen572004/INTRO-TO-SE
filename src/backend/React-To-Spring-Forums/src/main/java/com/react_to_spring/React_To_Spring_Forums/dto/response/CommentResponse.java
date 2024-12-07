@@ -15,10 +15,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentResponse {
     String id;
-    String userId;
-    String author;
-    String authorAvatar;
+    UserInfoResponse user;
     String content;
-    List<String> imageUrls;
+    List<String> imageList;
     LocalDateTime createdDate;
 }

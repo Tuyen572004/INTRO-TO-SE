@@ -51,6 +51,8 @@ public class PostConverter {
         PostResponse postResponse = postMapper.toPostResponse(post);
 
         UserInfoResponse userInfo = UserInfoResponse.builder().name("").username("").avatar("").build();
+        userInfo.setId(post.getUserId());
+
         Optional<UserProfile> userProfile = userProfileRepository.findByUserId(post.getUserId());
         Optional<User> user = userRepository.findById(post.getUserId());
 

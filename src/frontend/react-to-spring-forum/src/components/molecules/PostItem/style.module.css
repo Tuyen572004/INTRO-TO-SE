@@ -4,7 +4,7 @@
 	width: 100%;
 	padding: 12px;
 	border-bottom: 1px solid #D9D9D9;
-
+	margin-bottom: 25px;
 }
 
 .header {
@@ -27,7 +27,12 @@
 	margin-right: 10px;
 }
 
-.inner_avatar {}
+.avatar .inner_avatar img {
+	height: 50px;
+	width: 50px;
+	border-radius: 100%;
+	object-fit: cover;
+}
 
 .name {
 	font-size: large;
@@ -40,8 +45,12 @@
 .title {
 	font-size: large;
 	font-weight: bold;
+	margin-top: 10px;
 }
 
 .content {}
 
-.image_list {}
+.image_list {
+	margin-top: 10px;
+	margin-bottom: 15px;
+}
