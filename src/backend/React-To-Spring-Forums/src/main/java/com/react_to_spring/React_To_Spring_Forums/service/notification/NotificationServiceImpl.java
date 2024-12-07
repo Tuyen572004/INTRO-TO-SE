@@ -103,62 +103,61 @@ public class NotificationServiceImpl implements NotificationService{
         notificationRecipient.setReadStatus(true);
     }
 
-    @Override
-    public void sendPostCreationNotification(String userId,String entityId, String title) {
-        String userName = userRepository.findById(userId).get().getUsername();
-        String message = NotificationTemplate.CREATE_POST.formatMessage(userName,title);
+    private void sendNotification(NotificationTemplate template, String userId, String notificationEntityId) {
+        // Fetch user details
+        String userName = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getUsername();
+
+        // Format message using the template
+        String message = template.formatMessage(userName);
+
+        // Build notification object
         Notification notification = Notification.builder()
                 .actorId(userId)
-                .notificationType(NotificationTemplate.CREATE_POST.getEntity())
-                .notificationEntityId(entityId)
+                .notificationType(template.getEntity())
+                .notificationEntityId(notificationEntityId)
                 .message(message)
                 .sendAt(LocalDateTime.now())
                 .build();
 
+        // Save notification
         notificationRepository.save(notification);
 
         List<String> recipientIds = userProfileRepository.findByUserId(userId).get().getFriendIds();
 
-        recipientIds.addAll(userRepository.findByRole("ADMIN").stream().map(User::getId).toList());
+        if(template==NotificationTemplate.CREATE_POST){
+            // inform admin
+            recipientIds.addAll(userRepository.findByRole("ADMIN").stream().map(User::getId).toList());
+        }
 
         sendNotification(notification, recipientIds);
+    }
 
+    // Template-specific methods delegate to the generic method
+    @Override
+    public void sendPostCreationNotification(String userId, String postId) {
+        sendNotification(NotificationTemplate.CREATE_POST, userId, postId);
     }
 
     @Override
-    public void sendCommentCreationNotification(String userId,String entityId) {
-        String userName = userRepository.findById(userId).get().getUsername();
-        String message = NotificationTemplate.CREATE_COMMENT.formatMessage(userName);
-        Notification notification = Notification.builder()
-                .actorId(userId)
-                .notificationType(NotificationTemplate.CREATE_COMMENT.getEntity())
-                .notificationEntityId(entityId)
-                .message(message)
-                .sendAt(LocalDateTime.now())
-                .build();
-
-        notificationRepository.save(notification);
-
-        List<String> recipientIds = userProfileRepository.findByUserId(userId).get().getFriendIds();
-
-        recipientIds.addAll(userRepository.findByRole("ADMIN").stream().map(User::getId).toList());
-
-        sendNotification(notification, recipientIds);
-
+    public void sendCommentCreationNotification(String userId, String commentId) {
+        sendNotification(NotificationTemplate.CREATE_COMMENT, userId, commentId);
     }
 
     @Override
-    public void sendReactToPostCreationNotification(String userId,String entityId, String name) {
-        String userName = userRepository.findById(userId).get().getUsername();
-        String message = NotificationTemplate.CREATE_REACT_TO_POST.formatMessage(userName,name);
-        Notification notification = Notification.builder()
-                .actorId(userId)
-                .notificationType(NotificationTemplate.CREATE_REACT_TO_POST.getEntity())
-                .notificationEntityId(entityId)
-                .message(message)
-                .sendAt(LocalDateTime.now())
-                .build();
-
-        notificationRepository.save(notification);
+    public void sendReactToPostCreationNotification(String userId, String reactId) {
+        sendNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, reactId);
     }
+
+    @Override
+    public void sendAddFriendNotification(String userId, String addFriendRequestId) {
+        sendNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, addFriendRequestId);
+    }
+
+    @Override
+    public void sendAcceptFriendNotification(String userId, String acceptFriendRequestId) {
+        sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, acceptFriendRequestId);
+    }
+
 }

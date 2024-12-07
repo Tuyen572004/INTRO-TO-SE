@@ -14,8 +14,10 @@ public interface NotificationService {
     PageResponse<NotificationResponse> findNotificationsByRecipientId(String userId, int page, int size);
     void markAsRead(String notificationId, String userId);
 
-    void sendPostCreationNotification(String userId,String entityId, String title);
-    void sendCommentCreationNotification(String userId,String entityId);
+    void sendPostCreationNotification(String userId,String postId);
+    void sendCommentCreationNotification(String userId,String commentId);
+    void sendReactToPostCreationNotification(String userId, String reactId);
+    void sendAddFriendNotification(String userId, String addFriendRequestId);
+    void sendAcceptFriendNotification(String userId, String acceptFriendRequestId);
 
-    void sendReactToPostCreationNotification(String userId, String id, String reactName);
 }
