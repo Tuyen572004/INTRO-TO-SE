@@ -10,9 +10,11 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.AuthenticationRes
 import com.react_to_spring.React_To_Spring_Forums.dto.response.IntrospectResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.InvalidatedToken;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.repository.InvalidatedTokenRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.VerifyCodeRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.verifycode.VerifyCodeService;
@@ -42,6 +44,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
     InvalidatedTokenRepository invalidatedTokenRepository;
     UserRepository userRepository;
+    UserProfileRepository userProfileRepository;
     VerifyCodeRepository verifyCodeRepository;
 
     PasswordEncoder passwordEncoder;
@@ -132,12 +135,25 @@ public class AuthenticationServiceImp implements AuthenticationService {
             throw new AppException(ErrorCode.SAME_PASSWORD);
         }
 
-        // verify code
-        if(!verifyCodeService.verifyCode(user.getId(), request.getVerificationCode())) { // expire
-             throw new AppException(ErrorCode.VERIFY_CODE_EXPIRED);
-        }
+        verifyCodeService.verify(user.getId(), request.getVerificationCode());
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    @Override
+    public void changeEmail(ChangeEmailRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findById(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.INCORRECT_PASSWORD);
+        }
+
+        verifyCodeService.verify(user.getId(), request.getVerificationCode());
+
+        user.setEmail(request.getNewEmail());
         userRepository.save(user);
     }
 
@@ -167,6 +183,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
     }
+
 
     private AuthenticationResponse buildAuthenticationResponse(User user) {
         String acId = UUID.randomUUID().toString();
@@ -236,15 +253,22 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     private JWTClaimsSet buildAccessTokenClaims(User user, long duration, String id, String otherId) {
-        return new JWTClaimsSet.Builder()
-                .subject(user.getId())
-                .jwtID(id)
-                .issuer("React-To-Spring-Team")
-                .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(duration, ChronoUnit.SECONDS).toEpochMilli()))
-                .claim("rfId", otherId)
-                .claim("scope", buildScope(user))
-                .build();
+        UserProfile userProfile = userProfileRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        try {
+            return new JWTClaimsSet.Builder()
+                    .subject(user.getId())
+                    .jwtID(id)
+                    .issuer("React-To-Spring-Team")
+                    .issueTime(new Date())
+                    .expirationTime(new Date(Instant.now().plus(duration, ChronoUnit.SECONDS).toEpochMilli()))
+                    .claim("rfId", otherId)
+                    .claim("scope", buildScope(user))
+                    .claim("user", userProfile)
+                    .build();
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
     }
 
     private JWTClaimsSet buildRefreshTokenClaims(User user, long duration, String id, String otherId) {
