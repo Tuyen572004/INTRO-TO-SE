@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import s from "./style.module.css";
 import "./style.css";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,12 +10,30 @@ import ReactBar from "../ReactionBar/ReactionBar";
 import { Dropdown } from "react-bootstrap";
 import CustomToggle from "../../atoms/CustomToggle/CustomToggle";
 import EditPostModal from "../EditPostModal/EditPostModal";
+import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModal";
+import {PostAPI} from "../../../api/PostAPI";
+import {postListContext} from "../../pages/Dashboard/Dashboard";
 
 const PostItem = ({ post }) => {
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const { posts, setPosts } = useContext(postListContext);
 
     const handleEditClick = () => {
         setShowEditModal(true);
+    };
+
+    const handleDeleteClick = () => {
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        const response = await PostAPI.delete(post.id);
+        console.log(response);
+        const newPosts = posts.filter((p) => p.id !== post.id);
+        setPosts(newPosts);
+        setShowDeleteModal(false);
     };
 
     return (
@@ -38,7 +56,7 @@ const PostItem = ({ post }) => {
                                 <Dropdown.Toggle as={CustomToggle}/>
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={handleEditClick}>Edit</Dropdown.Item>
-                                    <Dropdown.Item>Delete</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleDeleteClick}>Delete</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
@@ -65,19 +83,24 @@ const PostItem = ({ post }) => {
                     >
                         {post.imageList?.map((image, index) => (
                             <SwiperSlide key={index}>
-                                <img src={image} alt={post.title}/>
+                                <img src={image} alt={post.title} style={{width: '100%'}}/>
                             </SwiperSlide>
                         ))}
                     </Swiper>
                 </div>
                 <ReactBar reactions={post?.reactions} postId={post?.id}/>
-
-
             </div>
+
             <EditPostModal
                 show={showEditModal}
                 onHide={() => setShowEditModal(false)}
                 post={post}
+            />
+
+            <ConfirmDeleteModal
+                show={showDeleteModal}
+                onHide={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
             />
         </>
     );

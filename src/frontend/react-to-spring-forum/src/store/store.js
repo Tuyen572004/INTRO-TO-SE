@@ -1,6 +1,6 @@
 import { userReducer } from "./userSlice";
 import { postReducer } from "./postSlice";
-import { commentReducer } from "./CommentSlice";
+import { commentReducer } from "./commentSlice";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import {

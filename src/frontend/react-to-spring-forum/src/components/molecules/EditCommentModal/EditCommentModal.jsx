@@ -2,16 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Uploader from '../../atoms/Uploader/Uploader';
-import useAuth from '../../../hooks/useAuth';
-import { setAuthToken } from "../../../api/PrivateAxios";
 import { CommentAPI } from "../../../api/CommentAPI";
 import { useDispatch, useSelector } from "react-redux";
-import { updateComment } from "../../../store/CommentSlice";
+import { updateComment } from "../../../store/commentSlice";
 
 import s from './style.module.css';
 
 const EditCommentModal = ({ show, onHide, comment }) => {
-    const { auth } = useAuth();
     const dispatch = useDispatch();
     const comments = useSelector((state) => state.commentSlice.comments);
 
@@ -57,7 +54,6 @@ const EditCommentModal = ({ show, onHide, comment }) => {
 
             updatedComment.image_url = [...updatedComment.image_url, ...uploadedImageUrls];
 
-            setAuthToken("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlNDZkZDY1Yi0zMmU0LTRkNTYtOGY3Mi1lNDBhNTc5NWZiYjciLCJzY29wZSI6IlJPTEVfVVNFUiIsImlzcyI6IlJlYWN0LVRvLVNwcmluZy1UZWFtIiwicmZJZCI6IjUxYWQ5NGM1LTRmMjQtNDczMi05NzQ0LWU4ZmU0Y2FhMzU1MCIsImV4cCI6MTczNjg1MDk0MSwiaWF0IjoxNzMzMjUwOTQxLCJqdGkiOiIzZDY4Y2VlMS00MzdkLTQ5NzItYmI4Zi04MjE1NzJiNzNlOTkifQ.1nJdb9HGs-0Zis1Nqdj0HBUI3LW_vmRrA3R7Zo7uV9GGkYxDrdayNAp2u_LlPDGH-WFoM85PnjFvn_lF886mlg")
             const response = await CommentAPI.update(updatedComment);
             dispatch(updateComment(response.data));
 

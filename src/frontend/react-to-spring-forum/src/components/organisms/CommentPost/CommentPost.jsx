@@ -4,15 +4,13 @@ import { PostAPI} from "../../../api/PostAPI";
 import PostItem from "../../molecules/PostItem/PostItem";
 import CommentItem from "../../molecules/CommentItem/CommentItem";
 import {CommentAPI} from "../../../api/CommentAPI";
+import {useDispatch, useSelector} from "react-redux";
+import {addComment, setComments} from "../../../store/commentSlice";
 
 import s from './style.module.css';
-import {useDispatch, useSelector} from "react-redux";
-import {addComment, setComments} from "../../../store/CommentSlice";
-import useAuth from "../../../hooks/useAuth";
 
 const CommentPost = () => {
     const navigate = useNavigate();
-    const auth = useAuth();
 
     const { id } = useParams();
     const [post, setPost] = useState(null);
@@ -41,12 +39,12 @@ const CommentPost = () => {
                 console.log('Comments:', response.data);
 
                 const sortedComments = response.data.sort((a, b) => {
-                    if (a.userId === auth.userId && b.userId !== auth.userId) {
-                        return -1;
-                    }
-                    if (a.userId !== auth.userId && b.userId === auth.userId) {
-                        return 1;
-                    }
+                    // if (a.userId === auth.userId && b.userId !== auth.userId) {
+                    //     return -1;
+                    // }
+                    // if (a.userId !== auth.userId && b.userId === auth.userId) {
+                    //     return 1;
+                    // }
                     return new Date(b.createdDate) - new Date(a.createdDate);
                 });
 

@@ -1,24 +1,44 @@
-import PrivateAxios from "./PrivateAxios";
+import AuthorizedAxios from "./AuthorizedAxios";
 import Axios from "./Axios";
 
 export class CommentAPI {
     static async getAllCommentByPostId(postId) {
-        const response = await Axios.get(`/api/comments?post_id=${postId}`);
-        return response.data;
+        try {
+            const response = await Axios.get(`/api/comments?post_id=${postId}`);
+            return response.data;
+        } catch (error) {
+            console.error("API Error:", error.response || error.message);
+            throw error;
+        }
     }
 
     static async create(data) {
-        const response = await PrivateAxios.post("/api/comments", data);
-        return response.data;
+        try {
+            const response = await AuthorizedAxios.post(`/api/comments`, data);
+            return response.data;
+        } catch (error) {
+            console.error("API Error:", error.response || error.message);
+            throw error;
+        }
     }
 
     static async update(data) {
-        const response = await PrivateAxios.put(`/api/comments`, data);
-        return response.data;
+        try {
+            const response = await AuthorizedAxios.put(`/api/comments`, data);
+            return response.data;
+        } catch (error) {
+            console.error("API Error:", error.response || error.message);
+            throw error;
+        }
     }
 
     static async delete(id) {
-        const response = await PrivateAxios.delete(`/api/comments/${id}`);
-        return response.data;
+        try {
+            const response = await AuthorizedAxios.delete(`/api/comments/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error("API Error:", error.response || error.message);
+            throw error;
+        }
     }
 }

@@ -4,24 +4,19 @@ import CustomToggle from "../../atoms/CustomToggle/CustomToggle";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import EditCommentModal from "../EditCommentModal/EditCommentModal";
 import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModal";
-import { setAuthToken } from "../../../api/PrivateAxios";
 import { CommentAPI } from "../../../api/CommentAPI";
-import { useDispatch, useSelector } from "react-redux";
-import { removeComment } from "../../../store/CommentSlice";
-import useAuth from "../../../hooks/useAuth";
+import { useDispatch } from "react-redux";
+import { removeComment } from "../../../store/commentSlice";
 
 import s from "./style.module.css"
 
 function CommentItem({ comment }) {
-    const auth = useAuth();
     const dispatch = useDispatch();
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [selectedComment, setSelectedComment] = useState(null);
 
     const handleEditClick = () => {
-        setSelectedComment(comment);
         setShowEditModal(true);
     };
 
@@ -30,7 +25,6 @@ function CommentItem({ comment }) {
     };
 
     const confirmDelete = async () => {
-        setAuthToken("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlNDZkZDY1Yi0zMmU0LTRkNTYtOGY3Mi1lNDBhNTc5NWZiYjciLCJzY29wZSI6IlJPTEVfVVNFUiIsImlzcyI6IlJlYWN0LVRvLVNwcmluZy1UZWFtIiwicmZJZCI6IjUxYWQ5NGM1LTRmMjQtNDczMi05NzQ0LWU4ZmU0Y2FhMzU1MCIsImV4cCI6MTczNjg1MDk0MSwiaWF0IjoxNzMzMjUwOTQxLCJqdGkiOiIzZDY4Y2VlMS00MzdkLTQ5NzItYmI4Zi04MjE1NzJiNzNlOTkifQ.1nJdb9HGs-0Zis1Nqdj0HBUI3LW_vmRrA3R7Zo7uV9GGkYxDrdayNAp2u_LlPDGH-WFoM85PnjFvn_lF886mlg")
         await CommentAPI.delete(comment.id);
         dispatch(removeComment(comment.id));
         setShowDeleteModal(false);
@@ -81,21 +75,17 @@ function CommentItem({ comment }) {
                 </div>
             </div>
 
-            {showEditModal && (
-                <EditCommentModal
-                    show={showEditModal}
-                    onHide={() => setShowEditModal(false)}
-                    comment={selectedComment}
-                />
-            )}
+            <EditCommentModal
+                show={showEditModal}
+                onHide={() => setShowEditModal(false)}
+                comment={comment}
+            />
 
-            {showDeleteModal && (
-                <ConfirmDeleteModal
-                    show={showDeleteModal}
-                    onHide={() => setShowDeleteModal(false)}
-                    onConfirm={confirmDelete}
-                />
-            )}
+            <ConfirmDeleteModal
+                show={showDeleteModal}
+                onHide={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+            />
         </div>
     );
 }
