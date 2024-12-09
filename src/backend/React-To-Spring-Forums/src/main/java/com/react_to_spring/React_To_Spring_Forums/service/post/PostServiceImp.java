@@ -5,11 +5,13 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateReq
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
+import com.react_to_spring.React_To_Spring_Forums.enums.NotificationTemplate;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.*;
 import com.react_to_spring.React_To_Spring_Forums.converter.PostConverter;
+import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
 import com.react_to_spring.React_To_Spring_Forums.utils.StringUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,8 @@ public class PostServiceImp implements PostService {
     private ReactRepository reactRepository;
 
     private PostConverter postConverter;
+
+    NotificationService notificationService;
 
     @Override
     public PostResponse getPostById(String id) {
@@ -140,6 +144,8 @@ public class PostServiceImp implements PostService {
         post.setUserId(userId);
 
         post = postRepository.save(post);
+
+        notificationService.sendPostCreationNotification(userId,post.getId());
 
         return postConverter.buildPostResponse(post);
     }
