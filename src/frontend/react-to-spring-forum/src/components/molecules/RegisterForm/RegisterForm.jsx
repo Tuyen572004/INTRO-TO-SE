@@ -66,7 +66,6 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
     }
     try {
       const response = await UserAPI.register({ username, password, email });
-
       console.log(response);
       if (response) {
         setModalIsOpen(true);
