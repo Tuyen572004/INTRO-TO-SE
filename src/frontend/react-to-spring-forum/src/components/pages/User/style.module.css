@@ -21,13 +21,17 @@
 .inner_information {}
 
 .username {
-	color: black;
-	font-weight: 700;
+	color: rgb(103, 99, 99);
+	font-weight: 400;
+	font-size: 22px;
 }
 
-.name {}
+.name {
+	font-weight: 600;
+	font-size: 28px;
+}
 
-.inner_avatar {
+.inner_avatar img {
 	height: 100px;
 	width: 100px;
 	border-radius: 100%;
