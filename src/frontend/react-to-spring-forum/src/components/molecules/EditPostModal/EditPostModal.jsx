@@ -1,10 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Uploader from '../../atoms/Uploader/Uploader';
 import './EditPostModal.css';
 import {PostAPI} from "../../../api/PostAPI";
-import {postListContext} from "../../pages/Dashboard/Dashboard";
+import {useDispatch} from "react-redux";
+import {updatePost} from "../../../store/postSlice";
+import {updateMyPost} from "../../../store/myPostSlice";
 
 const EditPostModal = ({ show, onHide, post }) => {
     const [title, setTitle] = useState(post?.title || '');
@@ -12,7 +14,7 @@ const EditPostModal = ({ show, onHide, post }) => {
     const [images, setImages] = useState(post?.imageList || []);
     const [newImages, setNewImages] = useState([]);
 
-    const {posts, setPosts} = useContext(postListContext);
+    const dispatch = useDispatch();
 
     const removeImage = (index, event) => {
         event.preventDefault();
@@ -55,7 +57,8 @@ const EditPostModal = ({ show, onHide, post }) => {
             const response = await PostAPI.update(updatedPost);
             console.log('Post response:', response);
 
-            setPosts(posts.map((p) => (p.id === post.id ? response.data : p)));
+            dispatch(updatePost(response.data));
+            dispatch(updateMyPost(response.data));
         } catch (error) {
             console.error('Error:', error);
         }

@@ -1,8 +1,8 @@
 .container {
 	display: flex;
 	flex-direction: column;
-	height: 100%;
-	width: 100%;
+	overflow-y: auto;
+	height: 46rem;
 }
 
 .user_card {
@@ -23,7 +23,7 @@
 .username {
 	color: rgb(103, 99, 99);
 	font-weight: 400;
-	font-size: 22px;
+	font-size: 18px;
 }
 
 .name {

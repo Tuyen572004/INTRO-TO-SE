@@ -2,13 +2,15 @@ import React, {createContext, useEffect, useState} from "react";
 import PostList from "../../organisms/PostList/PostList";
 import s from "./style.module.css";
 import { PostAPI } from "../../../api/PostAPI";
-
-export const postListContext = createContext();
+import {useDispatch, useSelector} from "react-redux";
+import {setPosts} from "../../../store/postSlice";
 
 const Dashboard = () => {
-    const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+
+    const posts = useSelector((state) => state.postSlice.posts);
+    const dispatch = useDispatch();
 
     const fetchPosts = async (page) => {
         try {
@@ -16,7 +18,7 @@ const Dashboard = () => {
             if (response.length === 0) {
                 setHasMore(false);
             } else {
-                setPosts(prevPosts => [...prevPosts, ...response]);
+                dispatch(setPosts([...posts, ...response]));
             }
         } catch (error) {
             console.error("Error fetching posts:", error);
@@ -33,9 +35,7 @@ const Dashboard = () => {
 
     return (
         <div className={s.container}>
-            <postListContext.Provider value={{posts, setPosts}}>
-                <PostList loadMorePosts={loadMorePosts} hasMore={hasMore}/>
-            </postListContext.Provider>
+            <PostList loadMorePosts={loadMorePosts} hasMore={hasMore}/>
         </div>
     );
 };

@@ -30,7 +30,7 @@
 .avatar .inner_avatar img {
 	height: 50px;
 	width: 50px;
-	border-radius: 100%;
+	border-radius: 50%;
 	object-fit: cover;
 }
 
@@ -48,9 +48,34 @@
 	margin-top: 10px;
 }
 
-.content {}
+.content {
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.expandedContent {
+	display: block;
+}
+
+.readMore {
+	color: #837f7f;
+	font-weight: 400;
+	cursor: pointer;
+	margin-top: 5px;
+	text-decoration: underline;
+}
+
 
 .image_list {
 	margin-top: 10px;
 	margin-bottom: 15px;
+}
+
+.postTime {
+	color: #A9A9A9;
+	margin-left: 10px;
+	font-weight: 400;
 }

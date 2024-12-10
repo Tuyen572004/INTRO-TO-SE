@@ -118,6 +118,23 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public PageResponse<PostResponse> getPostsDashboard(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        Page<Post> posts = postRepository.findByNotUserId(userId, pageable);
+        List<PostResponse> postResponses = postConverter.convertToPostResponses(posts.getContent());
+
+        return PageResponse.<PostResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
+
+    @Override
     public PostResponse createPost(PostCreationRequest postCreationRequest) {
         if (StringUtil.isEmpty(postCreationRequest.getTitle())) {
             throw new AppException(ErrorCode.TITLE_IS_EMPTY);
@@ -173,6 +190,14 @@ public class PostServiceImp implements PostService {
     public void deletePostById(String id) {
         if (!postRepository.existsById(id)) {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
+        }
+
+        Post post = postRepository.findById(id).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        if (!post.getUserId().equals(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_POST_OWNER);
         }
 
         commentRepository.deleteAllByPostId(id);

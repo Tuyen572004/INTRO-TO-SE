@@ -4,9 +4,10 @@ import s from "./style.module.css";
 import {RiCloseLargeFill} from "react-icons/ri";
 import {motion} from "framer-motion";
 import {useDispatch} from "react-redux";
-import {setPost} from "../../../store/postSlice";
 import {PostAPI} from "../../../api/PostAPI";
 import axios from "axios";
+import {addPost} from "../../../store/postSlice";
+import {addMyPost} from "../../../store/myPostSlice";
 
 const PostForm = ({toggleIsPostPopup}) => {
     const [title, setTitle] = useState("");
@@ -51,7 +52,9 @@ const PostForm = ({toggleIsPostPopup}) => {
             console.log("File upload and post creation success!");
 
             if (response.code === 1000) {
-                dispatch(setPost(response.data));
+                console.log("Post created successfully:", response.data);
+                dispatch(addPost(response.data));
+                dispatch(addMyPost(response.data));
                 toggleIsPostPopup();
             }
         } catch (error) {

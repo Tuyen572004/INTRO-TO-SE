@@ -17,6 +17,9 @@ public interface PostRepository extends MongoRepository<Post, String> {
 
     Page<Post> getAllBy(Pageable pageable);
 
+    @Query(value = "{ 'userId' : { '$ne' : ?0 } }")
+    Page<Post> findByNotUserId(String userId, Pageable pageable);
+
     @Query(value = "{ 'titleNoDiacritics' : { '$regex' : ?0, '$options' : 'i' } }")
     List<Post> findByTitleNoDiacriticsApproximate(String regex);
 

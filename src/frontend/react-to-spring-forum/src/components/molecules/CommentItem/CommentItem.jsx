@@ -7,10 +7,13 @@ import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModa
 import { CommentAPI } from "../../../api/CommentAPI";
 import { useDispatch } from "react-redux";
 import { removeComment } from "../../../store/commentSlice";
+import { decrement } from "../../../store/commentCounterSlice";
+import UserIcon from './../../../assets/User_Icon.png';
+import { formatDistanceToNow } from "date-fns";
 
-import s from "./style.module.css"
+import s from "./style.module.css";
 
-function CommentItem({ comment }) {
+function CommentItem({ comment, postId }) {
     const dispatch = useDispatch();
 
     const [showEditModal, setShowEditModal] = useState(false);
@@ -27,13 +30,18 @@ function CommentItem({ comment }) {
     const confirmDelete = async () => {
         await CommentAPI.delete(comment.id);
         dispatch(removeComment(comment.id));
+        dispatch(decrement(postId));
         setShowDeleteModal(false);
     };
 
     return (
         <div className={s.commentContainer}>
-            <div>
-                <img src={comment.user.avatar} alt={comment.user.name} className={s.avatar} />
+            <div className={s.avatar}>
+                {comment.user.avatar ? (
+                    <img src={comment.user.avatar} alt={comment.user.name}/>
+                ) : (
+                    <img src={UserIcon} alt={comment.user.name}/>
+                )}
             </div>
 
             <div className={s.contentWrapper}>
@@ -41,6 +49,9 @@ function CommentItem({ comment }) {
                     <div className={s.userInfo}>
                         <span className={s.name}>{comment.user.name}</span>
                         <span className={s.username}>@{comment.user.username}</span>
+                        <span className={s.createdDate}>
+                            {formatDistanceToNow(new Date(comment.createdDate), { addSuffix: true })}
+                        </span>
                     </div>
 
                     <Dropdown className={s.dropdown}>
@@ -61,15 +72,15 @@ function CommentItem({ comment }) {
 
                 <div className={s.engagementMetrics}>
                     <div className={s.metricItem}>
-                        <Heart className={s.metricIcon} size={20}/>
+                        <Heart className={s.metricIcon} size={20} />
                         <span className={s.metricCount}>12</span>
                     </div>
                     <div className={s.metricItem}>
-                        <MessageCircle className={s.metricIcon} size={20}/>
+                        <MessageCircle className={s.metricIcon} size={20} />
                         <span className={s.metricCount}>9</span>
                     </div>
                     <div className={s.metricItem}>
-                        <Send className={s.metricIcon} size={20}/>
+                        <Send className={s.metricIcon} size={20} />
                         <span className={s.metricCount}>21</span>
                     </div>
                 </div>

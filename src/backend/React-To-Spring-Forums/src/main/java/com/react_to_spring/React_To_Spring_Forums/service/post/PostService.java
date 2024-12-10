@@ -20,6 +20,8 @@ public interface PostService {
 
     PageResponse<PostResponse> getPostsByUserId(String userId, int page, int size);
 
+    PageResponse<PostResponse> getPostsDashboard(int page, int size);
+
     PostResponse createPost(PostCreationRequest postCreationRequest);
 
     PostResponse updatePost(PostUpdateRequest postUpdateRequest);

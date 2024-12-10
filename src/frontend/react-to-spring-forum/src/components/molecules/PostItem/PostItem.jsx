@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, { useEffect, useState } from "react";
 import s from "./style.module.css";
 import "./style.css";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,14 +11,27 @@ import { Dropdown } from "react-bootstrap";
 import CustomToggle from "../../atoms/CustomToggle/CustomToggle";
 import EditPostModal from "../EditPostModal/EditPostModal";
 import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModal";
-import {PostAPI} from "../../../api/PostAPI";
-import {postListContext} from "../../pages/Dashboard/Dashboard";
+import { PostAPI } from "../../../api/PostAPI";
+import { useDispatch, useSelector } from "react-redux";
+import { deletePost } from "../../../store/postSlice";
+import { deleteMyPost } from "../../../store/myPostSlice";
+import UserIcon from './../../../assets/User_Icon.png';
+import { formatDistanceToNow } from "date-fns";
+import { setCounter } from "../../../store/commentCounterSlice";
 
 const PostItem = ({ post }) => {
+    const commentCounter = useSelector(state => state.commentCounterSlice.commentCounter);
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        dispatch(setCounter({ postId: post.id, count: post.commentCounts}));
+        setLoading(false);
+    }, []);
+
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-    const { posts, setPosts } = useContext(postListContext);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const handleEditClick = () => {
         setShowEditModal(true);
@@ -28,13 +41,22 @@ const PostItem = ({ post }) => {
         setShowDeleteModal(true);
     };
 
+    const toggleReadMore = () => {
+        setIsExpanded(!isExpanded);
+    };
+
     const confirmDelete = async () => {
         const response = await PostAPI.delete(post.id);
-        console.log(response);
-        const newPosts = posts.filter((p) => p.id !== post.id);
-        setPosts(newPosts);
+        console.log('Delete response:', response);
+
+        dispatch(deletePost(post.id));
+        dispatch(deleteMyPost(post.id));
         setShowDeleteModal(false);
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
@@ -42,18 +64,23 @@ const PostItem = ({ post }) => {
                 <div className={s.header}>
                     <div className={s.avatar}>
                         <div className={s.inner_avatar}>
-                            <img src={post.user?.avatar} alt={post.user?.name}/>
+                            {post.user.avatar
+                                ? <img src={post.user.avatar} alt={post.user.name} />
+                                : <img src={UserIcon} alt={post.user.name} />}
                         </div>
                     </div>
 
                     <div className={s.user_information}>
                         <div className={s.inner_user_information}>
-                            <div className={s.name}>{post.user?.name}</div>
-                            <div className={s.username}>{post.user?.username}</div>
+                            <div className={s.name}>
+                                {post.user?.name}
+                                <span className={s.postTime}>{formatDistanceToNow(new Date(post.createdDate), { addSuffix: true })}</span>
+                            </div>
+                            <div className={s.username}>@{post.user?.username}</div>
                         </div>
                         <div>
                             <Dropdown className="dropdown">
-                                <Dropdown.Toggle as={CustomToggle}/>
+                                <Dropdown.Toggle as={CustomToggle} />
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={handleEditClick}>Edit</Dropdown.Item>
                                     <Dropdown.Item onClick={handleDeleteClick}>Delete</Dropdown.Item>
@@ -62,8 +89,17 @@ const PostItem = ({ post }) => {
                         </div>
                     </div>
                 </div>
+
                 <div className={s.title}>{post.title}</div>
-                <div className={s.content}>{post.content}</div>
+                <div className={`${s.content} ${isExpanded ? s.expandedContent : ""}`}>
+                    {post.content}
+                </div>
+                {post.content.length > 100 && (
+                    <span className={s.readMore} onClick={toggleReadMore}>
+                        {isExpanded ? "show less" : "read more"}
+                    </span>
+                )}
+
                 <div className={s.image_list}>
                     <Swiper
                         effect={"coverflow"}
@@ -83,12 +119,12 @@ const PostItem = ({ post }) => {
                     >
                         {post.imageList?.map((image, index) => (
                             <SwiperSlide key={index}>
-                                <img src={image} alt={post.title} style={{width: '100%'}}/>
+                                <img src={image} alt={post.title} style={{ width: '100%' }} />
                             </SwiperSlide>
                         ))}
                     </Swiper>
                 </div>
-                <ReactBar reactions={post?.reactions} postId={post?.id}/>
+                <ReactBar reactions={post?.reactions} postId={post?.id} />
             </div>
 
             <EditPostModal
