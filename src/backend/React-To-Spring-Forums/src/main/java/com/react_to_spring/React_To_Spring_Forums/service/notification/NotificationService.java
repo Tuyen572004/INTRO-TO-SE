@@ -19,5 +19,6 @@ public interface NotificationService {
     void sendReactToPostCreationNotification(String userId, String reactId);
     void sendAddFriendNotification(String userId, String addFriendRequestId);
     void sendAcceptFriendNotification(String userId, String acceptFriendRequestId);
+    void sendMessageNotification(String userId, String messageId);
 
 }
