@@ -168,4 +168,9 @@ public class NotificationServiceImpl implements NotificationService{
         sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, acceptFriendRequestId);
     }
 
+    @Override
+    public void sendMessageNotification(String userId, String messageId) {
+        sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId);
+    }
+
 }

@@ -8,6 +8,7 @@ import com.react_to_spring.React_To_Spring_Forums.entity.Message;
 import com.react_to_spring.React_To_Spring_Forums.mapper.MessageMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.MessageRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.chatroom.ChatRoomService;
+import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
 import com.react_to_spring.React_To_Spring_Forums.utils.formatter.DateFormatter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,8 @@ public class MessageServiceImp implements MessageService {
 
     SimpMessagingTemplate simpMessagingTemplate;
 
+    NotificationService notificationService;
+
     @Override
     public MessageResponse saveMessage(SaveMessageRequest request) {
         String chatId = request.getChatId();
@@ -62,8 +65,8 @@ public class MessageServiceImp implements MessageService {
         simpMessagingTemplate.convertAndSendToUser(request.getSenderId(), "/queue/messages", messageMapper.toMessageResponse(message));
         for (String recipientId : request.getRecipientIds()) {
             simpMessagingTemplate.convertAndSendToUser(recipientId, "/queue/messages", messageMapper.toMessageResponse(message));
+            notificationService.sendMessageNotification(request.getSenderId(), message.getId());
         }
-
         return messageMapper.toMessageResponse(messageRepository.save(message));
     }
 
