@@ -17,4 +17,8 @@ public interface UserProfileService {
     UserProfileResponse updateUserProfile(String userId, UserProfileUpdateRequest request);
 
     void deleteUserProfileByUserId(String userId);
+
+    void addFriend(String userId, String friendId);
+
+    void unfriend(String userId, String friendId);
 }

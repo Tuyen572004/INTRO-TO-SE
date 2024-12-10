@@ -46,6 +46,7 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(4008, HttpStatus.NOT_FOUND, "Comment not found"),
     CHAT_ROOM_NOT_FOUND(4009, HttpStatus.NOT_FOUND, "Chat room not found"),
     NOTIFICATION_NOT_FOUND(4010, HttpStatus.NOT_FOUND, "Notification not found"),
+    FRIEND_NOT_FOUND(4011, HttpStatus.NOT_FOUND, "Friend not found"),
 //    Unauthorized	Client	5xxx (Unauthenticated error)
     INVALID_TOKEN(5001, HttpStatus.UNAUTHORIZED, "Invalid token"),
     INVALID_USERNAME_PASSWORD(5002, HttpStatus.UNAUTHORIZED, "Invalid username or password"),

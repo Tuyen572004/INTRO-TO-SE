@@ -88,6 +88,11 @@ app:
           success: "Password has been changed"
         change-email:
           success: "Email has been changed"
+    add-friend:
+      response:
+        response-add-friend-success: "Response add friend request successfully"
+        add-friend-success: "Add friend successfully"
+        unfriend-success: "Unfriend successfully"
   email:
     verification:
       expiration: 5 # in minute

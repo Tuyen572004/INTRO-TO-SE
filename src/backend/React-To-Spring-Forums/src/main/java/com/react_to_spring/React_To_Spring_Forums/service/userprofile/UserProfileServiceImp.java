@@ -104,4 +104,27 @@ public class UserProfileServiceImp implements UserProfileService{
     public void deleteUserProfileByUserId(String userId) {
         userProfileRepository.deleteUserProfileByUserId(userId);
     }
+
+    @Override
+    public void addFriend(String userId, String friendId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIds = userProfile.getFriendIds();
+        friendIds.add(friendId);
+        userProfile.setFriendIds(friendIds);
+        userProfileRepository.save(userProfile);
+    }
+
+    @Override
+    public void unfriend(String userId, String friendId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIds = userProfile.getFriendIds();
+        if(!friendIds.contains(friendId)){
+            throw new AppException(ErrorCode.FRIEND_NOT_FOUND);
+        }
+        friendIds.remove(friendId);
+        userProfile.setFriendIds(friendIds);
+        userProfileRepository.save(userProfile);
+    }
 }
