@@ -28,8 +28,8 @@ public enum ErrorCode {
     REQUIRED_COMMENT_ID(2010, HttpStatus.BAD_REQUEST, "Comment ID is required"),
     CONTENT_IS_EMPTY(2011, HttpStatus.BAD_REQUEST, "Content is empty"),
     TITLE_IS_EMPTY(2012, HttpStatus.BAD_REQUEST, "Title is empty"),
-    USER_NOT_POST_OWNER(2013, HttpStatus.BAD_REQUEST, "Cannot edit other people's posts"),
-    USER_NOT_COMMENT_OWNER(2014, HttpStatus.BAD_REQUEST, "Cannot edit other people's comments"),
+    USER_NOT_POST_OWNER(2013, HttpStatus.BAD_REQUEST, "Cannot edit/delete other people's posts"),
+    USER_NOT_COMMENT_OWNER(2014, HttpStatus.BAD_REQUEST, "Cannot edit/delete other people's comments"),
     FIRST_NAME_IS_EMPTY(2015, HttpStatus.BAD_REQUEST, "First name is empty"),
     LAST_NAME_IS_EMPTY(2016, HttpStatus.BAD_REQUEST, "Last name is empty"),
     //    Existed Error 3xxx

@@ -102,8 +102,9 @@ public class UserServiceImp implements UserService{
     @PostAuthorize("returnObject.id == authentication.name")
     public UserResponse getMyAccount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
 
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return buildUserResponse(user);

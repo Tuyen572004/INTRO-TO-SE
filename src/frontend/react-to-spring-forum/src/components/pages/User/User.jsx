@@ -1,55 +1,103 @@
-import s from "./style.module.css";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import s from './style.module.css';
+import { FaFacebookSquare, FaInstagram } from 'react-icons/fa';
+import { UserProfileAPI } from '../../../api/UserProfileAPI';
+import { UserAPI } from '../../../api/UserAPI';
+import EditProfileModal from "../../molecules/EditProfileModal/EditProfileModal";
+import UserIcon from "../../../assets/User_Icon.png"
+import {PostAPI} from "../../../api/PostAPI";
+import {useDispatch} from "react-redux";
+import {setMyPosts} from "../../../store/myPostSlice";
+import MyPostList from "../../organisms/MyPostList/MyPostList";
 
 const User = () => {
-  const user = useSelector((state) => state.userSlice.user);
-  const openInNewWindow = (url) => {
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-  return (
-    <div className={s.container}>
-      <div className={s.user_card}>
-        <div className={s.user_information}>
-          <div className={s.inner_information}>
-            <div className={s.username}>{user.username}</div>
-            <div className={s.name}>{user.name}</div>
-          </div>
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [userProfile, setUserProfile] = useState({});
+    const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(true);
 
-          <div className={s.inner_avatar}>
-            <img src={user.avatar} alt={user.name} />
-          </div>
-        </div>
+    const dispatch = useDispatch();
 
-        <div className={s.description}>{user.description}</div>
+    useEffect(() => {
+        const fetchMyProfile = async () => {
+            const response = await UserProfileAPI.get();
+            setUserProfile(response.data);
+        };
 
-        <div className={s.sub_information}>
-          <div className={s.total_follower}>{user.totalFollower} followers</div>
-          <div className={s.link}>
-            <div className={s.inner_link}>
-              <div
-                className={s.link_button}
-                onClick={() => openInNewWindow(`https://${user.facebook}`)}
-              >
-                <FaFacebookSquare />
-              </div>
-              <div
-                className={s.link_button}
-                onClick={() => openInNewWindow(`https://${user.instagram}`)}
-              >
-                <FaInstagram />
-              </div>
+        const fetchMyAccount = async () => {
+            const response = await UserAPI.getMyAccount();
+            setUser(response.data);
+        };
+
+        const fetchMyPosts = async () => {
+            const response = await PostAPI.getMyPosts();
+            dispatch(setMyPosts(response));
+        }
+
+        Promise.all([fetchMyProfile(), fetchMyAccount(), fetchMyPosts()]).then(() => setLoading(false));
+    }, []);
+
+    const openInNewWindow = (url) => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
+    if (loading) {
+        return <div></div>;
+    }
+
+    return (
+        <>
+            <div className={s.container} id="user">
+                <div className={s.user_card}>
+                    <div className={s.user_information}>
+                        <div className={s.inner_information}>
+                            <div className={s.name}>{userProfile.firstName + ' ' + userProfile.lastName}</div>
+                            <div className={s.username}>{user.username}</div>
+                        </div>
+                        <div className={s.inner_avatar}>
+                            {userProfile.profileImgUrl
+                                ? <img src={userProfile.profileImgUrl} alt={user.username}/>
+                                : <img src={UserIcon} alt={user.username}/>
+                            }
+                        </div>
+                    </div>
+                    <div className={s.description}><b>Address:</b> {userProfile.address}</div>
+                    <div className={s.sub_information}>
+                        <div className={s.total_follower}><b>Followers:</b> BE chưa làm</div>
+                        <div className={s.link}>
+                            <div className={s.inner_link}>
+                                <div className={s.link_button}
+                                     onClick={() => openInNewWindow(`https://${user.facebook}`)}>
+                                    <FaFacebookSquare/>
+                                </div>
+                                <div className={s.link_button}
+                                     onClick={() => openInNewWindow(`https://${user.instagram}`)}>
+                                    <FaInstagram/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className={s.edit_button}>
+                    <div className={s.button} onClick={() => setShowEditModal(true)}>Edit Profile</div>
+                </div>
+
+
+                <hr className={"mt-4 mb-4"}/>
+
+                <div className="m-3">
+                    <MyPostList scrollableTarget="user"/>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div className={s.edit_button}>
-        <div className={s.button}>Edit Profile</div>
-      </div>
-    </div>
-  );
+            <EditProfileModal
+                show={showEditModal}
+                onHide={() => setShowEditModal(false)}
+                userProfile={userProfile}
+                setUserProfile={setUserProfile}
+            />
+        </>
+    );
 };
 
 export default User;

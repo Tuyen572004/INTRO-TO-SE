@@ -3,17 +3,18 @@ import {Button, Form, Modal} from "react-bootstrap";
 import Uploader from "../../atoms/Uploader/Uploader";
 import {motion} from "framer-motion";
 import axios from "axios";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {addComment} from "../../../store/commentSlice";
 import {CommentAPI} from "../../../api/CommentAPI";
 
 import s from "./style.module.css";
+import {increment} from "../../../store/commentCounterSlice";
 
 function CommentForm({ show, onClose, postId }) {
+    const dispatch = useDispatch();
+
     const [content, setContent] = useState("");
     const [imageList, setImageList] = useState([]);
-
-    const dispatch = useDispatch();
 
     const uploadFile = async (image) => {
         const data = new FormData();
@@ -61,6 +62,7 @@ function CommentForm({ show, onClose, postId }) {
             if (response.code === 1000) {
                 console.log(response);
                 dispatch(addComment(response.data));
+                dispatch(increment(postId));
                 setContent("");
                 setImageList([]);
             }

@@ -37,7 +37,7 @@ const App = () => {
                 <Route path="user" element={<User/>}/>
                 <Route path="activity" element={<Activity/>}/>
                 <Route path="search" element={<Search/>}/>
-                <Route path="posts/:id" element={<CommentPost />}/>
+                <Route path="post/:id" element={<CommentPost />}/>
 
                 <Route path="admin" element={<Admin/>}>
                     <Route index element={<AdminDashboard/>}/>

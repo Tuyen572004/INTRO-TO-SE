@@ -1,28 +1,21 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState } from "react";
 import PostItem from "../../molecules/PostItem/PostItem";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { postListContext } from "../../pages/Dashboard/Dashboard";
 import NewPost from "../../molecules/NewPost/NewPost";
 import PostForm from "../../molecules/PostForm/PostForm";
 import s from "./style.module.css";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import { AnimatePresence } from "framer-motion";
+import { v4 } from "uuid";
 
 const PostList = ({ loadMorePosts, hasMore }) => {
-    const { posts, setPosts } = useContext(postListContext);
-    const newPost = useSelector((state) => state.postSlice.post);
+    const posts = useSelector((state) => state.postSlice.posts);
 
     const [isPostPopup, setIsPostPopup] = useState(false);
 
     const toggleIsPostPopup = () => {
         setIsPostPopup(!isPostPopup);
     };
-
-    useEffect(() => {
-        if (newPost && Object.keys(newPost).length > 0) {
-            setPosts((prevPosts) => [newPost, ...prevPosts]);
-        }
-    }, [newPost, setPosts]);
 
     return (
         <div className={`${s.container} post_list`} id="post_list">
@@ -41,7 +34,7 @@ const PostList = ({ loadMorePosts, hasMore }) => {
                 scrollableTarget="post_list"
             >
                 {posts.map((post, index) => (
-                    <PostItem key={post.id || index} post={post} />
+                    <PostItem key={v4()} post={post} />
                 ))}
             </InfiniteScroll>
 

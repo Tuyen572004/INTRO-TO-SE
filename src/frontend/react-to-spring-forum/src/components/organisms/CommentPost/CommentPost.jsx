@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import { PostAPI} from "../../../api/PostAPI";
-import PostItem from "../../molecules/PostItem/PostItem";
 import CommentItem from "../../molecules/CommentItem/CommentItem";
 import {CommentAPI} from "../../../api/CommentAPI";
 import {useDispatch, useSelector} from "react-redux";
-import {addComment, setComments} from "../../../store/commentSlice";
+import {setComments} from "../../../store/commentSlice";
 
 import s from './style.module.css';
+import PostItem from "../../molecules/PostItem/PostItem";
 
 const CommentPost = () => {
+    const [commentCount, setCommentCount] = useState(0);
+    const [reactionCount, setReactionCount] = useState(0);
+
     const navigate = useNavigate();
 
     const { id } = useParams();
@@ -22,8 +25,8 @@ const CommentPost = () => {
         const fetchPost = async () => {
             try {
                 const response = await PostAPI.get(id);
-                console.log('Post:', response.data);
                 setPost(response.data);
+                setCommentCount(response.data.commentCount);
             } catch (error) {
                 if (error.response?.data?.code === 4005) {
                     navigate('*');
@@ -65,6 +68,7 @@ const CommentPost = () => {
     return (
         <div className={s.container}>
             <PostItem post={post}/>
+
             <div className={s.commentTitle}>
                 Comment
             </div>
@@ -74,7 +78,7 @@ const CommentPost = () => {
             <div className={s.comments}>
                 {comments?.map((comment) => (
                     <div key={comment.id}>
-                        <CommentItem comment={comment}/>
+                        <CommentItem comment={comment} postId={id}/>
                     </div>
                 ))}
             </div>
