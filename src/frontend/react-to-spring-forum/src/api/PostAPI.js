@@ -1,4 +1,3 @@
-import Axios from "./Axios";
 import AuthorizedAxios from "./AuthorizedAxios";
 
 export class PostAPI {
@@ -34,7 +33,7 @@ export class PostAPI {
 
 	static async get(id) {
 		try {
-			const response = await Axios.get(`/api/posts/${id}`);
+			const response = await AuthorizedAxios.get(`/api/posts/${id}`);
 			return response.data;
 		} catch (error) {
 			console.error("API Error:", error.response || error.message);
@@ -44,7 +43,7 @@ export class PostAPI {
 
 	static async getAll(page = 1, size = 10) {
 		try {
-			const response = await Axios.get(`/api/posts/dashboard?page=${page}&size=${size}`);
+			const response = await AuthorizedAxios.get(`/api/posts/dashboard?page=${page}&size=${size}`);
 			const posts = response.data.data.data;
 
 			// Shuffle the posts randomly

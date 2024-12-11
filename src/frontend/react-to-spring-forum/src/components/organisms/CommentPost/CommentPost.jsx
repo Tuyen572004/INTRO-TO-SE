@@ -10,13 +10,11 @@ import s from './style.module.css';
 import PostItem from "../../molecules/PostItem/PostItem";
 
 const CommentPost = () => {
-    const [commentCount, setCommentCount] = useState(0);
-    const [reactionCount, setReactionCount] = useState(0);
-
     const navigate = useNavigate();
 
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const comments = useSelector(state => state.commentSlice.comments);
     const dispatch = useDispatch();
@@ -26,7 +24,6 @@ const CommentPost = () => {
             try {
                 const response = await PostAPI.get(id);
                 setPost(response.data);
-                setCommentCount(response.data.commentCount);
             } catch (error) {
                 if (error.response?.data?.code === 4005) {
                     navigate('*');
@@ -39,7 +36,6 @@ const CommentPost = () => {
         const fetchComments = async () => {
             try {
                 const response = await CommentAPI.getAllCommentByPostId(id);
-                console.log('Comments:', response.data);
 
                 const sortedComments = response.data.sort((a, b) => {
                     // if (a.userId === auth.userId && b.userId !== auth.userId) {
@@ -57,11 +53,10 @@ const CommentPost = () => {
             }
         }
 
-        fetchPost();
-        fetchComments();
+        Promise.all([fetchPost(), fetchComments()]).then(() => {setLoading(false)});
     }, [id]);
 
-    if (!post) {
+    if (loading) {
         return <div>Loading...</div>;
     }
 

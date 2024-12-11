@@ -6,9 +6,12 @@ import CommentForm from "../CommentForm/CommentForm";
 import {Link} from "react-router-dom";
 
 import s from "./style.module.css";
+import {ReactAPI} from "../../../api/ReactAPI";
+import {decrement, increment} from "../../../store/reactCounterSlice";
 
-const ReactBar = ({ reactions, postId }) => {
+const ReactBar = ({ postId, reacted, setReacted}) => {
     const commentCounter = useSelector(state => state.commentCounterSlice.commentCounter);
+    const reactCounter = useSelector(state => state.reactCounterSlice.reactCounter);
     const dispatch = useDispatch();
 
     const [showCommentModal, setShowCommentModal] = useState(false);
@@ -21,16 +24,32 @@ const ReactBar = ({ reactions, postId }) => {
         setShowCommentModal(false);
     };
 
+    const handleReactClick = async () => {
+        if (reacted) {
+            await ReactAPI.delete(postId);
+            console.log("react deleted");
+            setReacted(false);
+            dispatch(decrement(postId));
+        } else {
+            await ReactAPI.create(postId);
+            console.log("react created");
+            setReacted(true);
+            dispatch(increment(postId));
+        }
+    }
+
     return (
         <>
             <div className={s.container}>
-                <div className={s.reaction}>
-                    {reactions?.isReacted ? (
-                        <FaHeart className={s.reacted + s.reactIcon}/>
+                <div className={s.reaction} onClick={handleReactClick}>
+                    {reacted ? (
+                        <FaHeart className={s.reacted + s.reactIcon} style={{color: 'red'}}/>
+
                     ) : (
                         <FaRegHeart className={s.reactIcon}/>
+
                     )}
-                    <span>{reactions?.totalReact}</span>
+                    <span>{reactCounter[postId] || 0}</span>
                 </div>
                 <Link to={`/post/${postId}`} style={{textDecoration: 'none', color: 'black'}}>
                     <div className={s.reaction} onClick={handleCommentClick}>
@@ -40,7 +59,7 @@ const ReactBar = ({ reactions, postId }) => {
                 </Link>
                 <div className={s.reaction}>
                     <PiShareFat className={s.reactIcon}/>
-                    <span>{reactions?.totalShare}</span>
+                    {/*<span>{reactions?.totalShare}</span>*/}
                 </div>
             </div>
 

@@ -18,14 +18,18 @@ import { deleteMyPost } from "../../../store/myPostSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
 import { setCounter } from "../../../store/commentCounterSlice";
+import { setCounter as setReactCounter } from "../../../store/reactCounterSlice";
 
 const PostItem = ({ post }) => {
-    const commentCounter = useSelector(state => state.commentCounterSlice.commentCounter);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
 
+    const [reacted, setReacted] = useState(false);
+
     useEffect(() => {
+        setReacted(post.isReacted);
         dispatch(setCounter({ postId: post.id, count: post.commentCounts}));
+        dispatch(setReactCounter({ postId: post.id, count: post.reactCounts}));
         setLoading(false);
     }, []);
 
@@ -124,7 +128,7 @@ const PostItem = ({ post }) => {
                         ))}
                     </Swiper>
                 </div>
-                <ReactBar reactions={post?.reactions} postId={post?.id} />
+                <ReactBar postId={post?.id} reacted={reacted} setReacted={setReacted} />
             </div>
 
             <EditPostModal
