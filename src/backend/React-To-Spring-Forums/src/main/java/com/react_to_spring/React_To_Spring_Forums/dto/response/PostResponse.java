@@ -22,6 +22,6 @@ public class PostResponse {
     List<String> imageList;
     LocalDateTime createdDate;
     Boolean isReacted;
-    Map<String, Integer> reactions;
+    Integer reactCounts;
     Integer commentCounts;
 }
