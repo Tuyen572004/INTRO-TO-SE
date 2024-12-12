@@ -40,11 +40,20 @@ public class ReactController {
 
     @DeleteMapping()
     @Operation(summary = "Delete a react",
-            description = "Delete a react by providing the react ID")
-    public ApiResponse<Void> deleteReact(@RequestParam("reactId") @NotNull String reactId) {
-        reactService.deleteReactById(reactId);
+            description = "Delete a react by postId")
+    public ApiResponse<Void> deleteReact(@RequestParam("postId") @NotNull String postId) {
+        reactService.deleteReactByPostId(postId);
         return ApiResponse.<Void>builder()
                 .message(DELETE_SUCCESS)
+                .build();
+    }
+
+    @GetMapping
+    @Operation(summary = "Get a react by postId",
+            description = "Get a react by postId")
+    public ApiResponse<ReactResponse> getReact(@RequestParam("postId") @NotNull String postId) {
+        return ApiResponse.<ReactResponse>builder()
+                .data(reactService.getReactByPostId(postId))
                 .build();
     }
 }

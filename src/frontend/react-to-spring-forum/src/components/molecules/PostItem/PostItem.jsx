@@ -17,21 +17,29 @@ import { deletePost } from "../../../store/postSlice";
 import { deleteMyPost } from "../../../store/myPostSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
-import { setCounter } from "../../../store/commentCounterSlice";
-import { setCounter as setReactCounter } from "../../../store/reactCounterSlice";
+import { setCommentCounter } from "../../../store/commentCounterSlice";
+import { setReactCounter, updateReactStatus} from "../../../store/reactCounterSlice";
 
 const PostItem = ({ post }) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
 
-    const [reacted, setReacted] = useState(false);
-
     useEffect(() => {
-        setReacted(post.isReacted);
-        dispatch(setCounter({ postId: post.id, count: post.commentCounts}));
-        dispatch(setReactCounter({ postId: post.id, count: post.reactCounts}));
+        dispatch(setCommentCounter({
+            postId: post.id,
+            count: post.commentCounts
+        }));
+        dispatch(setReactCounter({
+            postId: post.id,
+            count: post.reactCounts
+        }));
+        dispatch(updateReactStatus({
+            postId: post.id,
+            isReacted: post.isReacted
+        }));
+
         setLoading(false);
-    }, []);
+    }, [post, dispatch]);
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -128,7 +136,7 @@ const PostItem = ({ post }) => {
                         ))}
                     </Swiper>
                 </div>
-                <ReactBar postId={post?.id} reacted={reacted} setReacted={setReacted} />
+                <ReactBar postId={post?.id} />
             </div>
 
             <EditPostModal

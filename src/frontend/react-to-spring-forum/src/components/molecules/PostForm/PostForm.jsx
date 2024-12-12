@@ -8,6 +8,8 @@ import {PostAPI} from "../../../api/PostAPI";
 import axios from "axios";
 import {addPost} from "../../../store/postSlice";
 import {addMyPost} from "../../../store/myPostSlice";
+import {setReactCounter, addReactStatus, updateReactStatus} from "../../../store/reactCounterSlice";
+import {setCommentCounter} from "../../../store/commentCounterSlice";
 
 const PostForm = ({toggleIsPostPopup}) => {
     const [title, setTitle] = useState("");
@@ -53,8 +55,13 @@ const PostForm = ({toggleIsPostPopup}) => {
 
             if (response.code === 1000) {
                 console.log("Post created successfully:", response.data);
+                dispatch(setReactCounter({postId: response.data.id, count: 0}));
+                dispatch(addReactStatus({postId: response.data.id, isReacted: false}));
+                dispatch(setCommentCounter({postId: response.data.id, count: 0}));
+
                 dispatch(addPost(response.data));
                 dispatch(addMyPost(response.data));
+
                 toggleIsPostPopup();
             }
         } catch (error) {

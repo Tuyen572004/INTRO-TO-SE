@@ -54,21 +54,20 @@ public class ReactServiceImpl implements ReactService {
     }
 
     @Override
-    public void deleteReactById(String id) {
-        if(!reactRepository.existsById(id)) {
-            throw new AppException(ErrorCode.REACT_NOT_FOUND);
-        }
-
+    public void deleteReactByPostId(String postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
-        React react = reactRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.REACT_NOT_FOUND));
-
-        if(!react.getUserId().equals(userId)) {
-            throw new AppException(ErrorCode.USER_NOT_REACT_OWNER);
+        boolean exists = reactRepository.existsByUserIdAndPostId(userId, postId);
+        if(!exists) {
+            throw new AppException(ErrorCode.REACT_NOT_FOUND);
         }
 
-        reactRepository.deleteById(id);
+        reactRepository.deleteByPostIdAndUserId(postId, userId);
+    }
+
+    @Override
+    public ReactResponse getReactByPostId(String postId) {
+        return null;
     }
 }

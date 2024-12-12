@@ -72,8 +72,8 @@ public class PostConverter {
 
         // check if user reacted to this post
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String myUserId = authentication.getName();
-        Boolean isReacted = reactRepository.existsByUserIdAndPostId(myUserId, post.getId());
+        String userId = authentication.getName();
+        boolean isReacted = reactRepository.existsByUserIdAndPostId(userId, post.getId());
         postResponse.setIsReacted(isReacted);
 
         return postResponse;

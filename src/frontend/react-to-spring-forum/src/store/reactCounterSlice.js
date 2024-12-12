@@ -1,22 +1,43 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const reactCounterSlice = createSlice({
-    name: 'counter',
+    name: 'reactCounter',
     initialState: {
-        reactCounter: {}
+        reactCounter: {},
+        reactedPosts: {},
     },
     reducers: {
-        setCounter: (state, action) => {
-            state.reactCounter[action.payload.postId] = action.payload.count;
+        setReactCounter: (state, action) => {
+            const { postId, count } = action.payload;
+            state.reactCounter[postId] = count;
         },
         increment: (state, action) => {
-            state.reactCounter[action.payload]++;
+            const postId = action.payload;
+            state.reactCounter[postId] = (state.reactCounter[postId] || 0) + 1;
+            state.reactedPosts[postId] = true;
         },
         decrement: (state, action) => {
-            state.reactCounter[action.payload]--;
+            const postId = action.payload;
+            state.reactCounter[postId] = Math.max((state.reactCounter[postId] || 0) - 1, 0);
+            state.reactedPosts[postId] = false;
         },
-    },
+        addReactStatus: (state, action) => {
+            const { postId, isReacted } = action.payload;
+            state.reactedPosts[postId] = isReacted;
+        },
+        updateReactStatus: (state, action) => {
+            const { postId, isReacted } = action.payload;
+            state.reactedPosts[postId] = isReacted;
+        }
+    }
 });
 
-export const { setCounter, increment, decrement } = reactCounterSlice.actions;
+export const {
+    setReactCounter,
+    increment,
+    decrement,
+    addReactStatus,
+    updateReactStatus
+} = reactCounterSlice.actions;
+
 export const reactCounterReducer = reactCounterSlice.reducer;

@@ -7,5 +7,7 @@ import org.springframework.stereotype.Service;
 public interface ReactService {
     ReactResponse createReact(String postId);
 
-    void deleteReactById(String id);
+    void deleteReactByPostId(String postId);
+
+    ReactResponse getReactByPostId(String postId);
 }
