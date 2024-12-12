@@ -55,6 +55,7 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND(4010, HttpStatus.NOT_FOUND, "Notification not found"),
     FRIEND_NOT_FOUND(4011, HttpStatus.NOT_FOUND, "Friend not found"),
     REPORT_VIOLATING_POST_NOT_FOUND(4012, HttpStatus.NOT_FOUND, "Report violating post not found"),
+    NOTIFICATION_RECIPIENT_NOT_FOUND(4013,HttpStatus.NOT_FOUND,"Notification Recipient not found" ),
 //    Unauthorized	Client	5xxx (Unauthenticated error)
     INVALID_TOKEN(5001, HttpStatus.UNAUTHORIZED, "Invalid token"),
     INVALID_USERNAME_PASSWORD(5002, HttpStatus.UNAUTHORIZED, "Invalid username or password"),

@@ -58,7 +58,9 @@ public class ReactServiceImpl implements ReactService {
 
         react = reactRepository.save(react);
 
-        notificationService.sendReactToPostCreationNotification(userId,react.getId());
+        String postOwnerId = postRepository.findById(request.getPostId()).get().getUserId();
+
+        notificationService.sendReactToPostCreationNotification(userId,postOwnerId,react.getId());
         return reactMapper.toReactResponse(react);
     }
 

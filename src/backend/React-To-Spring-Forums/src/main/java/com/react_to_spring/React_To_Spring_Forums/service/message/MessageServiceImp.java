@@ -65,7 +65,7 @@ public class MessageServiceImp implements MessageService {
         simpMessagingTemplate.convertAndSendToUser(request.getSenderId(), "/queue/messages", messageMapper.toMessageResponse(message));
         for (String recipientId : request.getRecipientIds()) {
             simpMessagingTemplate.convertAndSendToUser(recipientId, "/queue/messages", messageMapper.toMessageResponse(message));
-            notificationService.sendMessageNotification(request.getSenderId(), message.getId());
+            notificationService.sendMessageNotification(request.getSenderId(),recipientId, message.getId());
         }
         return messageMapper.toMessageResponse(messageRepository.save(message));
     }

@@ -93,6 +93,9 @@ app:
         response-add-friend-success: "Response add friend request successfully"
         add-friend-success: "Add friend request is sent successfully"
         unfriend-success: "Unfriend successfully"
+    notification:
+        response:
+            mark-as-read-success: "Mark as read successfully"
   email:
     verification:
       expiration: 5 # in minute
