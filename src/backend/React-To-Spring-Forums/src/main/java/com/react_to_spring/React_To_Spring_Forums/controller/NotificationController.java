@@ -22,7 +22,7 @@ public class NotificationController {
     NotificationService notificationService;
 
     @NonFinal
-    @Value("${notification.markAsReadSuccess}")
+    @Value("${app.controller.notification.response.mark-as-read-success}")
     String MARK_AS_READ_SUCCESS;
 
     @GetMapping

@@ -43,6 +43,7 @@ public class NotificationServiceImpl implements NotificationService{
     private final ReportViolatingPostRequestRepository reportViolatingPostRequestRepository;
     private final AddFriendRequestRepository addFriendRequestRepository;
     private final NotificationRecipientMapper notificationRecipientMapper;
+    private final CommentRepository commentRepository;
     @NonFinal
     String defaultSortField = "sentAt";
 
@@ -188,13 +189,13 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendCommentCreationNotification(String userId, String commentId) {
-        sendNotification(NotificationTemplate.CREATE_COMMENT, userId, commentId);
+    public void sendCommentCreationNotification(String userId,String postOwnerId, String commentId) {
+        sendToSpecificUserNotification(NotificationTemplate.CREATE_COMMENT, userId, postOwnerId, commentId);
     }
 
     @Override
-    public void sendReactToPostCreationNotification(String userId, String reactId) {
-        sendNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, reactId);
+    public void sendReactToPostCreationNotification(String userId,String postOwnerId, String reactId) {
+        sendToSpecificUserNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, postOwnerId, reactId);
     }
 
     @Override

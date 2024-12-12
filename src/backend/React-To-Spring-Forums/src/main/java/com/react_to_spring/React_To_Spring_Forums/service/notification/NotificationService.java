@@ -16,8 +16,8 @@ public interface NotificationService {
     NotificationRecipientResponse markAsRead(String notificationId);
 
     void sendPostCreationNotification(String userId,String postId);
-    void sendCommentCreationNotification(String userId,String commentId);
-    void sendReactToPostCreationNotification(String userId, String reactId);
+    void sendCommentCreationNotification(String userId,String postOwnerId,String commentId);
+    void sendReactToPostCreationNotification(String userId,String postOwnerId, String reactId);
     void sendAddFriendNotification(String userId, String addFriendRequestId);
     void sendAcceptFriendNotification(String userId, String friendId);
     void sendMessageNotification(String userId, String messageId);
