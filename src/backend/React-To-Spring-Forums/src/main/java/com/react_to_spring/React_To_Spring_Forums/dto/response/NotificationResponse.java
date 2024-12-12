@@ -13,7 +13,6 @@ public class NotificationResponse {
     String notificationType; // POST, COMMENT,..
     String notificationEntityId; // PostId, CommentId,..
     String actorId;
-    Boolean readStatus;
-    String formattedCreatedDate;
+    String formattedSentTime;
 }
 

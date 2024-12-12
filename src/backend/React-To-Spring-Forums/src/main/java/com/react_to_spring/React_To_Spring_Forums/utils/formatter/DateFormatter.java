@@ -2,7 +2,6 @@ package com.react_to_spring.React_To_Spring_Forums.utils.formatter;
 
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +23,8 @@ public class DateFormatter {
     }
 
     public String format(LocalDateTime dateTime) {
-        long elapsedSeconds = ChronoUnit.SECONDS.between(dateTime, Instant.now());
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        long elapsedSeconds = ChronoUnit.SECONDS.between(dateTime, now);
 
         Function<LocalDateTime, String> formatter = formatterMap.entrySet().stream()
                 .filter(longFunctionEntry -> elapsedSeconds < longFunctionEntry.getKey())
@@ -36,27 +36,30 @@ public class DateFormatter {
     }
 
     private String formatSeconds(LocalDateTime dateTime) {
-        long elapsedSeconds = ChronoUnit.SECONDS.between(dateTime, Instant.now());
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        long elapsedSeconds = ChronoUnit.SECONDS.between(dateTime, now);
 
         return String.format("%d seconds", elapsedSeconds);
     }
 
     private String formatMinutes(LocalDateTime dateTime) {
-        long elapsedMinutes = ChronoUnit.MINUTES.between(dateTime, Instant.now());
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        long elapsedMinutes = ChronoUnit.MINUTES.between(dateTime, now);
 
         return String.format("%d minutes", elapsedMinutes);
     }
 
     private String formatHours(LocalDateTime dateTime) {
-        long elapsedHours = ChronoUnit.HOURS.between(dateTime, Instant.now());
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        long elapsedHours = ChronoUnit.HOURS.between(dateTime, now);
 
         return String.format("%d hours", elapsedHours);
     }
 
     private String formatDays(LocalDateTime dateTime) {
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.from(dateTime), ZoneId.systemDefault());
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        long elapsedDays = ChronoUnit.DAYS.between(dateTime, now);
 
-        return localDateTime.format(formatter);
+        return String.format("%d days", elapsedDays);
     }
 }
