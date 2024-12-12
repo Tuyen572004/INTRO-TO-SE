@@ -212,6 +212,9 @@ public class PostServiceImp implements PostService {
         postRepository.deleteById(id);
 
         // sendNotification to owner of post if post is deleted by admin
+        // UNCOMMENT IT AFTER FIXING THE ERROR : IF ADMIN DELETE THE POST
+        // --> THEN IT WILL THROW EXCEPTION : USER NOT POST OWNER AT LINE 206
+        // notificationService.sendDeletePostNotification(userId, post.getUserId(), id);
     }
 }
 

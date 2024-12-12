@@ -1,20 +1,17 @@
 package com.react_to_spring.React_To_Spring_Forums.service.notification;
 
+import com.react_to_spring.React_To_Spring_Forums.dto.request.reportpost.ResponseReportViolatingPostRequest;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationRecipientResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
-import com.react_to_spring.React_To_Spring_Forums.entity.Notification;
-import com.react_to_spring.React_To_Spring_Forums.entity.NotificationRecipient;
-import com.react_to_spring.React_To_Spring_Forums.entity.User;
-import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
+import com.react_to_spring.React_To_Spring_Forums.entity.*;
 import com.react_to_spring.React_To_Spring_Forums.enums.NotificationTemplate;
 import com.react_to_spring.React_To_Spring_Forums.enums.ReactName;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.NotificationMapper;
-import com.react_to_spring.React_To_Spring_Forums.repository.NotificationRecipientRepository;
-import com.react_to_spring.React_To_Spring_Forums.repository.NotificationRepository;
-import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
-import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
+import com.react_to_spring.React_To_Spring_Forums.mapper.NotificationRecipientMapper;
+import com.react_to_spring.React_To_Spring_Forums.repository.*;
 import com.react_to_spring.React_To_Spring_Forums.utils.formatter.DateFormatter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +40,9 @@ public class NotificationServiceImpl implements NotificationService{
 
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
+    private final ReportViolatingPostRequestRepository reportViolatingPostRequestRepository;
+    private final AddFriendRequestRepository addFriendRequestRepository;
+    private final NotificationRecipientMapper notificationRecipientMapper;
     @NonFinal
     String defaultSortField = "sentAt";
 
@@ -96,12 +96,12 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void markAsRead(String notificationId, String userId) {
-        NotificationRecipient notificationRecipient = notificationRecipientRepository.findByNotificationIdAndRecipientId(notificationId, userId);
-        if(notificationRecipient==null){
-            throw new AppException(ErrorCode.NOTIFICATION_NOT_FOUND);
-        }
+    public NotificationRecipientResponse markAsRead(String notificationId) {
+        NotificationRecipient notificationRecipient = notificationRecipientRepository.findById(notificationId)
+                .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_RECIPIENT_NOT_FOUND));
         notificationRecipient.setReadStatus(true);
+        notificationRecipientRepository.save(notificationRecipient);
+        return notificationRecipientMapper.toNotificationRecipientResponse(notificationRecipient);
     }
 
 
@@ -123,10 +123,11 @@ public class NotificationServiceImpl implements NotificationService{
                 .sendAt(LocalDateTime.now())
                 .build();
 
+        List<String> recipientIds = new ArrayList<String>();
+
         // Save notification
         notificationRepository.save(notification);
 
-        List<String> recipientIds = new ArrayList<String>();
         List<String> friendIds = userProfileRepository.findByUserId(userId).get().getFriendIds();
         if(friendIds!=null){
             recipientIds.addAll(friendIds);
@@ -137,6 +138,46 @@ public class NotificationServiceImpl implements NotificationService{
             recipientIds.addAll(userRepository.findByRole_Name("ADMIN").stream().map(User::getId).toList());
         }
 
+        sendNotification(notification, recipientIds);
+    }
+
+    // for reporting a post
+    private void sendToAdminOnlyNotification(NotificationTemplate notificationTemplate,String userId, String notificationEntityId){
+        // Fetch user details
+        String userName = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getUsername();
+
+        // Format message using the template
+        String message = notificationTemplate.formatMessage(userName);
+
+        // Build notification object
+        Notification notification = Notification.builder()
+                .actorId(userId)
+                .notificationType(notificationTemplate.getEntity())
+                .notificationEntityId(notificationEntityId)
+                .message(message)
+                .sendAt(LocalDateTime.now())
+                .build();
+
+        List<String> recipientIds = userRepository.findByRole_Name("ADMIN").stream().map(User::getId).toList();
+        sendNotification(notification, recipientIds);
+    }
+
+    // For deleting a post, accept report
+    private void sendToSpecificUserNotification(NotificationTemplate notificationTemplate,String userId, String recipient, String notificationEntity){
+        String userName = ""; // Notification from admin is anonymous (Sender's name is "")
+        String message = notificationTemplate.formatMessage(userName);
+        Notification notification = Notification.builder()
+                .actorId(userId)
+                .notificationType(notificationTemplate.getEntity())
+                .notificationEntityId(notificationEntity)
+                .message(message)
+                .sendAt(LocalDateTime.now())
+                .build();
+
+        List<String> recipientIds = new ArrayList<String>();
+        recipientIds.add(recipient);
         sendNotification(notification, recipientIds);
     }
 
@@ -158,17 +199,43 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public void sendAddFriendNotification(String userId, String addFriendRequestId) {
-        sendNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, addFriendRequestId);
+
+        AddFriendRequest addFriendRequest = addFriendRequestRepository.findById(addFriendRequestId)
+                .orElseThrow(() -> new AppException(ErrorCode.ADD_FRIEND_REQUEST_NOT_FOUND));
+        User friend = userRepository.findById(addFriendRequest.getReceivingUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        sendToSpecificUserNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, friend.getId(), addFriendRequestId);
     }
 
     @Override
-    public void sendAcceptFriendNotification(String userId, String acceptFriendRequestId) {
-        sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, acceptFriendRequestId);
+    public void sendAcceptFriendNotification(String userId, String friendId) {
+        sendToSpecificUserNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, friendId, userId);
     }
 
     @Override
     public void sendMessageNotification(String userId, String messageId) {
         sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId);
     }
+
+    @Override
+    public void sendReportViolatingPostNotification(String userId, String reportId) {
+        // reason why sending entire report object instead of post reported like other methods
+        // we have more things to send : reason, post reported
+        sendToAdminOnlyNotification(NotificationTemplate.SEND_REPORT_REQUEST,userId,reportId);
+    }
+
+    @Override
+    public void sendAcceptReportViolatingPostNotification(String adminId, String reportId) {
+        ReportViolatingPostRequest report = reportViolatingPostRequestRepository.findById(reportId)
+                .orElseThrow(() -> new AppException(ErrorCode.REPORT_VIOLATING_POST_NOT_FOUND));
+        String reporterId = report.getSendingUserId();
+        sendToSpecificUserNotification(NotificationTemplate.ACCEPT_REPORT_REQUEST, adminId, reporterId, reportId);
+    }
+
+    @Override
+    public void sendDeletePostNotification(String adminId, String ownerOfPostId, String postId) {
+        sendToSpecificUserNotification(NotificationTemplate.DELETE_POST, adminId, ownerOfPostId, postId);
+    }
+
 
 }

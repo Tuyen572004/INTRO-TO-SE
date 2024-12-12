@@ -48,7 +48,7 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
         reportViolatingPostRequest = reportViolatingPostRequestRepository.save(reportViolatingPostRequest);
 
 
-        // notificationService.sendReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
+        notificationService.sendReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(request.isAccepted()) {
-           // notificationService.sendAcceptReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
+           notificationService.sendAcceptReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
         }
 
 
