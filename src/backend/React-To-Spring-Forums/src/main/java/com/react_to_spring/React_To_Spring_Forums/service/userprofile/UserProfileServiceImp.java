@@ -129,9 +129,20 @@ public class UserProfileServiceImp implements UserProfileService{
         if(friendIds == null || !friendIds.contains(friendId)){
             throw new AppException(ErrorCode.FRIEND_NOT_FOUND);
         }
+
+        UserProfile friendProfile = userProfileRepository.findByUserId(friendId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIdsOfFriend = friendProfile.getFriendIds();
+        if(friendIdsOfFriend == null || !friendIdsOfFriend.contains(userId)){
+            throw new AppException(ErrorCode.FRIEND_NOT_FOUND);
+        }
+
+        friendIdsOfFriend.remove(userId);
         friendIds.remove(friendId);
         userProfile.setFriendIds(friendIds);
+        friendProfile.setFriendIds(friendIdsOfFriend);
         userProfileRepository.save(userProfile);
+        userProfileRepository.save(friendProfile);
     }
 
     @Override
