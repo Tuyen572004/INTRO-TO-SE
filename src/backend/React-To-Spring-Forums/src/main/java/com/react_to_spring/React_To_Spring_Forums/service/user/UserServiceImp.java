@@ -61,6 +61,10 @@ public class UserServiceImp implements UserService{
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+        }
+
         User user = userMapper.toUser(request);
 
         Role role;
