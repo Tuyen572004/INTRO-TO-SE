@@ -82,7 +82,7 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
         if (request.isAccepted()) {
             userProfileService.addFriend(authentication.getName(), request.getFriendId());
             userProfileService.addFriend(request.getFriendId(), authentication.getName());
-            //notificationService.sendAcceptFriendNotification(authentication.getName(), request.getFriendId());
+            notificationService.sendAcceptFriendNotification(authentication.getName(), request.getFriendId());
         }
     }
 

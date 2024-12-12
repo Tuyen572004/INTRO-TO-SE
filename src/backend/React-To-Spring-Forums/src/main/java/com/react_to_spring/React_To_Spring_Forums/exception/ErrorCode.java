@@ -36,6 +36,7 @@ public enum ErrorCode {
     ALREADY_FRIEND(2018, HttpStatus.BAD_REQUEST, "Already friend"),
     ALREADY_SENT_ADD_FRIEND_REQUEST(2019, HttpStatus.BAD_REQUEST, "Already sent add friend request"),
     ADD_FRIEND_REQUEST_NOT_FOUND(2020, HttpStatus.BAD_REQUEST, "Add friend request not found"),
+    ALREADY_SENT_REPORT(2021, HttpStatus.BAD_REQUEST, "Already sent report"),
 
     //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),

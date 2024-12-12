@@ -32,17 +32,23 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
     @Override
     public void sendReportViolatingPostRequest(ReportViolatingPostRequestDTO request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(!postRepository.existsById(request.getPostId())) {
+        if (reportViolatingPostRequestRepository.existsBySendingUserIdAndPostId(authentication.getName(), request.getPostId())) {
+            throw new AppException(ErrorCode.ALREADY_SENT_REPORT);
+        }
+
+        if (!postRepository.existsById(request.getPostId())) {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
+
         ReportViolatingPostRequest reportViolatingPostRequest = ReportViolatingPostRequest.builder()
                 .postId(request.getPostId())
                 .reason(request.getReason())
                 .sendingUserId(authentication.getName())
                 .build();
-        reportViolatingPostRequest =  reportViolatingPostRequestRepository.save(reportViolatingPostRequest);
+        reportViolatingPostRequest = reportViolatingPostRequestRepository.save(reportViolatingPostRequest);
 
-//        notificationService.sendReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
+
+        // notificationService.sendReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
     }
 
     @Override
