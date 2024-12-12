@@ -21,4 +21,9 @@ public interface NotificationService {
     void sendAcceptFriendNotification(String userId, String acceptFriendRequestId);
     void sendMessageNotification(String userId, String messageId);
 
+    // sendReportViolatingPostNotification(userId, reportId)  // Notes: send to all admins
+
+    // sendAcceptReportViolatingPostNotification ( adminId, reportId)
+
+    // sendDeletePostNotification(adminId, ownerOfPostId, postId)
 }

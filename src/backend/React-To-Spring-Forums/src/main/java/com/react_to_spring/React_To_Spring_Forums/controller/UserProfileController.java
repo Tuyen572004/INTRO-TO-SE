@@ -2,6 +2,7 @@ package com.react_to_spring.React_To_Spring_Forums.controller;
 
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ApiResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserProfileResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.userprofile.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user-profiles")
@@ -44,6 +47,24 @@ public class UserProfileController {
     public ApiResponse<UserProfileResponse> updateUserProfile(@RequestParam("userId") String userId, @RequestBody UserProfileUpdateRequest request) {
         return ApiResponse.<UserProfileResponse>builder()
                 .data(userProfileService.updateUserProfile(userId, request))
+                .build();
+    }
+
+    @GetMapping("/friends")
+    @Operation(summary = "Get friends",
+            description = "Get friends with pagination")
+    public ApiResponse<PageResponse<UserProfileResponse>> getFriends(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return ApiResponse.<PageResponse<UserProfileResponse>>builder()
+                .data(userProfileService.getFriends(page, size))
+                .build();
+    }
+
+    @GetMapping("/all-friends")
+    @Operation(summary = "Get all friends",
+            description = "Get all friends")
+    public ApiResponse<List<UserProfileResponse>> getAllFriends() {
+        return ApiResponse.<List<UserProfileResponse>>builder()
+                .data(userProfileService.getAllFriends())
                 .build();
     }
 

@@ -5,6 +5,8 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserPr
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserProfileResponse;
 
+import java.util.List;
+
 public interface UserProfileService {
     UserProfileResponse createUserProfile(UserProfileCreationRequest request);
 
@@ -21,4 +23,8 @@ public interface UserProfileService {
     void addFriend(String userId, String friendId);
 
     void unfriend(String userId, String friendId);
+
+    PageResponse<UserProfileResponse> getFriends(int page, int size);
+
+    List<UserProfileResponse> getAllFriends();
 }

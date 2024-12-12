@@ -210,6 +210,8 @@ public class PostServiceImp implements PostService {
         reactRepository.deleteAllByPostId(id);
 
         postRepository.deleteById(id);
+
+        // sendNotification to owner of post if post is deleted by admin
     }
 }
 

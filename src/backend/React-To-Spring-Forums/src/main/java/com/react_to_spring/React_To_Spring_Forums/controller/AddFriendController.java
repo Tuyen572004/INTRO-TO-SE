@@ -54,12 +54,11 @@ public class AddFriendController {
     @GetMapping("/all-add-friend")
     @Operation(summary = "Get all add friend requests by user ID",
             description = "Get all add friend requests by user ID")
-    public ApiResponse<PageResponse<AddFriendRequestResponse>> getAllAddFriendRequestsByUserId(
-            @RequestParam("userId") String userId,
+    public ApiResponse<PageResponse<AddFriendRequestResponse>> getAllOfMyAddFriendRequests(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
             @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
         PageResponse<AddFriendRequestResponse> responses =
-                addFriendRequestService.getAllAddFriendRequestsByUserId(userId, page, size);
+                addFriendRequestService.getAllOfMyAddFriendRequests(page, size);
 
         return ApiResponse.<PageResponse<AddFriendRequestResponse>>builder()
                 .data(responses)
@@ -72,6 +71,29 @@ public class AddFriendController {
     public ApiResponse<Void> unfriend(@RequestParam("friendId") String friendId) {
         addFriendRequestService.unfriend(friendId);
         return ApiResponse.<Void>builder().message(unfriendSuccessMessage).build();
+    }
+
+
+    @PatchMapping("/unsend-add-friend-request")
+    @Operation(summary = "Unsend add friend request",
+            description = "Unsend add friend request to another user")
+    public ApiResponse<Void> unsendAddFriendRequest(@RequestParam("friendId") String friendId) {
+        addFriendRequestService.unsendAddFriendRequest(friendId);
+        return ApiResponse.<Void>builder().message("Unsend add friend request successfully!").build();
+    }
+
+    @GetMapping("/is-friend")
+    @Operation(summary = "Check if user is friend",
+            description = "Check if user is friend")
+    public ApiResponse<Boolean> isFriend(@RequestParam("friendId") String friendId) {
+        return ApiResponse.<Boolean>builder().data(addFriendRequestService.isFriend(friendId)).build();
+    }
+
+    @GetMapping("/is-add-friend-request-sent")
+    @Operation(summary = "Check if add friend request is sent",
+            description = "Check if add friend request is sent")
+    public ApiResponse<Boolean> isAddFriendRequestSent(@RequestParam("friendId") String friendId) {
+        return ApiResponse.<Boolean>builder().data(addFriendRequestService.isAddFriendRequestSent(friendId)).build();
     }
 
 }
