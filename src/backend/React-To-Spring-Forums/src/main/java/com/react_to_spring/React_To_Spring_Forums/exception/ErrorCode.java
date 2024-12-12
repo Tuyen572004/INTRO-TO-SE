@@ -34,7 +34,8 @@ public enum ErrorCode {
     LAST_NAME_IS_EMPTY(2016, HttpStatus.BAD_REQUEST, "Last name is empty"),
     CANNOT_ADD_YOURSELF_AS_FRIEND(2017, HttpStatus.BAD_REQUEST, "Cannot add yourself as friend"),
     ALREADY_FRIEND(2018, HttpStatus.BAD_REQUEST, "Already friend"),
-
+    ALREADY_SENT_ADD_FRIEND_REQUEST(2019, HttpStatus.BAD_REQUEST, "Already sent add friend request"),
+    ADD_FRIEND_REQUEST_NOT_FOUND(2020, HttpStatus.BAD_REQUEST, "Add friend request not found"),
 
     //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),

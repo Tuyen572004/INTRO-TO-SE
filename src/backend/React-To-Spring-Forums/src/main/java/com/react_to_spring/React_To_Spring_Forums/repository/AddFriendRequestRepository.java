@@ -7,4 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface AddFriendRequestRepository extends MongoRepository<AddFriendRequest, String> {
     void deleteBySendingUserIdAndReceivingUserId(String sendingUserId, String receivingUserId);
     Page<AddFriendRequest> findAllByReceivingUserId(String receivingUserId, org.springframework.data.domain.Pageable pageable);
+
+    boolean existsBySendingUserIdAndReceivingUserId(String userId, String friendId);
 }

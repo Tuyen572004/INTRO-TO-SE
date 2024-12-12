@@ -44,6 +44,9 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
         if(Objects.equals(friendId, authentication.getName())) {
             throw new AppException(ErrorCode.CANNOT_ADD_YOURSELF_AS_FRIEND);
         }
+        if(addFriendRequestRepository.existsBySendingUserIdAndReceivingUserId(authentication.getName(), friendId)) {
+            throw new AppException(ErrorCode.ALREADY_SENT_ADD_FRIEND_REQUEST);
+        }
         List<String> friends = userProfileRepository.findByUserId(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND))
                 .getFriendIds();
@@ -69,20 +72,26 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
         log.info(request.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if(!addFriendRequestRepository.existsBySendingUserIdAndReceivingUserId(request.getFriendId(), authentication.getName())) {
+            throw new AppException(ErrorCode.ADD_FRIEND_REQUEST_NOT_FOUND);
+        }
+
         addFriendRequestRepository.deleteBySendingUserIdAndReceivingUserId(
                 request.getFriendId(), authentication.getName());
 
         if (request.isAccepted()) {
             userProfileService.addFriend(authentication.getName(), request.getFriendId());
-            notificationService.sendAcceptFriendNotification(authentication.getName(), request.getFriendId());
+            userProfileService.addFriend(request.getFriendId(), authentication.getName());
+            //notificationService.sendAcceptFriendNotification(authentication.getName(), request.getFriendId());
         }
     }
 
     @Override
-    public PageResponse<AddFriendRequestResponse> getAllAddFriendRequestsByUserId(String userId, int page, int size) {
+    public PageResponse<AddFriendRequestResponse> getAllOfMyAddFriendRequests(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Page<AddFriendRequest> addFriendRequests =
-                addFriendRequestRepository.findAllByReceivingUserId(userId, pageable);
+                addFriendRequestRepository.findAllByReceivingUserId(authentication.getName(), pageable);
         List<AddFriendRequest> addFriendRequestList = addFriendRequests.getContent();
         List<AddFriendRequestResponse> addFriendRequestResponseList = new ArrayList<>();
 
@@ -111,5 +120,26 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
     public void unfriend(String friendId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userProfileService.unfriend(authentication.getName(), friendId);
+    }
+
+    @Override
+    public void unsendAddFriendRequest(String friendId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        addFriendRequestRepository.deleteBySendingUserIdAndReceivingUserId(authentication.getName(), friendId);
+    }
+
+    @Override
+    public boolean isFriend(String friendId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> friends = userProfileRepository.findByUserId(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND))
+                .getFriendIds();
+        return friends != null && friends.contains(friendId);
+    }
+
+    @Override
+    public boolean isAddFriendRequestSent(String friendId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return addFriendRequestRepository.existsBySendingUserIdAndReceivingUserId(authentication.getName(), friendId);
     }
 }
