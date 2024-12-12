@@ -28,22 +28,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import static org.apache.commons.lang3.BooleanUtils.forEach;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class NotificationServiceImpl implements NotificationService{
+public class NotificationServiceImpl implements NotificationService {
 
-    private final UserRepository userRepository;
-    private final UserProfileRepository userProfileRepository;
-    private final ReportViolatingPostRequestRepository reportViolatingPostRequestRepository;
-    private final AddFriendRequestRepository addFriendRequestRepository;
-    private final NotificationRecipientMapper notificationRecipientMapper;
-    private final CommentRepository commentRepository;
+    UserRepository userRepository;
+    UserProfileRepository userProfileRepository;
+    ReportViolatingPostRequestRepository reportViolatingPostRequestRepository;
+    AddFriendRequestRepository addFriendRequestRepository;
+    NotificationRecipientMapper notificationRecipientMapper;
+    CommentRepository commentRepository;
     @NonFinal
     String defaultSortField = "sentAt";
 
@@ -65,12 +62,11 @@ public class NotificationServiceImpl implements NotificationService{
                 .collect(Collectors.toList());
         notificationRecipientRepository.saveAll(recipients);
 
-        for(String recipientId : recipientIds){
+        recipientIds.forEach(recipientId -> {
             NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
             notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
             simpMessagingTemplate.convertAndSendToUser(recipientId, "/queue/notifications", notificationResponse);
-        }
-
+        });
     }
 
     @Override
@@ -78,14 +74,15 @@ public class NotificationServiceImpl implements NotificationService{
         Sort sort = Sort.by(Sort.Order.desc(defaultSortField));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findAllByRecipientId(userId, pageable);
+
         List<NotificationResponse> notificationResponses = notificationRecipients.getContent().stream()
-                .map( notificationRecipient  -> {
-                        Notification notification = notificationRepository.findById(notificationRecipient.getNotificationId())
-                        .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
-                        NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
-                        notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
-                        return notificationResponse;
-            }).toList();
+                .map(notificationRecipient -> {
+                    Notification notification = notificationRepository.findById(notificationRecipient.getNotificationId())
+                            .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
+                    NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
+                    notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
+                    return notificationResponse;
+                }).toList();
 
         return PageResponse.<NotificationResponse>builder()
                 .page(page)
@@ -105,17 +102,13 @@ public class NotificationServiceImpl implements NotificationService{
         return notificationRecipientMapper.toNotificationRecipientResponse(notificationRecipient);
     }
 
-
-    private void sendNotification(NotificationTemplate template, String userId, String notificationEntityId) {
-        // Fetch user details
-        String userName = userRepository.findById(userId)
+    private void sendNotification(NotificationTemplate template, String userId, String notificationEntityId, List<String> additionalRecipients, boolean includeAdmin, boolean isAnonymous) {
+        String userName = isAnonymous ? "" : userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"))
                 .getUsername();
 
-        // Format message using the template
         String message = template.formatMessage(userName);
 
-        // Build notification object
         Notification notification = Notification.builder()
                 .actorId(userId)
                 .notificationType(template.getEntity())
@@ -124,119 +117,77 @@ public class NotificationServiceImpl implements NotificationService{
                 .sendAt(LocalDateTime.now())
                 .build();
 
-        List<String> recipientIds = new ArrayList<String>();
-
-        // Save notification
         notificationRepository.save(notification);
 
-        List<String> friendIds = userProfileRepository.findByUserId(userId).get().getFriendIds();
-        if(friendIds!=null){
-            recipientIds.addAll(friendIds);
+        List<String> recipientIds = new ArrayList<>();
+        if (!isAnonymous) {
+            UserProfile userProfile = userProfileRepository.findByUserId(userId).orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+            List<String> friendIds = userProfile.getFriendIds();
+            if(friendIds!=null){
+                recipientIds.addAll(friendIds);
+            }
+
         }
 
-        if(template==NotificationTemplate.CREATE_POST){
-            // inform admin
+        if (includeAdmin) {
             recipientIds.addAll(userRepository.findByRole_Name("ADMIN").stream().map(User::getId).toList());
         }
 
+        if (additionalRecipients != null) {
+            recipientIds.addAll(additionalRecipients);
+        }
+
         sendNotification(notification, recipientIds);
-    }
-
-    // for reporting a post
-    private void sendToAdminOnlyNotification(NotificationTemplate notificationTemplate,String userId, String notificationEntityId){
-        // Fetch user details
-        String userName = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"))
-                .getUsername();
-
-        // Format message using the template
-        String message = notificationTemplate.formatMessage(userName);
-
-        // Build notification object
-        Notification notification = Notification.builder()
-                .actorId(userId)
-                .notificationType(notificationTemplate.getEntity())
-                .notificationEntityId(notificationEntityId)
-                .message(message)
-                .sendAt(LocalDateTime.now())
-                .build();
-
-        List<String> recipientIds = userRepository.findByRole_Name("ADMIN").stream().map(User::getId).toList();
-        sendNotification(notification, recipientIds);
-    }
-
-    // For deleting a post, accept report
-    private void sendToSpecificUserNotification(NotificationTemplate notificationTemplate,String userId, String recipient, String notificationEntity){
-        String userName = ""; // Notification from admin is anonymous (Sender's name is "")
-        String message = notificationTemplate.formatMessage(userName);
-        Notification notification = Notification.builder()
-                .actorId(userId)
-                .notificationType(notificationTemplate.getEntity())
-                .notificationEntityId(notificationEntity)
-                .message(message)
-                .sendAt(LocalDateTime.now())
-                .build();
-
-        List<String> recipientIds = new ArrayList<String>();
-        recipientIds.add(recipient);
-        sendNotification(notification, recipientIds);
-    }
-
-    // Template-specific methods delegate to the generic method
-    @Override
-    public void sendPostCreationNotification(String userId, String postId) {
-        sendNotification(NotificationTemplate.CREATE_POST, userId, postId);
     }
 
     @Override
-    public void sendCommentCreationNotification(String userId,String postOwnerId, String commentId) {
-        sendToSpecificUserNotification(NotificationTemplate.CREATE_COMMENT, userId, postOwnerId, commentId);
+    public void sendPostCreationNotification(String userId, String postId) {
+        sendNotification(NotificationTemplate.CREATE_POST, userId, postId, null, true, false);
     }
 
     @Override
-    public void sendReactToPostCreationNotification(String userId,String postOwnerId, String reactId) {
-        sendToSpecificUserNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, postOwnerId, reactId);
+    public void sendCommentCreationNotification(String userId, String postOwnerId, String commentId) {
+        sendNotification(NotificationTemplate.CREATE_COMMENT, userId, commentId, List.of(postOwnerId), false, false);
+    }
+
+    @Override
+    public void sendReactToPostCreationNotification(String userId, String postOwnerId, String reactId) {
+        sendNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, reactId, List.of(postOwnerId), false, false);
     }
 
     @Override
     public void sendAddFriendNotification(String userId, String addFriendRequestId) {
-
         AddFriendRequest addFriendRequest = addFriendRequestRepository.findById(addFriendRequestId)
                 .orElseThrow(() -> new AppException(ErrorCode.ADD_FRIEND_REQUEST_NOT_FOUND));
         User friend = userRepository.findById(addFriendRequest.getReceivingUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        sendToSpecificUserNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, friend.getId(), addFriendRequestId);
+        sendNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, addFriendRequestId, List.of(friend.getId()), false, false);
     }
 
     @Override
     public void sendAcceptFriendNotification(String userId, String friendId) {
-        sendToSpecificUserNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, friendId, userId);
+        sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, userId, List.of(friendId), false, false);
     }
 
     @Override
-    public void sendMessageNotification(String userId, String messageId) {
-        sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId);
+    public void sendMessageNotification(String userId, String recipient, String messageId) {
+        sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId, List.of(recipient), false, false);
     }
 
     @Override
     public void sendReportViolatingPostNotification(String userId, String reportId) {
-        // reason why sending entire report object instead of post reported like other methods
-        // we have more things to send : reason, post reported
-        sendToAdminOnlyNotification(NotificationTemplate.SEND_REPORT_REQUEST,userId,reportId);
+        sendNotification(NotificationTemplate.SEND_REPORT_REQUEST, userId, reportId, null, true, false);
     }
 
     @Override
     public void sendAcceptReportViolatingPostNotification(String adminId, String reportId) {
         ReportViolatingPostRequest report = reportViolatingPostRequestRepository.findById(reportId)
                 .orElseThrow(() -> new AppException(ErrorCode.REPORT_VIOLATING_POST_NOT_FOUND));
-        String reporterId = report.getSendingUserId();
-        sendToSpecificUserNotification(NotificationTemplate.ACCEPT_REPORT_REQUEST, adminId, reporterId, reportId);
+        sendNotification(NotificationTemplate.ACCEPT_REPORT_REQUEST, adminId, reportId, List.of(report.getSendingUserId()), false, false);
     }
 
     @Override
-    public void sendDeletePostNotification(String adminId, String ownerOfPostId, String postId) {
-        sendToSpecificUserNotification(NotificationTemplate.DELETE_POST, adminId, ownerOfPostId, postId);
+    public void sendDeletePostNotification(String adminId, String ownerOfPostId) {
+        sendNotification(NotificationTemplate.DELETE_POST, adminId, null, List.of(ownerOfPostId), false, false);
     }
-
-
 }

@@ -202,7 +202,9 @@ public class PostServiceImp implements PostService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
-        if (!post.getUserId().equals(userId)) {
+        String postOwnerId = post.getUserId();
+
+        if (!postOwnerId.equals(userId)) {
             throw new AppException(ErrorCode.USER_NOT_POST_OWNER);
         }
 
@@ -214,7 +216,7 @@ public class PostServiceImp implements PostService {
         // sendNotification to owner of post if post is deleted by admin
         // UNCOMMENT IT AFTER FIXING THE ERROR : IF ADMIN DELETE THE POST
         // --> THEN IT WILL THROW EXCEPTION : USER NOT POST OWNER AT LINE 206
-        // notificationService.sendDeletePostNotification(userId, post.getUserId(), id);
+        // notificationService.sendDeletePostNotification(userId, postOwnerId);
     }
 }
 

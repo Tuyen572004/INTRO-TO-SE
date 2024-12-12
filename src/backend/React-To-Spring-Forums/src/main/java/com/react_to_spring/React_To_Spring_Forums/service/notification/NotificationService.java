@@ -20,9 +20,9 @@ public interface NotificationService {
     void sendReactToPostCreationNotification(String userId,String postOwnerId, String reactId);
     void sendAddFriendNotification(String userId, String addFriendRequestId);
     void sendAcceptFriendNotification(String userId, String friendId);
-    void sendMessageNotification(String userId, String messageId);
+    void sendMessageNotification(String userId,String recipientId, String messageId);
 
     void sendReportViolatingPostNotification(String userId, String reportId);  // Notes: send to all admins
     void sendAcceptReportViolatingPostNotification (String adminId,String reportId);
-    void sendDeletePostNotification(String adminId, String ownerOfPostId,String postId);
+    void sendDeletePostNotification(String adminId, String ownerOfPostId);
 }
