@@ -64,14 +64,12 @@ public class NotificationServiceImpl implements NotificationService{
                 .collect(Collectors.toList());
         notificationRecipientRepository.saveAll(recipients);
 
-        // Send WebSocket notifications in parallel
-        List<CompletableFuture<Void>> futures = recipientIds.stream()
-                .map(recipientId -> CompletableFuture.runAsync(() ->
-                        simpMessagingTemplate.convertAndSendToUser(recipientId, "/queue/notifications", notification)))
-                .collect(Collectors.toList());
+        for(String recipientId : recipientIds){
+            NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
+            notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
+            simpMessagingTemplate.convertAndSendToUser(recipientId, "/queue/notifications", notificationResponse);
+        }
 
-        // Wait for all notifications to be sent
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 
     @Override
@@ -84,7 +82,7 @@ public class NotificationServiceImpl implements NotificationService{
                         Notification notification = notificationRepository.findById(notificationRecipient.getNotificationId())
                         .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
                         NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
-                        notificationResponse.setFormattedCreatedDate(dateFormatter.format(notification.getSendAt()));
+                        notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
                         return notificationResponse;
             }).toList();
 
