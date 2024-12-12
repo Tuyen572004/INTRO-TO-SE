@@ -24,6 +24,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.addfriend.Response
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -40,11 +41,17 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
     @Override
     public void sendAddFriendRequest(String friendId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(Objects.equals(friendId, authentication.getName())) {
+            throw new AppException(ErrorCode.CANNOT_ADD_YOURSELF_AS_FRIEND);
+        }
         List<String> friends = userProfileRepository.findByUserId(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND))
                 .getFriendIds();
+        if(friends == null) {
+            friends = new ArrayList<>();
+        }
         if (friends.contains(friendId)) {
-            return;
+            throw new AppException(ErrorCode.ALREADY_FRIEND);
         }
 
         AddFriendRequest addFriendRequest = AddFriendRequest.builder()
@@ -52,7 +59,7 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
                 .receivingUserId(friendId)
                 .build();
 
-        addFriendRequestRepository.save(addFriendRequest);
+        addFriendRequest =  addFriendRequestRepository.save(addFriendRequest);
 
         notificationService.sendAddFriendNotification(authentication.getName(), addFriendRequest.getId());
     }

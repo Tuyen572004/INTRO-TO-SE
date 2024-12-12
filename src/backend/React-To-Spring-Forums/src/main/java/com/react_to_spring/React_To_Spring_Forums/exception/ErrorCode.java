@@ -32,6 +32,10 @@ public enum ErrorCode {
     USER_NOT_COMMENT_OWNER(2014, HttpStatus.BAD_REQUEST, "Cannot edit other people's comments"),
     FIRST_NAME_IS_EMPTY(2015, HttpStatus.BAD_REQUEST, "First name is empty"),
     LAST_NAME_IS_EMPTY(2016, HttpStatus.BAD_REQUEST, "Last name is empty"),
+    CANNOT_ADD_YOURSELF_AS_FRIEND(2017, HttpStatus.BAD_REQUEST, "Cannot add yourself as friend"),
+    ALREADY_FRIEND(2018, HttpStatus.BAD_REQUEST, "Already friend"),
+
+
     //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),
     USER_PROFILE_EXISTED(3002, HttpStatus.BAD_REQUEST, "User profile existed"),
@@ -47,6 +51,7 @@ public enum ErrorCode {
     CHAT_ROOM_NOT_FOUND(4009, HttpStatus.NOT_FOUND, "Chat room not found"),
     NOTIFICATION_NOT_FOUND(4010, HttpStatus.NOT_FOUND, "Notification not found"),
     FRIEND_NOT_FOUND(4011, HttpStatus.NOT_FOUND, "Friend not found"),
+    REPORT_VIOLATING_POST_NOT_FOUND(4012, HttpStatus.NOT_FOUND, "Report violating post not found"),
 //    Unauthorized	Client	5xxx (Unauthenticated error)
     INVALID_TOKEN(5001, HttpStatus.UNAUTHORIZED, "Invalid token"),
     INVALID_USERNAME_PASSWORD(5002, HttpStatus.UNAUTHORIZED, "Invalid username or password"),

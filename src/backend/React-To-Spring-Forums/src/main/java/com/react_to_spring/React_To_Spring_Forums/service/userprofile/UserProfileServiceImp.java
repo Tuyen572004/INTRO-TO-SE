@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -110,6 +111,11 @@ public class UserProfileServiceImp implements UserProfileService{
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
         List<String> friendIds = userProfile.getFriendIds();
+
+        if(friendIds == null){
+            friendIds = new ArrayList<>();
+        }
+
         friendIds.add(friendId);
         userProfile.setFriendIds(friendIds);
         userProfileRepository.save(userProfile);
@@ -120,7 +126,7 @@ public class UserProfileServiceImp implements UserProfileService{
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
         List<String> friendIds = userProfile.getFriendIds();
-        if(!friendIds.contains(friendId)){
+        if(friendIds == null || !friendIds.contains(friendId)){
             throw new AppException(ErrorCode.FRIEND_NOT_FOUND);
         }
         friendIds.remove(friendId);
