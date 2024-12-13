@@ -4,8 +4,6 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationRecip
 import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Notification;
-import com.react_to_spring.React_To_Spring_Forums.entity.NotificationRecipient;
-import com.react_to_spring.React_To_Spring_Forums.enums.ReactName;
 
 import java.util.List;
 

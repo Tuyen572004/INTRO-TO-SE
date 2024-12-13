@@ -24,3 +24,10 @@
 .reaction span {
 	margin-left: 5px;
 }
+
+.reactIcon {
+}
+
+.reacted {
+	color: red;
+}

@@ -1,37 +1,35 @@
-import {useState} from "react";
-import Uploader from "../../atoms/Uploader/Uploader";
-import s from "./style.module.css";
-import {RiCloseLargeFill} from "react-icons/ri";
-import {motion} from "framer-motion";
-import {useDispatch} from "react-redux";
-import {PostAPI} from "../../../api/PostAPI";
-import axios from "axios";
-import {addPost} from "../../../store/postSlice";
-import {addMyPost} from "../../../store/myPostSlice";
+import React, { useState, useRef } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { X, Images } from 'lucide-react';
+import { uploadFile } from "../../../utils/uploadImageFile";
+import {addReactStatus, setReactCounter, updateReactStatus} from "../../../store/reactCounterSlice";
+import { setCommentCounter } from "../../../store/commentCounterSlice";
+import { addPost } from "../../../store/postSlice";
+import { addMyPost } from "../../../store/myPostSlice";
+import { useDispatch } from "react-redux";
+import { PostAPI } from "../../../api/PostAPI";
 
-const PostForm = ({toggleIsPostPopup}) => {
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
+import s from './style.module.css';
+import ImageList from "../ImageList/ImageList";
+
+const PostForm = ({ show, toggleIsPostFormVisible, userProfile }) => {
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
     const [imageList, setImageList] = useState([]);
+    const titleRef = useRef(null);
+    const contentRef = useRef(null);
 
     const dispatch = useDispatch();
 
-    const uploadFile = async (image) => {
-        const data = new FormData();
-        data.append("file", image);
-        data.append("upload_preset", "images_preset");
+    const handleFileUpload = (event) => {
+        const files = Array.from(event.target.files);
+        setImageList(prevImages => [...prevImages, ...files]);
+    };
 
-        try {
-            let cloudName = process.env.REACT_APP_CLOUD_NAME;
-            let resourceType = "image";
-            let api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
-
-            const res = await axios.post(api, data);
-            const {secure_url} = res.data;
-            return secure_url;
-        } catch (error) {
-            console.error(error);
-        }
+    const removeImage = (indexToRemove) => {
+        setImageList(prevImages =>
+            prevImages.filter((_, index) => index !== indexToRemove)
+        );
     };
 
     const handlePost = async () => {
@@ -49,67 +47,117 @@ const PostForm = ({toggleIsPostPopup}) => {
             const response = await PostAPI.create(data);
 
             setImageList([]);
-            console.log("File upload and post creation success!");
 
             if (response.code === 1000) {
-                console.log("Post created successfully:", response.data);
                 dispatch(addPost(response.data));
                 dispatch(addMyPost(response.data));
-                toggleIsPostPopup();
+
+                console.log(response.data);
+                console.log(response.data.id);
+                dispatch(setReactCounter({ postId: response.data.id, count: 0 }));
+                dispatch(setCommentCounter({ postId: response.data.id, count: 0 }));
+                dispatch(addReactStatus(response.data.id));
+
+                toggleIsPostFormVisible();
             }
         } catch (error) {
-            console.error("Error creating post:", error);
+            console.error('Error creating post:', error);
         }
     };
 
+    const adjustHeight = (ref) => {
+        ref.current.style.height = 'auto';
+        ref.current.style.height = ref.current.scrollHeight + 'px';
+    };
+
     return (
-        <motion.div
-            className={s.overlay}
-            initial={{opacity: 0}}
-            animate={{opacity: 1}}
-            exit={{opacity: 0}}
-            transition={{duration: 0.3}}
-        >
-            <motion.div
-                className={s.container}
-                initial={{scale: 0.8, y: "-50%", opacity: 0}}
-                animate={{scale: 1, y: "0%", opacity: 1}}
-                exit={{scale: 0.8, y: "-50%", opacity: 0}}
-                transition={{duration: 0.4, ease: "easeInOut"}}
-            >
-                <div className={s.header}>
-                    <h3>What's on your mind?</h3>
-                </div>
-                <input
-                    className={s.title}
-                    placeholder="Enter the title..."
-                    onChange={(e) => setTitle(e.target.value)}
-                ></input>
-                <textarea
-                    className={s.content}
-                    placeholder="Enter the content..."
-                    onChange={(e) => setContent(e.target.value)}
-                ></textarea>
-                <motion.div className={s.uploader} whileTap={{scale: 0.95}}>
-                    <Uploader setImageList={setImageList}/>
-                </motion.div>
-                <motion.button
-                    className={s.post_button}
-                    whileHover={{scale: 1.1}}
-                    whileTap={{scale: 0.95}}
-                    onClick={handlePost}
-                >
-                    Post
-                </motion.button>
-                <motion.button
-                    className={s.close_popup}
-                    whileHover={{rotate: 90}}
-                    onClick={() => toggleIsPostPopup()}
-                >
-                    <RiCloseLargeFill/>
-                </motion.button>
-            </motion.div>
-        </motion.div>
+        <>
+            <Modal show={show} onHide={toggleIsPostFormVisible} centered>
+                <Modal.Header closeButton>
+                    <div className="row">
+                        <div className="col-2">
+                            <img
+                                src={userProfile.profileImgUrl || 'https://via.placeholder.com/150'}
+                                alt="profile"
+                                className={s.avatar}
+                            />
+                        </div>
+                        <div className="col-10">
+                            <div className="row">
+                                <div className="col-12">
+                                    <div className={s.name}>{userProfile.firstName + ' ' + userProfile.lastName}</div>
+                                </div>
+                                <div className="col-12">
+                                    <div className={s.username}>@vuthevy1209</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <Form>
+                        <Form.Group>
+                            <Form.Control
+                                as="textarea"
+                                rows={1}
+                                placeholder="Post Title"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                onInput={() => adjustHeight(titleRef)}
+                                ref={titleRef}
+                                className={s.customTextarea + ' ' + s.titleTextarea}
+                            />
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Control
+                                as="textarea"
+                                rows={5}
+                                placeholder="Write your post content here..."
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                                onInput={() => adjustHeight(contentRef)}
+                                ref={contentRef}
+                                className={s.customTextarea + ' ' + s.contentTextarea}
+                            />
+                        </Form.Group>
+
+                        <ImageList images={imageList} removeImage={removeImage}/>
+
+                        <Form.Group>
+                            <div className={"row " + s.addImage}>
+                                <div className={"col-10 " + s.addImageTitle}>
+                                    Add to your post
+                                </div>
+                                <label htmlFor="image-upload-for-new-post" className="col-2">
+                                    <Images strokeWidth={2.5}/>
+                                </label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    onChange={handleFileUpload}
+                                    className="d-none"
+                                    id="image-upload-for-new-post"
+                                    accept="image/*"
+                                />
+                            </div>
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button
+                        onClick={handlePost}
+                        disabled={!title && !content}
+                        variant={title || content ? 'primary' : 'secondary'}
+                        className={s.postButton}
+                    >
+                        Post
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 };
 

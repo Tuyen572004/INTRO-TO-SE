@@ -18,12 +18,6 @@ const MyPostList = ({ scrollableTarget }) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
 
-    const [isPostPopup, setIsPostPopup] = useState(false);
-
-    const toggleIsPostPopup = () => {
-        setIsPostPopup(!isPostPopup);
-    };
-
     useEffect(() => {
         const fetchMyPosts = async () => {
             try {
@@ -55,7 +49,7 @@ const MyPostList = ({ scrollableTarget }) => {
 
     return (
         <div>
-            <NewPost toggleIsPostPopup={toggleIsPostPopup} />
+            <NewPost />
 
             <InfiniteScroll
                 dataLength={myPosts.length}
@@ -77,10 +71,6 @@ const MyPostList = ({ scrollableTarget }) => {
                     <PostItem key={v4()} post={post} />
                 ))}
             </InfiniteScroll>
-
-            <AnimatePresence>
-                {isPostPopup && <PostForm toggleIsPostPopup={toggleIsPostPopup} />}
-            </AnimatePresence>
         </div>
     );
 };

@@ -6,7 +6,7 @@ const commentCounterSlice = createSlice({
         commentCounter: {},
     },
     reducers: {
-        setCounter: (state, action) => {
+        setCommentCounter: (state, action) => {
             state.commentCounter[action.payload.postId] = action.payload.count;
         },
         increment: (state, action) => {
@@ -18,5 +18,5 @@ const commentCounterSlice = createSlice({
     },
 });
 
-export const { setCounter, increment, decrement } = commentCounterSlice.actions;
+export const { setCommentCounter, increment, decrement } = commentCounterSlice.actions;
 export const commentCounterReducer = commentCounterSlice.reducer;

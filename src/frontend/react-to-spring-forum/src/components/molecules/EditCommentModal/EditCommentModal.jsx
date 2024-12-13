@@ -1,43 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import axios from 'axios';
-import Uploader from '../../atoms/Uploader/Uploader';
+import {Images } from "lucide-react";
 import { CommentAPI } from "../../../api/CommentAPI";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateComment } from "../../../store/commentSlice";
+import {uploadFile} from "../../../utils/uploadImageFile";
 
 import s from './style.module.css';
+import ImageList from "../ImageList/ImageList";
 
 const EditCommentModal = ({ show, onHide, comment }) => {
-    const dispatch = useDispatch();
-    const comments = useSelector((state) => state.commentSlice.comments);
-
     const [content, setContent] = useState(comment?.content || '');
     const [images, setImages] = useState(comment?.imageList || []);
-    const [newImages, setNewImages] = useState([]);
+    const contentRef = useRef(null);
 
-    const removeImage = (index, event) => {
-        event.preventDefault();
-        const updatedImages = images.filter((_, i) => i !== index);
-        setImages(updatedImages);
+    const dispatch = useDispatch();
+
+    const handleFileUpload = (event) => {
+        const files = Array.from(event.target.files);
+        setImages(prevImages => [...prevImages, ...files]);
     };
 
-    const uploadFile = async (image) => {
-        const data = new FormData();
-        data.append('file', image);
-        data.append('upload_preset', 'images_preset');
-
-        try {
-            const cloudName = process.env.REACT_APP_CLOUD_NAME;
-            const resourceType = 'image';
-            const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
-
-            const res = await axios.post(api, data);
-            const { secure_url } = res.data;
-            return secure_url;
-        } catch (error) {
-            console.error(error);
-        }
+    const removeImage = (indexToRemove) => {
+        setImages(prevImages =>
+            prevImages.filter((_, index) => index !== indexToRemove)
+        );
     };
 
     const handleSave = async () => {
@@ -48,11 +35,9 @@ const EditCommentModal = ({ show, onHide, comment }) => {
         };
 
         try {
-            const uploadedImageUrls = await Promise.all(
-                newImages.map((image) => uploadFile(image))
+            updatedComment.image_url = await Promise.all(
+                images.map((image) => uploadFile(image))
             );
-
-            updatedComment.image_url = [...updatedComment.image_url, ...uploadedImageUrls];
 
             const response = await CommentAPI.update(updatedComment);
             dispatch(updateComment(response.data));
@@ -65,19 +50,26 @@ const EditCommentModal = ({ show, onHide, comment }) => {
         onHide();
     };
 
+    const adjustHeight = (ref) => {
+        ref.current.style.height = 'auto';
+        ref.current.style.height = ref.current.scrollHeight + 'px';
+    };
+
     useEffect(() => {
         if (show) {
             setContent(comment?.content || '');
             setImages(comment?.imageList || []);
-            setNewImages([]);
         }
     }, [comment, show]);
 
-    useEffect(() => {
-    }, [comments]);
-
     return (
-        <Modal show={show} onHide={onHide} size="md" centered>
+        <Modal
+            show={show}
+            onHide={onHide}
+            size="md"
+            centered
+            className="edit-post-modal"
+        >
             <Modal.Header closeButton>
                 <Modal.Title className={s.modalTitle}>
                     Edit Comment
@@ -86,36 +78,51 @@ const EditCommentModal = ({ show, onHide, comment }) => {
 
             <Modal.Body>
                 <Form>
-                    <Form.Group className="mb-3">
+                    <Form.Group>
                         <Form.Control
                             as="textarea"
-                            rows={3}
-                            placeholder="What's on your mind?"
+                            rows={5}
+                            placeholder="Write your post content here..."
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            className={s.modalInput}
+                            onInput={() => adjustHeight(contentRef)}
+                            ref={contentRef}
+                            className={s.customTextarea}
                         />
                     </Form.Group>
 
-                    <div className="image-preview mb-3">
-                        {images.map((image, index) => (
-                            <div key={index} className="position-relative">
-                                <img src={image} alt={`Upload ${index}`} />
-                                <button
-                                    className="remove-btn"
-                                    onClick={(event) => removeImage(index, event)}>
-                                    ✕
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                    <ImageList images={images} removeImage={removeImage} />
 
-                    <Uploader setImageList={setNewImages} />
+                    <Form.Group>
+                        <div className={"row " + s.addMoreImage}>
+                            <div className={"col-10 " + s.addMoreImageTitle}>
+                                Add more to your comment
+                            </div>
+                            <label htmlFor="image-upload-for-edit-comment" className="col-2">
+                                <Images strokeWidth={2.5}/>
+                            </label>
+                            <input
+                                type="file"
+                                multiple
+                                onChange={handleFileUpload}
+                                className="d-none"
+                                id="image-upload-for-edit-comment"
+                                accept="image/*"
+                            />
+                        </div>
+                    </Form.Group>
                 </Form>
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={handleSave} className={s.modalButton}> Save </Button>
+                <Button
+                    onClick={handleSave}
+                    className={s.saveButton}
+                    variant={content ? 'primary' : 'secondary'}
+                    disabled={!content}
+                >
+                    Save
+                </Button>
             </Modal.Footer>
         </Modal>
     );

@@ -4,9 +4,12 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.reportpost.Respons
 import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationRecipientResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.entity.Notification;
+import com.react_to_spring.React_To_Spring_Forums.entity.NotificationRecipient;
+import com.react_to_spring.React_To_Spring_Forums.entity.User;
+
 import com.react_to_spring.React_To_Spring_Forums.entity.*;
 import com.react_to_spring.React_To_Spring_Forums.enums.NotificationTemplate;
-import com.react_to_spring.React_To_Spring_Forums.enums.ReactName;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.NotificationMapper;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.Set;
 import java.util.stream.Collectors;
 

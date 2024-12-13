@@ -2,18 +2,51 @@
     width: 100%;
     text-align: center;
     font-weight: bold;
-    font-size: 20px;
 }
 
-.modalInput {
-    border-radius: 12px;
-    border: none;
-    background: #f2f2f2;
+.addMoreImage {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    position: relative;
 }
 
-.modalButton {
+.addMoreImageTitle {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.saveButton {
     width: 100%;
     background: black;
     border-radius: 12px;
     border: none;
+    color: white;
+}
+
+.saveButton:hover {
+    background: #333;
+}
+
+.saveButton:focus {
+    outline: none;
+    box-shadow: none;
+    background: #333;
+}
+
+.customTextarea {
+    outline: none;
+    box-shadow: none;
+    border: none;
+    resize: none;
+    max-height: 25rem;
+    overflow-y: auto;
+}
+
+.customTextarea:focus {
+    outline: none;
+    box-shadow: none;
 }
