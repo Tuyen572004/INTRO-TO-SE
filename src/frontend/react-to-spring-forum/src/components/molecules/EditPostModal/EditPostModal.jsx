@@ -1,43 +1,33 @@
-import React, { useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import axios from 'axios';
-import Uploader from '../../atoms/Uploader/Uploader';
-import './EditPostModal.css';
 import {PostAPI} from "../../../api/PostAPI";
 import {useDispatch} from "react-redux";
 import {updatePost} from "../../../store/postSlice";
 import {updateMyPost} from "../../../store/myPostSlice";
+import {uploadFile} from "../../../utils/uploadImageFile";
+import {Images} from "lucide-react";
+
+import s from "./style.module.css";
+import ImageList from "../ImageList/ImageList";
 
 const EditPostModal = ({ show, onHide, post }) => {
     const [title, setTitle] = useState(post?.title || '');
     const [content, setContent] = useState(post?.content || '');
     const [images, setImages] = useState(post?.imageList || []);
-    const [newImages, setNewImages] = useState([]);
+    const titleRef = useRef(null);
+    const contentRef = useRef(null);
 
     const dispatch = useDispatch();
 
-    const removeImage = (index, event) => {
-        event.preventDefault();
-        const updatedImages = images.filter((_, i) => i !== index);
-        setImages(updatedImages);
+    const handleFileUpload = (event) => {
+        const files = Array.from(event.target.files);
+        setImages(prevImages => [...prevImages, ...files]);
     };
 
-    const uploadFile = async (image) => {
-        const data = new FormData();
-        data.append('file', image);
-        data.append('upload_preset', 'images_preset');
-
-        try {
-            const cloudName = process.env.REACT_APP_CLOUD_NAME;
-            const resourceType = 'image';
-            const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
-
-            const res = await axios.post(api, data);
-            const { secure_url } = res.data;
-            return secure_url;
-        } catch (error) {
-            console.error(error);
-        }
+    const removeImage = (indexToRemove) => {
+        setImages(prevImages =>
+            prevImages.filter((_, index) => index !== indexToRemove)
+        );
     };
 
     const handleSave = async () => {
@@ -49,10 +39,9 @@ const EditPostModal = ({ show, onHide, post }) => {
         };
 
         try {
-            const uploadedImageUrls = await Promise.all(
-                newImages.map((image) => uploadFile(image))
+            updatedPost.image_url = await Promise.all(
+                images.map((image) => uploadFile(image))
             );
-            updatedPost.image_url = [...updatedPost.image_url, ...uploadedImageUrls];
 
             const response = await PostAPI.update(updatedPost);
             console.log('Post response:', response);
@@ -66,12 +55,16 @@ const EditPostModal = ({ show, onHide, post }) => {
         onHide();
     };
 
+    const adjustHeight = (ref) => {
+        ref.current.style.height = 'auto';
+        ref.current.style.height = ref.current.scrollHeight + 'px';
+    };
+
     useEffect(() => {
         if (show) {
             setTitle(post?.title || '');
             setContent(post?.content || '');
             setImages(post?.imageList || []);
-            setNewImages([]);
         }
     }, [post, show]);
 
@@ -84,56 +77,80 @@ const EditPostModal = ({ show, onHide, post }) => {
             className="edit-post-modal"
         >
             <Modal.Header closeButton>
-                <Modal.Title style={{ width: '100%', textAlign: 'center', fontWeight: 'bold' }}>
+                <Modal.Title className={s.modalTitle}>
                     Edit Post
                 </Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
                 <Form>
-                    <Form.Group className="mb-3">
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter post title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            style={{ borderRadius: '12px', border: 'none', background: '#f2f2f2' }}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
+                    <Form.Group>
                         <Form.Control
                             as="textarea"
-                            rows={10}
-                            placeholder="What's on your mind?"
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                            style={{ borderRadius: '12px', border: 'none', background: '#f2f2f2' }}
+                            rows={1}
+                            placeholder="Post Title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            onInput={() => adjustHeight(titleRef)}
+                            ref={titleRef}
+                            className={s.customTextarea + ' ' + s.titleTextarea}
                         />
                     </Form.Group>
 
-                    <div className="image-preview mb-3">
-                        {images.map((image, index) => (
-                            <div key={index} className="position-relative">
-                                <img src={image} alt={`Upload ${index}`} />
-                                <button
-                                    className="remove-btn"
-                                    onClick={(event) => removeImage(index, event)}
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                    <Form.Group>
+                        <Form.Control
+                            as="textarea"
+                            rows={5}
+                            placeholder="Write your post content here..."
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            onInput={() => adjustHeight(contentRef)}
+                            ref={contentRef}
+                            style={{ border: 'none', resize: 'none', maxHeight: '25rem', overflowY: 'auto' }}
+                            className={s.customTextarea + ' ' + s.contentTextarea}
+                        />
+                    </Form.Group>
 
-                    <Uploader setImageList={setNewImages} />
+                    <ImageList images={images} removeImage={removeImage} />
+
+                    <Form.Group>
+                        <div
+                            className="row"
+                            style={{
+                                marginLeft: '0px',
+                                marginRight: '0px',
+                                padding: '8px',
+                                border: '1px solid black',
+                                borderRadius: '10px',
+                                backgroundColor: '#f8f9fa',
+                                position: 'relative'
+                            }}
+                        >
+                            <div className={"col-10 " + s.addImageTitle}>
+                                Add to your post
+                            </div>
+                            <label htmlFor="image-upload-for-edit-post" className="col-2">
+                                <Images strokeWidth={2.5}/>
+                            </label>
+                            <input
+                                type="file"
+                                multiple
+                                onChange={handleFileUpload}
+                                className="d-none"
+                                id="image-upload-for-edit-post"
+                                accept="image/*"
+                            />
+                        </div>
+                    </Form.Group>
                 </Form>
             </Modal.Body>
 
             <Modal.Footer>
                 <Button
                     onClick={handleSave}
-                    style={{ width: '100%', background: 'black', borderRadius: '12px', border: 'none' }}
+                    className={s.saveButton}
+                    variant={title || content ? 'primary' : 'secondary'}
+                    disabled={!title && !content}
                 >
                     Save
                 </Button>

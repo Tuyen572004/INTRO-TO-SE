@@ -19,6 +19,7 @@ import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
 import { setCommentCounter } from "../../../store/commentCounterSlice";
 import { setReactCounter, updateReactStatus} from "../../../store/reactCounterSlice";
+import GoBack from "../../atoms/GoBack/GoBack";
 
 const PostItem = ({ post }) => {
     const dispatch = useDispatch();

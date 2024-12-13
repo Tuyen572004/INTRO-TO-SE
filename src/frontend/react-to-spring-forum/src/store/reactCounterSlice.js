@@ -22,8 +22,7 @@ const reactCounterSlice = createSlice({
             state.reactedPosts[postId] = false;
         },
         addReactStatus: (state, action) => {
-            const { postId, isReacted } = action.payload;
-            state.reactedPosts[postId] = isReacted;
+            state.reactedPosts[action.payload] = false;
         },
         updateReactStatus: (state, action) => {
             const { postId, isReacted } = action.payload;

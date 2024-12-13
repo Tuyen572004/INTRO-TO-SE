@@ -8,6 +8,8 @@ import {setComments} from "../../../store/commentSlice";
 
 import s from './style.module.css';
 import PostItem from "../../molecules/PostItem/PostItem";
+import NewComment from "../../molecules/NewComment/NewComment";
+import GoBack from "../../atoms/GoBack/GoBack";
 
 const CommentPost = () => {
     const navigate = useNavigate();
@@ -61,23 +63,26 @@ const CommentPost = () => {
     }
 
     return (
-        <div className={s.container}>
-            <PostItem post={post}/>
+        <>
+            <div className={s.container}>
+                <GoBack />
+                <PostItem post={post}/>
 
-            <div className={s.commentTitle}>
-                Comment
+                <div className={s.commentTitle}>
+                    Comment
+                </div>
+
+                <NewComment postId={id}/>
+
+                <div className={s.comments}>
+                    {comments?.map((comment) => (
+                        <div key={comment.id}>
+                            <CommentItem comment={comment} postId={id}/>
+                        </div>
+                    ))}
+                </div>
             </div>
-
-            <hr className={"m-0"}/>
-
-            <div className={s.comments}>
-                {comments?.map((comment) => (
-                    <div key={comment.id}>
-                        <CommentItem comment={comment} postId={id}/>
-                    </div>
-                ))}
-            </div>
-        </div>
+        </>
     );
 };
 
