@@ -81,7 +81,9 @@ public class CommentServiceImp implements CommentService{
 
         comment = commentRepository.save(comment);
 
-        notificationService.sendCommentCreationNotification(userId, comment.getPostId());
+        String postOwnerId = postRepository.findById(commentCreationRequest.getPostId()).get().getUserId();
+
+        notificationService.sendCommentCreationNotification(userId,postOwnerId, comment.getPostId());
 
         return commentConverter.buildCommentResponse(comment);
     }

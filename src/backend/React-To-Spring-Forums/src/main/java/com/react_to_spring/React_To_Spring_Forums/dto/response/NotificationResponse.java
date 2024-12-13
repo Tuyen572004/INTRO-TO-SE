@@ -10,10 +10,9 @@ import lombok.experimental.FieldDefaults;
 public class NotificationResponse {
     String id;
     String message;
-    String notificationType; // POST, COMMENT,..
-    String notificationEntityId; // PostId, CommentId,..
+    String notificationType; // POST, COMMENT, REPORT, DELETE_POST
+    String notificationEntityId; // postId, commentId, reportId, post reported id (postId)
     String actorId;
-    Boolean readStatus;
-    String formattedCreatedDate;
+    String formattedSentTime;
 }
 
