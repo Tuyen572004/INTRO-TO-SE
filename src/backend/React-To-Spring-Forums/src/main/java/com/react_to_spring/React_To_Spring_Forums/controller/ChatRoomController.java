@@ -34,7 +34,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/my-chat-rooms")
-    public ApiResponse<PageResponse<ChatRoomResponse>> pageResponseApiResponse(@RequestParam("page") int page,
+    public ApiResponse<PageResponse<ChatRoomResponse>> getMyChatRooms(@RequestParam("page") int page,
                                                                               @RequestParam("size") int size) {
         return ApiResponse.<PageResponse<ChatRoomResponse>>builder()
                 .data(chatRoomService.getMyChatRooms(page, size))
