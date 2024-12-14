@@ -12,28 +12,22 @@ import validatePassword from "../../../validates/validatePassword";
 Modal.setAppElement("#root");
 
 const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPaswword] = useState("");
+  const [password, setPassword] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [countdown, setCountdown] = useState(300);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleEmailChange = (value) => {
-    setEmail(value);
+  const handleChange = (value, set) => {
+    set(value);
     setErrorMessage("");
   };
 
-  const handleUsernameChange = (value) => {
-    setUsername(value);
-    setErrorMessage("");
-  };
-
-  const handlePasswordChange = (value) => {
-    setPaswword(value);
-    setErrorMessage("");
-  };
   useEffect(() => {
     let timer;
     if (isTimerActive && countdown > 0) {
@@ -48,6 +42,23 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("First Name: ", firstName);
+    console.log("Last Name: ", lastName);
+    console.log("Address: ", address);
+    console.log("Username: ", username);
+    console.log("Email: ", email);
+    console.log("Password: ", password);
+    if (
+      !firstName ||
+      !lastName ||
+      !address ||
+      !username ||
+      !email ||
+      !password
+    ) {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
     if (!validateUsername(username)) {
       setErrorMessage(
         "Username must be at least 5 characters with no special characters."
@@ -80,6 +91,7 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
         setErrorMessage("Email already exists.");
       } else if (error.response?.data?.code === 1002) {
         setErrorMessage("Cannot send mail.");
+      } else if (error.response?.data?.code === 5003) {
       }
     }
   };
@@ -139,12 +151,36 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
     >
       <form onSubmit={handleSubmit} className={s.container_form} action="">
         <h1>Register here</h1>
-        <Input placeholder="Username" onTextChange={handleUsernameChange} />
-        <Input placeholder="Email" onTextChange={handleEmailChange} />
+        <Input
+          placeholder="First Name"
+          onTextChange={handleChange}
+          setFunction={setFirstName}
+        />
+        <Input
+          placeholder="Last Name"
+          onTextChange={handleChange}
+          setFunction={setLastName}
+        />
+        <Input
+          placeholder="Address"
+          onTextChange={handleChange}
+          setFunction={setAddress}
+        />
+        <Input
+          placeholder="Username"
+          onTextChange={handleChange}
+          setFunction={setUsername}
+        />
+        <Input
+          placeholder="Email"
+          onTextChange={handleChange}
+          setFunction={setEmail}
+        />
         <Input
           type="password"
           placeholder="Password"
-          onTextChange={handlePasswordChange}
+          onTextChange={handleChange}
+          setFunction={setPassword}
         />
 
         {errorMessage && <div className={s.error_message}>{errorMessage}</div>}

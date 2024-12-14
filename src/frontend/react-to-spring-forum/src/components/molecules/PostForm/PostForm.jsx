@@ -26,6 +26,7 @@ const PostForm = ({ show, toggleIsPostFormVisible, userProfile }) => {
         setImageList(prevImages => [...prevImages, ...files]);
     };
 
+
     const removeImage = (indexToRemove) => {
         setImageList(prevImages =>
             prevImages.filter((_, index) => index !== indexToRemove)

@@ -2,9 +2,9 @@ import s from "./style.module.css";
 import Input from "../../atoms/Input/Input";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AuthenticationAPI } from "../../../api/AuthenticateAPI";
+import { UserAPI } from "../../../api/UserAPI";
 import PrimaryButton from "../../atoms/PrimaryButton/PrimaryButton";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 
 const LoginForm = ({ isNotLogIn }) => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const LoginForm = ({ isNotLogIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await AuthenticationAPI.authenticate({
+      const response = await UserAPI.authenticate({
         username,
         password,
       });

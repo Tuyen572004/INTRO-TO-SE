@@ -7,7 +7,7 @@ import LoginRegister from "./components/pages/LoginRegister/LoginRegister";
 import VerificationSuccess from "./components/pages/Verification/VerificationSuccess";
 import VerificationFailed from "./components/pages/Verification/VerificationFailed";
 import Message from "./components/pages/Message/Message";
-import {Routes, Route, Navigate, Outlet} from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import "./index.css"
 import useTokenRefresher from './hooks/useTokenRefresher';
 import Admin from "./components/pages/Admin/Admin";
