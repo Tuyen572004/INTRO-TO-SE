@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { AuthenticationAPI } from "../api/AuthenticateAPI";
+import { UserAPI } from "../api/UserAPI";
 
 const useTokenRefresher = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const useTokenRefresher = () => {
         const timeToExpire = decoded.exp - currentTime;
 
         if (timeToExpire < 300) {
-          const response = await AuthenticationAPI.refreshToken(localStorage.getItem("refreshToken"));
+          const response = await UserAPI.refreshToken(localStorage.getItem("refreshToken"));
           const newAccessToken = response.data.accessToken;
           const newRefreshToken = response.data.refreshToken;
 
@@ -33,7 +33,7 @@ const useTokenRefresher = () => {
       }
     };
 
-    const intervalId = setInterval(refreshTokenInterval, 60 * 1000); 
+    const intervalId = setInterval(refreshTokenInterval, 60 * 1000);
 
     return () => clearInterval(intervalId);
   }, [navigate]);

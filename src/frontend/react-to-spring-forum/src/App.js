@@ -7,21 +7,21 @@ import LoginRegister from "./components/pages/LoginRegister/LoginRegister";
 import VerificationSuccess from "./components/pages/Verification/VerificationSuccess";
 import VerificationFailed from "./components/pages/Verification/VerificationFailed";
 import Message from "./components/pages/Message/Message";
-import {Routes, Route, Navigate, Outlet} from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import "./index.css"
 import useTokenRefresher from './hooks/useTokenRefresher';
 
 const AuthorizedRoutes = () => {
-  const authorized = JSON.parse(localStorage.getItem("accessToken"))?.length > 0;
+  const authorized = localStorage.getItem("accessToken")?.length > 0;
 
-  if(authorized) return <Navigate to="/" replace={true}/>;
-  return <Outlet/>;
+  if (authorized) return <Navigate to="/" replace={true} />;
+  return <Outlet />;
 }
 const App = () => {
   useTokenRefresher();
   return (
     <Routes>
-      <Route element={<AuthorizedRoutes/>}>
+      <Route element={<AuthorizedRoutes />}>
         <Route path="login" element={<LoginRegister />} />
       </Route>
       <Route path="verification-success" element={<VerificationSuccess />} />

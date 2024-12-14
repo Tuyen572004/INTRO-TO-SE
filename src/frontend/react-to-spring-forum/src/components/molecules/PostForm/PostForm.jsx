@@ -50,8 +50,8 @@ const PostForm = ({ toggleIsPostPopup }) => {
       setImageList([]);
       console.log("File upload and post creation success!");
 
-      if (response.data.code === 1000) {
-        dispatch(addPost(response.data.data));
+      if (response.code === 1000) {
+        dispatch(addPost(response.data));
         toggleIsPostPopup();
       }
     } catch (error) {

@@ -8,7 +8,6 @@ import { EffectCoverflow, Pagination } from "swiper/modules";
 import ReactBar from "../ReactionBar/ReactionBar";
 
 const PostItem = ({ post }) => {
-  console.log("PostItem", post);
   return (
     <div className={s.container}>
       <div className={s.header}>
