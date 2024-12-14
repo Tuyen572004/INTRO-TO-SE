@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -85,6 +86,14 @@ public class UserProfileServiceImp implements UserProfileService{
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
 
+        if (request.getFirstName() != null && request.getFirstName().isEmpty()) {
+            throw new AppException(ErrorCode.FIRST_NAME_IS_EMPTY);
+        }
+
+        if (request.getLastName() != null && request.getLastName().isEmpty()) {
+            throw new AppException(ErrorCode.LAST_NAME_IS_EMPTY);
+        }
+
         userProfilerMapper.updateUserProfile(userProfile, request);
 
         userProfile = userProfileRepository.save(userProfile);
@@ -94,10 +103,82 @@ public class UserProfileServiceImp implements UserProfileService{
 
     @Override
     public void deleteUserProfileByUserId(String userId) {
-        if (!userProfileRepository.existsByUserId(userId)) {
-            throw new AppException(ErrorCode.USER_PROFILE_NOT_FOUND);
+        userProfileRepository.deleteUserProfileByUserId(userId);
+    }
+
+    @Override
+    public void addFriend(String userId, String friendId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIds = userProfile.getFriendIds();
+
+        if(friendIds == null){
+            friendIds = new ArrayList<>();
         }
 
-        userProfileRepository.deleteUserProfileByUserId(userId);
+        friendIds.add(friendId);
+        userProfile.setFriendIds(friendIds);
+        userProfileRepository.save(userProfile);
+    }
+
+    @Override
+    public void unfriend(String userId, String friendId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIds = userProfile.getFriendIds();
+        if(friendIds == null || !friendIds.contains(friendId)){
+            throw new AppException(ErrorCode.FRIEND_NOT_FOUND);
+        }
+
+        UserProfile friendProfile = userProfileRepository.findByUserId(friendId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIdsOfFriend = friendProfile.getFriendIds();
+        if(friendIdsOfFriend == null || !friendIdsOfFriend.contains(userId)){
+            throw new AppException(ErrorCode.FRIEND_NOT_FOUND);
+        }
+
+        friendIdsOfFriend.remove(userId);
+        friendIds.remove(friendId);
+        userProfile.setFriendIds(friendIds);
+        friendProfile.setFriendIds(friendIdsOfFriend);
+        userProfileRepository.save(userProfile);
+        userProfileRepository.save(friendProfile);
+    }
+
+    @Override
+    public PageResponse<UserProfileResponse> getFriends(int page, int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserProfile userProfile = userProfileRepository.findByUserId(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIds = userProfile.getFriendIds();
+        if(friendIds == null){
+            friendIds = new ArrayList<>();
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<UserProfile> userProfiles = userProfileRepository.findAllByUserIdIn(friendIds, pageable);
+        List<UserProfileResponse> userProfileResponses = userProfiles.map(userProfilerMapper::toUserProfileResponse).getContent();
+
+        return PageResponse.<UserProfileResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements(userProfiles.getTotalElements())
+                .totalPages(userProfiles.getTotalPages())
+                .data(userProfileResponses)
+                .build();
+    }
+
+    @Override
+    public List<UserProfileResponse> getAllFriends() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserProfile userProfile = userProfileRepository.findByUserId(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<String> friendIds = userProfile.getFriendIds();
+        if(friendIds == null){
+            friendIds = new ArrayList<>();
+        }
+
+        List<UserProfile> userProfiles = userProfileRepository.findAllByUserIdIn(friendIds);
+        return userProfiles.stream().map(userProfilerMapper::toUserProfileResponse).toList();
     }
 }

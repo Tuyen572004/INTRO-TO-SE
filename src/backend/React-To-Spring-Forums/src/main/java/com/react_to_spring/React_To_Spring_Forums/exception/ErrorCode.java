@@ -13,6 +13,7 @@ public enum ErrorCode {
 //    Internal Server Error	Developer error 1xxx
     INVALID_KEY(1001, HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Key"),
     CANNOT_SEND_EMAIL(1002, HttpStatus.INTERNAL_SERVER_ERROR, "Cannot send email"),
+    CANNOT_UPLOAD_IMAGE(1003, HttpStatus.INTERNAL_SERVER_ERROR, "Cannot upload image"),
 //    Bad Request Client Input Error 2xxx
     INVALID_USERNAME(2001, HttpStatus.BAD_REQUEST, "Username should be at least {} characters"),
     INVALID_PASSWORD(2002, HttpStatus.BAD_REQUEST, "Password should be at least {} characters, " +
@@ -27,12 +28,21 @@ public enum ErrorCode {
     REQUIRED_COMMENT_ID(2010, HttpStatus.BAD_REQUEST, "Comment ID is required"),
     CONTENT_IS_EMPTY(2011, HttpStatus.BAD_REQUEST, "Content is empty"),
     TITLE_IS_EMPTY(2012, HttpStatus.BAD_REQUEST, "Title is empty"),
-    USER_NOT_POST_OWNER(2013, HttpStatus.BAD_REQUEST, "Cannot edit other people's posts"),
-    USER_NOT_COMMENT_OWNER(2014, HttpStatus.BAD_REQUEST, "Cannot edit other people's comments"),
+    USER_NOT_POST_OWNER(2013, HttpStatus.BAD_REQUEST, "Cannot edit/delete other people's posts"),
+    USER_NOT_COMMENT_OWNER(2014, HttpStatus.BAD_REQUEST, "Cannot edit/delete other people's comments"),
+    USER_NOT_REACT_OWNER(2015, HttpStatus.BAD_REQUEST, "Cannot edit/delete other people's reacts"),
+    FIRST_NAME_IS_EMPTY(2016, HttpStatus.BAD_REQUEST, "First name is empty"),
+    LAST_NAME_IS_EMPTY(2017, HttpStatus.BAD_REQUEST, "Last name is empty"),
+    CANNOT_ADD_YOURSELF_AS_FRIEND(2018, HttpStatus.BAD_REQUEST, "Cannot add yourself as friend"),
+    ALREADY_FRIEND(2019, HttpStatus.BAD_REQUEST, "Already friend"),
+    ALREADY_SENT_ADD_FRIEND_REQUEST(2020, HttpStatus.BAD_REQUEST, "Already sent add friend request"),
+    ADD_FRIEND_REQUEST_NOT_FOUND(2021, HttpStatus.BAD_REQUEST, "Add friend request not found"),
+    ALREADY_SENT_REPORT(2022, HttpStatus.BAD_REQUEST, "Already sent report"),
 
     //    Existed Error 3xxx
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),
     USER_PROFILE_EXISTED(3002, HttpStatus.BAD_REQUEST, "User profile existed"),
+    EMAIL_EXISTED(3003, HttpStatus.BAD_REQUEST, "Email existed"),
 //    Not Found Error 4xxx
     USER_NOT_FOUND(4001, HttpStatus.NOT_FOUND, "User not found"),
     ROLE_NOT_FOUND(4002, HttpStatus.NOT_FOUND, "Role not found"),
@@ -42,6 +52,11 @@ public enum ErrorCode {
     REACT_NOT_FOUND(4006, HttpStatus.NOT_FOUND, "React not found"),
     VERIFY_CODE_NOT_FOUND(4007, HttpStatus.NOT_FOUND, "Verify code not found"),
     COMMENT_NOT_FOUND(4008, HttpStatus.NOT_FOUND, "Comment not found"),
+    CHAT_ROOM_NOT_FOUND(4009, HttpStatus.NOT_FOUND, "Chat room not found"),
+    NOTIFICATION_NOT_FOUND(4010, HttpStatus.NOT_FOUND, "Notification not found"),
+    FRIEND_NOT_FOUND(4011, HttpStatus.NOT_FOUND, "Friend not found"),
+    REPORT_VIOLATING_POST_NOT_FOUND(4012, HttpStatus.NOT_FOUND, "Report violating post not found"),
+    NOTIFICATION_RECIPIENT_NOT_FOUND(4013,HttpStatus.NOT_FOUND,"Notification Recipient not found" ),
 //    Unauthorized	Client	5xxx (Unauthenticated error)
     INVALID_TOKEN(5001, HttpStatus.UNAUTHORIZED, "Invalid token"),
     INVALID_USERNAME_PASSWORD(5002, HttpStatus.UNAUTHORIZED, "Invalid username or password"),

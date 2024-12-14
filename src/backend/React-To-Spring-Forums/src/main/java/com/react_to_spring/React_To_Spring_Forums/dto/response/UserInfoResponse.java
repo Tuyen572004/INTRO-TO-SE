@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class UserInfoResponse {
+    String id;
     String name;
     String username;
     String avatar;

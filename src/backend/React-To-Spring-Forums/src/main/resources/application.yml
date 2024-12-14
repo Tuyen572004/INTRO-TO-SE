@@ -5,6 +5,9 @@ server:
 
 client:
   url: "http://localhost:3000"
+  verification-success-page: "/verification-success"
+  verification-fail-page: "/verification-fail"
+  expire-verification-page-time: 5 # in minute
 
 spring:
   application:
@@ -83,6 +86,16 @@ app:
           success: "Logout successfully"
         change-password:
           success: "Password has been changed"
+        change-email:
+          success: "Email has been changed"
+    add-friend:
+      response:
+        response-add-friend-success: "Response add friend request successfully"
+        add-friend-success: "Add friend request is sent successfully"
+        unfriend-success: "Unfriend successfully"
+    notification:
+        response:
+            mark-as-read-success: "Mark as read successfully"
   email:
     verification:
       expiration: 5 # in minute
@@ -95,9 +108,8 @@ app:
     sender:
       email: ${SENDER_EMAIL}
       name : ${SENDER_NAME}
-
-
-
+  time:
+    EXPIRATION_TIME_KEY: ${EXPIRATION_TIME_KEY}
 
 
 open:

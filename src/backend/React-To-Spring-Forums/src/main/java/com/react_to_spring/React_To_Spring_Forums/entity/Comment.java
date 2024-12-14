@@ -30,7 +30,7 @@ public class Comment {
     String content;
 
     @Field(name = "image_url")
-    List<String> imageUrls;
+    List<String> imageList;
 
     @Field(name = "created_date")
     LocalDateTime createdDate;

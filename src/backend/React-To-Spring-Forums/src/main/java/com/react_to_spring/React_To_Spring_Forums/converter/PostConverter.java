@@ -1,10 +1,8 @@
 package com.react_to_spring.React_To_Spring_Forums.converter;
 
-import com.nimbusds.jose.proc.SecurityContext;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
-import com.react_to_spring.React_To_Spring_Forums.entity.React;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
@@ -51,6 +49,8 @@ public class PostConverter {
         PostResponse postResponse = postMapper.toPostResponse(post);
 
         UserInfoResponse userInfo = UserInfoResponse.builder().name("").username("").avatar("").build();
+        userInfo.setId(post.getUserId());
+
         Optional<UserProfile> userProfile = userProfileRepository.findByUserId(post.getUserId());
         Optional<User> user = userRepository.findById(post.getUserId());
 
@@ -65,23 +65,16 @@ public class PostConverter {
         });
         postResponse.setUser(userInfo);
 
-        // get reacts
-        List<React> reacts = reactRepository.findAllByPostId(post.getId());
-        Map<String, Integer> reactMap = new HashMap<>();
-        for (React react : reacts) {
-            String reactName = react.getName().toString();
-            reactMap.put(reactName, reactMap.getOrDefault(reactName, 0) + 1);
-        }
-        postResponse.setReactions(reactMap);
+        // get react counts
+        postResponse.setReactCounts(reactRepository.countByPostId(post.getId()));
+        // get comment counts
+        postResponse.setCommentCounts(commentRepository.countByPostId(post.getId()));
 
         // check if user reacted to this post
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String myUserId = authentication.getName();
-        Boolean isReacted = reactRepository.existsByUserIdAndPostId(myUserId, post.getId());
+        String userId = authentication.getName();
+        boolean isReacted = reactRepository.existsByUserIdAndPostId(userId, post.getId());
         postResponse.setIsReacted(isReacted);
-
-        // get comment counts
-        postResponse.setCommentCounts(commentRepository.countByPostId(post.getId()));
 
         return postResponse;
     }

@@ -1,0 +1,47 @@
+.customTextarea:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.titleTextarea {
+    font-weight: bold;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 0;
+    resize: none;
+}
+
+.contentTextarea {
+    border: none;
+    resize: none;
+    max-height: 25rem;
+    overflow-y: auto;
+}
+
+.addImageTitle {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.modalTitle {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.saveButton {
+    width: 100%;
+    background: black;
+    border-radius: 12px;
+    border: none;
+}
+
+.saveButton:hover {
+    background: #333;
+}
+
+.saveButton:focus {
+    outline: none;
+    box-shadow: none;
+    background: #333;
+}

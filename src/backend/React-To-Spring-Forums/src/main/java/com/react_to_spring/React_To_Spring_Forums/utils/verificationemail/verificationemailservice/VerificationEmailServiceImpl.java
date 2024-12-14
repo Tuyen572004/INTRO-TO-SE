@@ -14,11 +14,12 @@ import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
-@Component
+@Service
 @Qualifier("RegistrationVerificationEmailService")
 @RequiredArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE, makeFinal = true)
@@ -31,8 +32,6 @@ public class VerificationEmailServiceImpl implements VerificationEmailService {
     VerificationEmailGenerator codeGenerator;
 
     EmailService emailService;
-
-    VerifyCodeRepository verifyCodeRepository;
 
     @NonFinal
     @Value("${app.email.sender.email}")
@@ -92,9 +91,6 @@ public class VerificationEmailServiceImpl implements VerificationEmailService {
 
     private EmailRequest buildEmailRequest(User user, String htmlContent) {
 
-        System.out.println("email: " +user.getEmail());
-        System.out.println("username: " +user.getUsername());
-
         return  EmailRequest.builder()
                 .sender(Account.builder().email(senderEmail).name(senderName).build())
                 .to(List.of(Account.builder().name(user.getUsername()).email(user.getEmail()).build()))
@@ -105,25 +101,25 @@ public class VerificationEmailServiceImpl implements VerificationEmailService {
 
 
     @Override
-    public void sendRegistration(User user) {
+    public VerifyCode sendRegistration(User user) {
         VerifyCode verifyCode = linkGenerator.generateVerifyCode(user);
         String htmlContent = buildRegistrationHtmlContent(user, verifyCode);
         EmailRequest emailRequest = buildEmailRequest(user, htmlContent);
-
-
         // send email
         emailService.sendEmail(emailRequest);
-        verifyCodeRepository.save(verifyCode);
+
+        return verifyCode;
     }
 
     @Override
-    public void sendCode(User user) {
+    public VerifyCode sendCode(User user) {
         VerifyCode verifyCode = codeGenerator.generateVerifyCode(user);
         String htmlContent = buildAccountUpdateHtmlContent(user, verifyCode);
         EmailRequest emailRequest = buildEmailRequest(user, htmlContent);
 
         // send email
         emailService.sendEmail(emailRequest);
-        verifyCodeRepository.save(verifyCode);
+
+        return verifyCode;
     }
 }

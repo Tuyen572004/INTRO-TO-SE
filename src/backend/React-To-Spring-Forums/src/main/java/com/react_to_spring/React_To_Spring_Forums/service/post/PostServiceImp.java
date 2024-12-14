@@ -5,11 +5,13 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateReq
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
+import com.react_to_spring.React_To_Spring_Forums.enums.NotificationTemplate;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.PostMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.*;
 import com.react_to_spring.React_To_Spring_Forums.converter.PostConverter;
+import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
 import com.react_to_spring.React_To_Spring_Forums.utils.StringUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,8 @@ public class PostServiceImp implements PostService {
     private ReactRepository reactRepository;
 
     private PostConverter postConverter;
+
+    NotificationService notificationService;
 
     @Override
     public PostResponse getPostById(String id) {
@@ -118,6 +122,23 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public PageResponse<PostResponse> getPostsDashboard(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        Page<Post> posts = postRepository.findByNotUserId(userId, pageable);
+        List<PostResponse> postResponses = postConverter.convertToPostResponses(posts.getContent());
+
+        return PageResponse.<PostResponse>builder()
+                .page(page)
+                .size(size)
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
+    }
+
+    @Override
     public PostResponse createPost(PostCreationRequest postCreationRequest) {
         if (StringUtil.isEmpty(postCreationRequest.getTitle())) {
             throw new AppException(ErrorCode.TITLE_IS_EMPTY);
@@ -140,6 +161,8 @@ public class PostServiceImp implements PostService {
         post.setUserId(userId);
 
         post = postRepository.save(post);
+
+        //notificationService.sendPostCreationNotification(userId,post.getId());
 
         return postConverter.buildPostResponse(post);
     }
@@ -175,10 +198,25 @@ public class PostServiceImp implements PostService {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
 
+        Post post = postRepository.findById(id).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        String postOwnerId = post.getUserId();
+
+        if (!postOwnerId.equals(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_POST_OWNER);
+        }
+
         commentRepository.deleteAllByPostId(id);
         reactRepository.deleteAllByPostId(id);
 
         postRepository.deleteById(id);
+
+        // sendNotification to owner of post if post is deleted by admin
+        // UNCOMMENT IT AFTER FIXING THE ERROR : IF ADMIN DELETE THE POST
+        // --> THEN IT WILL THROW EXCEPTION : USER NOT POST OWNER AT LINE 206
+        // notificationService.sendDeletePostNotification(userId, postOwnerId);
     }
 }
 

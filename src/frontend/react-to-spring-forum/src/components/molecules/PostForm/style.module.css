@@ -1,106 +1,79 @@
-.overlay {
-	position: fixed;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 2;
+.customTextarea:focus {
+	outline: none;
+	box-shadow: none;
 }
 
-.container {
-	width: 40vw;
-	height: auto;
-	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-	border-radius: 1vw;
-	padding: 10px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	z-index: 3;
-	background-color: white;
+.titleTextarea {
+	font-weight: bold;
+	font-size: 1.5rem;
+	border: none;
+	border-radius: 0;
+	resize: none;
+}
+
+.contentTextarea {
+	border: none;
+	resize: none;
+	max-height: 25rem;
+	overflow-y: auto;
+}
+
+.addImage {
+	margin-left: 0;
+	margin-right: 0;
+	padding: 8px;
+	border: 1px solid black;
+	border-radius: 10px;
+	background-color: #f8f9fa;
 	position: relative;
 }
 
-.header {
-	text-align: center;
+.addImageTitle {
+	font-weight: bold;
+	font-size: 1.2rem;
+}
+
+.modalTitle {
 	width: 100%;
-	padding: 10px;
+	text-align: center;
+	font-weight: bold;
 }
 
 .avatar {
-	height: 40px;
-	width: 40px;
+	height: 50px;
+	width: 50px;
 	border-radius: 100%;
 	border: 1px solid #D9D9D9;
+	margin-right: 10px;
+}
+
+.avatar .inner_avatar img {
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+	object-fit: cover;
 }
 
 .name {
-	margin-left: 5px;
-}
-
-.title {
-	width: 90%;
-	border: none;
-	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-	padding: 10px;
-	border-radius: 10px;
-	margin-bottom: 3vh;
-	font-size: 0.8rem;
-}
-
-.title:focus {
-	outline: none;
-}
-
-.content {
-	width: 90%;
-	height: 15vh;
-	border: none;
-	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-	padding: 10px;
-	border-radius: 10px;
-	margin-bottom: 5vh;
-	font-size: 0.8rem;
-
-}
-
-.content:focus {
-	outline: none;
-}
-
-.close_popup {
-	position: absolute;
-	top: 1vh;
-	right: 1vw;
-	border: none;
-	background-color: transparent;
-}
-
-.uploader {
-	width: 90%;
-	padding: 5px;
-	border-radius: 10px;
-	background: white;
-	font-size: 0.8rem;
-	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-	text-align: center;
-	height: auto;
-	margin-bottom: 3vh;
-}
-
-.post_button {
-	font-size: 13px;
-	color: white;
+	font-size: large;
 	font-weight: bold;
-	padding: 5px 10px;
-	border: 1px solid #D9D9D9;
+}
+
+.username {}
+
+
+.postButton {
+	background-color: black;
+	border: none;
 	border-radius: 10px;
-	background: black;
+	width: 100%;
+}
+
+.postButton:hover {
+	background-color: #333333;
+}
+
+.postButton:focus {
+	outline: none;
+	background: #333333;
 }

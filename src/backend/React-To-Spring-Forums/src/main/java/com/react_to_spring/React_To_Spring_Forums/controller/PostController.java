@@ -60,6 +60,17 @@ public class PostController {
     }
 
 
+    @GetMapping("/dashboard")
+    @Operation(summary = "Get all posts by not like user ID",
+            description = "The results will include information about the post and the user who created it")
+    public ApiResponse<PageResponse<PostResponse>> getPostsDashboard(
+            @RequestParam(value = "page", required = false, defaultValue = "1") @Min(0) int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        return ApiResponse.<PageResponse<PostResponse>>builder()
+                .data(postService.getPostsDashboard(page, size))
+                .build();
+    }
+
     @GetMapping
     @Operation(summary = "Get all posts by title",
             description = "The results will include information about the post and the user who created it")
