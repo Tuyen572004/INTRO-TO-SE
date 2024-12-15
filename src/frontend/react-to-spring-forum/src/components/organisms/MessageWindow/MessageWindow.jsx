@@ -6,68 +6,27 @@ import "swiper/css/scrollbar";
 import { GrSend } from "react-icons/gr";
 import { Scrollbar } from "swiper/modules";
 import SearchBar from "../../atoms/SearchBar/SearchBar";
+import { MessageAPI } from "../../../api/MessageAPI";
 import s from "./style.module.css";
 
 const MessageWindow = () => {
-  const users = [
-    {
-      id: 1,
-      name: "User1",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar1",
-    },
-    {
-      id: 2,
-      name: "User2",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar2",
-    },
-    {
-      id: 3,
-      name: "User3",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar3",
-    },
-    {
-      id: 4,
-      name: "User4",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar4",
-    },
-    {
-      id: 5,
-      name: "User5",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar5",
-    },
-    {
-      id: 6,
-      name: "User6",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar6",
-    },
-    {
-      id: 7,
-      name: "User7",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar7",
-    },
-    {
-      id: 8,
-      name: "User8",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar8",
-    },
-    {
-      id: 9,
-      name: "User9",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar9",
-    },
-    {
-      id: 10,
-      name: "User10",
-      avatar: "https://api.dicebear.com/5.x/bottts/svg?seed=avatar10",
-    },
-  ];
-
-  const [selectedUser, setSelectedUser] = useState(users[0]);
+  const [chatRooms, setChatRooms] = useState([]);
+  const [selectedChatRoom, setSelectedChatRoom] = useState(chatRooms[0]);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+
+  const fetchChatRoom = async () => {
+    try {
+      const response = await MessageAPI.getChatRooms(1, 5);
+      console.log(response);
+      setChatRooms(response.data.data);
+    } catch (error) {
+      console.error("Error fetching chat rooms:", error);
+    }
+  };
 
   const fetchMessages = async () => {
     setLoading(true);
@@ -76,7 +35,8 @@ const MessageWindow = () => {
 
       const newMessages = Array.from({ length: 20 }, (_, index) => ({
         id: messages.length + index + 1,
-        senderId: Math.random() > 0.5 ? "me" : selectedUser.id,
+        senderId:
+          Math.random() > 0.5 ? "me" : selectedChatRoom.participantIds[0],
         text: `Tin nhắn từ ${messages.length + index + 1}p trước`,
         timestamp: new Date(Date.now() - index * 60000).toISOString(),
       }));
@@ -93,6 +53,10 @@ const MessageWindow = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchChatRoom();
+  }, []);
 
   useEffect(() => {
     fetchMessages();
@@ -161,21 +125,21 @@ const MessageWindow = () => {
             scrollbar={{ draggable: true }}
             className={s.swiper}
           >
-            {users.map((user) => (
+            {chatRooms.map((room) => (
               <SwiperSlide
-                key={user.id}
+                key={room.chatId}
                 className={s.user_slide}
-                onClick={() => setSelectedUser(user)}
+                onClick={() => setSelectedChatRoom(room)}
               >
                 <div className={s.user}>
                   <div className={s.avatar}>
                     <img
-                      src={user.avatar}
-                      alt={user.name}
+                      src={room.avatar}
+                      alt={room.name}
                       className={s.avatar_image}
                     />
                   </div>
-                  <p className={s.user_name}>{user.name}</p>
+                  <p className={s.user_name}>{room.name}</p>
                 </div>
               </SwiperSlide>
             ))}
@@ -185,12 +149,12 @@ const MessageWindow = () => {
           <div className={s.box_chat_header}>
             <div className={s.avatar}>
               <img
-                src={selectedUser.avatar}
-                alt={selectedUser.name}
+                src={selectedChatRoom.avatar}
+                alt={selectedChatRoom.name}
                 className={s.avatar_image}
               />
             </div>
-            <p className={s.user_name}>{selectedUser.name}</p>
+            <p className={s.user_name}>{selectedChatRoom.name}</p>
           </div>
           <div className={s.box_chat_body}>
             <div
