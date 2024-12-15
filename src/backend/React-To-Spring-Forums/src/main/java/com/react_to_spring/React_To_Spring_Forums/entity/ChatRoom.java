@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.List;
 
+@ToString
 @Document("chat_rooms")
 @Getter
 @Setter
