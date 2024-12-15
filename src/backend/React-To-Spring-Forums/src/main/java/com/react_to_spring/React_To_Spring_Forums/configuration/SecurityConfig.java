@@ -31,7 +31,7 @@ public class SecurityConfig {
     @NonFinal
     String[] PUBLIC_POST_ENDPOINTS = {
             "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh",
-            "/verify/send-code", "/verify/send-link",
+            "/verify/send-code", "/verify/send-link","/auth/forget-password",
 //            "/posts", "/posts/**", "/comments", "/comments/**", "/reacts", "/reacts/**"
     };
 
