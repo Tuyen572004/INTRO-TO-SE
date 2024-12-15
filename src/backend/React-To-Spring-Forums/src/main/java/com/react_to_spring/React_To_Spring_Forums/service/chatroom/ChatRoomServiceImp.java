@@ -3,12 +3,19 @@ package com.react_to_spring.React_To_Spring_Forums.service.chatroom;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.chatroom.ChatRoomCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ChatRoomResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserProfileResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.ChatRoom;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
+import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
+import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.ChatRoomMapper;
+import com.react_to_spring.React_To_Spring_Forums.mapper.UserProfilerMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.ChatRoomRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,27 +23,35 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ChatRoomServiceImp implements ChatRoomService {
 
     ChatRoomRepository chatRoomRepository;
+    UserProfileRepository UserProfileRepository;
 
     ChatRoomMapper chatRoomMapper;
+    UserProfilerMapper userProfilerMapper;
 
     @Override
     public ChatRoomResponse createChatRoom(ChatRoomCreationRequest request) {
         ChatRoom chatRoom = chatRoomRepository.findChatRoomByParticipantIds(request.getParticipantIds()).orElse(
                 chatRoomMapper.toChatRoom(request)
         );
-        chatRoom.setChatId(UUID.randomUUID().toString());
-        chatRoomRepository.save(chatRoom);
 
-        return chatRoomMapper.toChatRoomResponse(chatRoom);
+        chatRoom.setChatId(UUID.randomUUID().toString());
+        if (request.getChatRoomName() == null || request.getChatRoomName().isEmpty()) {
+            chatRoom.setChatRoomName("");
+        }
+        chatRoomRepository.save(chatRoom);
+        log.info(chatRoom.toString());
+        return buildChatRoomResponse(chatRoom);
     }
 
     @Override
@@ -51,7 +66,7 @@ public class ChatRoomServiceImp implements ChatRoomService {
                     .build());
         }
 
-        return chatRoomMapper.toChatRoomResponse(chatRoom);
+        return buildChatRoomResponse(chatRoom);
     }
 
     @Override
@@ -63,7 +78,9 @@ public class ChatRoomServiceImp implements ChatRoomService {
                 .findChatRoomByParticipantIdsContaining(List.of(authentication.getName()), pageable);
 
         List<ChatRoomResponse> chatRoomResponses = chatRooms.getContent().stream()
-                .map(chatRoomMapper::toChatRoomResponse).toList();
+                .map(this::buildChatRoomResponse).toList();
+
+
 
         return PageResponse.<ChatRoomResponse>builder()
                 .page(page)
@@ -77,5 +94,28 @@ public class ChatRoomServiceImp implements ChatRoomService {
     @Override
     public void deleteChatRoom(String chatId) {
         chatRoomRepository.deleteByChatId(chatId);
+    }
+
+    private String buildChatRoomName(List<UserProfileResponse> participantProfiles) {
+        StringBuilder chatRoomName = new StringBuilder();
+        for (UserProfileResponse userProfile : participantProfiles) {
+            chatRoomName.append(userProfile.getFirstName()).append(" ").append(userProfile.getLastName()).append(", ");
+        }
+        return chatRoomName.substring(0, chatRoomName.length() - 2);
+    }
+
+    private ChatRoomResponse buildChatRoomResponse(ChatRoom chatRoom) {
+        ChatRoomResponse chatRoomResponse = chatRoomMapper.toChatRoomResponse(chatRoom);
+        List<UserProfileResponse> participantProfiles = new ArrayList<>();
+        for (String participantId : chatRoom.getParticipantIds()) {
+            UserProfile userProfile = UserProfileRepository.findByUserId(participantId).orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+            participantProfiles.add(userProfilerMapper.toUserProfileResponse(userProfile));
+        }
+        chatRoomResponse.setParticipantProfiles(participantProfiles);
+
+        if ( chatRoom.getChatRoomName() == null || chatRoom.getChatRoomName().isEmpty()) {
+            chatRoomResponse.setChatRoomName(buildChatRoomName(participantProfiles));
+        }
+        return chatRoomResponse;
     }
 }

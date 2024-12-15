@@ -13,5 +13,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChatRoomResponse {
     String chatId;
-    List<String> participantIds;
+    String chatRoomName;
+    List<UserProfileResponse> participantProfiles;
 }
