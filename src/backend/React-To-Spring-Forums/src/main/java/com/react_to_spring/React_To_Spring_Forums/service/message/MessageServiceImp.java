@@ -62,9 +62,10 @@ public class MessageServiceImp implements MessageService {
         message.setSentAt(LocalDateTime.now());
         message.setReadStatus(false);
 
-        simpMessagingTemplate.convertAndSendToUser(request.getSenderId(), "/queue/messages", messageMapper.toMessageResponse(message));
+        String destination = "/queue/messages" + chatId;
+        simpMessagingTemplate.convertAndSendToUser(request.getSenderId(), destination, messageMapper.toMessageResponse(message));
         for (String recipientId : request.getRecipientIds()) {
-            simpMessagingTemplate.convertAndSendToUser(recipientId, "/queue/messages", messageMapper.toMessageResponse(message));
+            simpMessagingTemplate.convertAndSendToUser(recipientId, destination, messageMapper.toMessageResponse(message));
             notificationService.sendMessageNotification(request.getSenderId(),recipientId, message.getId());
         }
         return messageMapper.toMessageResponse(messageRepository.save(message));
