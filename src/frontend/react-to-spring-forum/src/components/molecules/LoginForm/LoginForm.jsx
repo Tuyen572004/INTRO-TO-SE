@@ -5,8 +5,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserAPI } from "../../../api/UserAPI";
 import PrimaryButton from "../../atoms/PrimaryButton/PrimaryButton";
 import { jwtDecode } from "jwt-decode";
-
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../store/userSlice";
 const LoginForm = ({ isNotLogIn }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -52,6 +54,7 @@ const LoginForm = ({ isNotLogIn }) => {
       navigate(from, { replace: true });
       if (response.code === 1000) {
         navigate("/");
+        dispatch(setUser(decoded.user));
       }
     } catch (error) {
       if (error.response?.data?.code === 5002) {
