@@ -6,6 +6,9 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.ChatRoom;
 import com.react_to_spring.React_To_Spring_Forums.mapper.ChatRoomMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.ChatRoomRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +17,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ChatRoomServiceImp implements ChatRoomService {
 
     ChatRoomRepository chatRoomRepository;
@@ -24,8 +30,10 @@ public class ChatRoomServiceImp implements ChatRoomService {
 
     @Override
     public ChatRoomResponse createChatRoom(ChatRoomCreationRequest request) {
-        ChatRoom chatRoom = chatRoomMapper.toChatRoom(request);
-
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomByParticipantIds(request.getParticipantIds()).orElse(
+                chatRoomMapper.toChatRoom(request)
+        );
+        chatRoom.setChatId(UUID.randomUUID().toString());
         chatRoomRepository.save(chatRoom);
 
         return chatRoomMapper.toChatRoomResponse(chatRoom);
