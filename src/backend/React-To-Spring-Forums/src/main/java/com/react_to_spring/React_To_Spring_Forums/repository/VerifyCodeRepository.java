@@ -12,6 +12,8 @@ public interface VerifyCodeRepository extends JpaRepository<VerifyCode, String> 
 
     Optional<VerifyCode> findByUserIdAndVerifyCode(String userId, String verifyCode);
 
+    Optional<VerifyCode> findByVerifyCode(String verificationCode);
+
 
 //    Optional<VerifyCode> findByUser_id(String userId);
 }

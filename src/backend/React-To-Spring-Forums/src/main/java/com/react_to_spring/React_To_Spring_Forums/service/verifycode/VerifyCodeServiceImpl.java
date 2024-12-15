@@ -100,6 +100,20 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         verifyCodeRepository.delete(verifyCode);
     }
 
+    @Override
+    public User verifyCode(String verificationCode) {
+        VerifyCode verifyCode = verifyCodeRepository.findByVerifyCode(verificationCode)
+                .orElseThrow(() -> new AppException(ErrorCode.VERIFY_CODE_NOT_FOUND));
+        if (checkExpiration(verifyCode)) {
+            verifyCodeRepository.delete(verifyCode);
+            throw new AppException(ErrorCode.VERIFY_CODE_EXPIRED);
+        }
+
+        User user = verifyCode.getUser();
+        verifyCodeRepository.delete(verifyCode);
+        return user;
+    }
+
 
     // Used : hashExpirationTime
     // eg : '19820'

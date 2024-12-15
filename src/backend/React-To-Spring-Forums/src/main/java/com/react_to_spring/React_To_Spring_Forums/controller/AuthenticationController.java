@@ -85,4 +85,12 @@ public class AuthenticationController {
         authenticationService.changeEmail(request);
         return ApiResponse.<Void>builder().message(CHANGE_EMAIL_SUCCESS_MESSAGE).build();
     }
+
+    @PostMapping("/forget-password")
+    @Operation(summary = "Forget password",
+            description = "Forget password of user with email, verification code (sent via email after clicking sent code)")
+    public ApiResponse<Void> forgetPassword(@Valid @RequestBody ForgetPasswordRequest request) {
+        authenticationService.forgetPassword(request);
+        return ApiResponse.<Void>builder().message(CHANGE_PASSWORD_SUCCESS_MESSAGE).build();
+    }
 }
