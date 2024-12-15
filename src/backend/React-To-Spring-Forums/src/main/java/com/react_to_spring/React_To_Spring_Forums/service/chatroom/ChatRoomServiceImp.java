@@ -97,8 +97,13 @@ public class ChatRoomServiceImp implements ChatRoomService {
     }
 
     private String buildChatRoomName(List<UserProfileResponse> participantProfiles) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         StringBuilder chatRoomName = new StringBuilder();
         for (UserProfileResponse userProfile : participantProfiles) {
+            if(userProfile.getUserId().equals(authentication.getName())) {
+                continue;
+            }
             chatRoomName.append(userProfile.getFirstName()).append(" ").append(userProfile.getLastName()).append(", ");
         }
         return chatRoomName.substring(0, chatRoomName.length() - 2);
