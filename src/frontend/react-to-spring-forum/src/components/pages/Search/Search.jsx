@@ -2,8 +2,8 @@ import { useLocation } from "react-router-dom";
 import s from "./style.module.css";
 import {useEffect, useState} from "react";
 import {PostAPI} from "../../../api/PostAPI";
-import Spinner from 'react-bootstrap/Spinner';
 import PostItem from "../../molecules/PostItem/PostItem";
+import Loading from "../../atoms/Loading/Loading";
 
 const Search = () => {
     const location = useLocation();
@@ -31,11 +31,7 @@ const Search = () => {
 
     if (loading) {
         return (
-            <div className={s.loading_container}>
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </div>
+            <Loading />
         );
     }
 

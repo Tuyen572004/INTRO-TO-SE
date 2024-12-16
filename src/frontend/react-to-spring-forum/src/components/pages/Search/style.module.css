@@ -14,16 +14,6 @@
 	font-weight: 600;
 }
 
-.loading_container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
 .warning {
 	font-size: 20px;
 	font-weight: 600;
