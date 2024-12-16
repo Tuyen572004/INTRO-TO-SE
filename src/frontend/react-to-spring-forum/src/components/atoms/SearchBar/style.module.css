@@ -1,12 +1,20 @@
 .container {
 	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+
+.search_bar_container {
+	display: flex;
 	flex-direction: row;
-	width: 50%;
+	width: 35rem;
 	padding: 0px 12px 0px 12px;
 	box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 	border-radius: 16px;
 	align-items: center;
 	background-color: #d3d3d3;
+	z-index: 999;
 }
 
 .search_bar {
@@ -26,4 +34,18 @@
 
 .clear_button {
 	display: none;
+}
+
+.search_result_container {
+	width: 35rem;
+	height: auto;
+	max-height: 20rem;
+	z-index: 998;
+	position: absolute;
+	top: 2rem;
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+	border: 1px solid #d3d3d3;
+	background-color: white;
+	overflow-y: auto;
 }

@@ -5,6 +5,7 @@
 	flex-direction: end;
 	justify-content: flex-end;
 	box-sizing: border-box;
+	z-index: 0;
 }
 
 .newsfeed {

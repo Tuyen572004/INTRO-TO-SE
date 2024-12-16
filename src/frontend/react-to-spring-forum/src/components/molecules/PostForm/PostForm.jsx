@@ -12,7 +12,7 @@ import { PostAPI } from "../../../api/PostAPI";
 import s from './style.module.css';
 import ImageList from "../ImageList/ImageList";
 
-const PostForm = ({ show, toggleIsPostFormVisible, userProfile }) => {
+const PostForm = ({ show, toggleIsPostFormVisible, userProfile, user }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [imageList, setImageList] = useState([]);
@@ -89,7 +89,7 @@ const PostForm = ({ show, toggleIsPostFormVisible, userProfile }) => {
                                     <div className={s.name}>{userProfile.firstName + ' ' + userProfile.lastName}</div>
                                 </div>
                                 <div className="col-12">
-                                    <div className={s.username}>@vuthevy1209</div>
+                                    <div className={s.username}>@{user.username}</div>
                                 </div>
                             </div>
                         </div>

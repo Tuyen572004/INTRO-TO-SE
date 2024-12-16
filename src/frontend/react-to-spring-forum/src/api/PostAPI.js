@@ -65,4 +65,14 @@ export class PostAPI {
 			throw error;
 		}
 	}
+
+	static async searchPostsByTitle(title, page = 1, size = 10) {
+		try {
+			const response = await AuthorizedAxios.get(`/api/posts/pagination?title=${title}&page=${page}&size=${size}`);
+			return response.data.data.data;
+		} catch (error) {
+			console.error("API Error:", error.response || error.message);
+			throw error;
+		}
+	}
 }

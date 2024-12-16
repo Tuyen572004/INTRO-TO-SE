@@ -1,9 +1,31 @@
 .container {
 	display: flex;
-	padding: 12px;
-	align-items: center;
-	box-sizing: border-box;
-	display: flex;
 	flex-direction: column;
-	height: 100%;
+	gap: 15px;
+	padding: 15px 10px;
+	border-radius: 12px;
+	overflow-y: auto;
+	max-height: 46rem;
+	align-items: center;
+}
+
+.search_title {
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.loading_container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.warning {
+	font-size: 20px;
+	font-weight: 600;
+	color: red;
 }
