@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -217,6 +218,25 @@ public class PostServiceImp implements PostService {
         // UNCOMMENT IT AFTER FIXING THE ERROR : IF ADMIN DELETE THE POST
         // --> THEN IT WILL THROW EXCEPTION : USER NOT POST OWNER AT LINE 206
         // notificationService.sendDeletePostNotification(userId, postOwnerId);
+    }
+
+
+    @Override
+    public List<PostResponse> getRandomPosts(int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        List<Post> randomPosts = postRepository.findRandomPosts(size);
+        List<Post> postRemoved = randomPosts.stream().filter(post -> !post.getUserId().equals(userId)).toList();
+        List<PostResponse> postResponses = postConverter.convertToPostResponses(postRemoved);
+
+        while (postResponses.size() < size) {
+            List<Post> randomPosts2 = postRepository.findRandomPosts(size - postResponses.size());
+            List<Post> postRemoved2 = randomPosts2.stream().filter(post -> !post.getUserId().equals(userId)).toList();
+            postResponses.addAll(postConverter.convertToPostResponses(postRemoved2));
+        }
+
+        return postResponses;
     }
 }
 
