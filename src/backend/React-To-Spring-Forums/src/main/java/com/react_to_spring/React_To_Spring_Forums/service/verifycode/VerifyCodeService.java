@@ -15,4 +15,6 @@ public interface VerifyCodeService {
     void deleteVerifyCode(String userId, String verificationCode);
 
     User verifyCode(String verificationCode);
+
+    boolean checkAuthorizedCodeExistsByUserId(String userId);
 }
