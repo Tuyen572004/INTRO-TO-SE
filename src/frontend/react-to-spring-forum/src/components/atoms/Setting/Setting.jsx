@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import s from "./style.module.css";
 import { UserAPI } from "../../../api/UserAPI";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import SettingOptions from "../../molecules/SettingOptions/SettingOptions";
 
-const Setting = () => {
+const Setting = ({ toggleIsChangePasswordModalOpen }) => {
   const navigate = useNavigate();
   const handleLogout = () => {
     UserAPI.logout({ token: localStorage.getItem("accessToken") });
@@ -14,6 +16,9 @@ const Setting = () => {
 
     navigate("/login");
   };
+
+  const [showSettingOption, setShowSettingOption] = useState(false);
+
   const iconVariants = {
     hover: { scale: 1.2, transition: { type: "spring", stiffness: 300 } },
     tap: { scale: 0.9 },
@@ -34,8 +39,15 @@ const Setting = () => {
         variants={iconVariants}
         whileHover="hover"
         whileTap="tap"
+        onMouseEnter={() => setShowSettingOption(true)}
+        onMouseLeave={() => setShowSettingOption(false)}
       >
         <IoMdOptions />
+        {showSettingOption && (
+          <SettingOptions
+            toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen}
+          />
+        )}
       </motion.div>
     </div>
   );

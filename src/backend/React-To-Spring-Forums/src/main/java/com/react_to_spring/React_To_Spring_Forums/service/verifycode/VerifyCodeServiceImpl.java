@@ -3,6 +3,7 @@ package com.react_to_spring.React_To_Spring_Forums.service.verifycode;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.verifycode.SendVerificationRequest;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.VerifyCode;
+import com.react_to_spring.React_To_Spring_Forums.enums.VerifyCodeType;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
@@ -15,10 +16,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -55,6 +58,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 
     // verify both code and link
     @Override
+    @Transactional
     public boolean verify(String userId, String verificationCode) {
         VerifyCode verifyCode = checkExisted(userId, verificationCode);
 
@@ -67,11 +71,37 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         return true;
     }
 
+    // delete all previous verify code (both code and link)
+    // --> used: resend verify link to registration
+    // --> FIX: can not add multiple verify code for the same user
+    protected void deletePreviousVerifyCodeAndLink(String userId) {
+        List<VerifyCode> verifyCodes = verifyCodeRepository.findByUserId(userId);
+        if(verifyCodes==null || verifyCodes.isEmpty()) return;
+        verifyCodeRepository.deleteAll(verifyCodes);
+    }
+
+    // used: resend verify code
+    protected void deletePreviousVerifyCode(String userId) {
+        List<VerifyCode> verifyCodes = verifyCodeRepository.findByUserId(userId);
+        if(verifyCodes==null || verifyCodes.isEmpty()) return;
+        for(VerifyCode verifyCode : verifyCodes){
+            // seperate by - delimiter
+            String[] verifyCodeArr = verifyCode.getVerifyCode().split("-");
+            if(verifyCodeArr[0].equals(VerifyCodeType.AUTHORIZE.getType())){
+                throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFIED);
+            }
+            verifyCodeRepository.delete(verifyCode);
+        }
+    }
+
     @Override
+
     public void sendVerifyCode(SendVerificationRequest sendVerificationRequest) {
         User user = userRepository.findByEmail(sendVerificationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        deletePreviousVerifyCode(user.getId());
         VerifyCode verifyCode = verificationEmailService.sendCode(user);
+
         verifyCodeRepository.save(verifyCode);
     }
 
@@ -80,10 +110,12 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         User user = userRepository.findByEmail(sendVerificationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         VerifyCode verifyCode = verificationEmailService.sendRegistration(user);
+        deletePreviousVerifyCodeAndLink(user.getId());
         verifyCodeRepository.save(verifyCode);
     }
 
     @Override
+    @Transactional
     public String buildRedirectUrl(boolean success){
         StringBuilder url = success ? new StringBuilder(SUCCESS_REDIRECT_URL) : new StringBuilder(FAIL_REDIRECT_URL);
 
@@ -100,15 +132,19 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         verifyCodeRepository.delete(verifyCode);
     }
 
+    @Override
+    public User verifyCode(String verificationCode) {
+        VerifyCode verifyCode = verifyCodeRepository.findByVerifyCode(verificationCode)
+                .orElseThrow(() -> new AppException(ErrorCode.VERIFY_CODE_NOT_FOUND));
+        if (checkExpiration(verifyCode)) {
+            verifyCodeRepository.delete(verifyCode);
+            throw new AppException(ErrorCode.VERIFY_CODE_EXPIRED);
+        }
 
-    // Used : hashExpirationTime
-    // eg : '19820'
-    // i = 0 --> timeStr[0]-'0' = 1 --> secretKey[1] = '#'
-    // i = 1 --> timeStr[1]-'0' = 9 --> secretKey[9] = 'o'
-
-    // decode
-    // i = 0 --> '#' = secretKey[1] --> 1
-    // i = 1 --> 'o' = secretKey[9] --> 9
+        User user = verifyCode.getUser();
+        verifyCodeRepository.delete(verifyCode);
+        return user;
+    }
 
     private String hashExpirationTime(String timeStr) {
         try {
@@ -124,5 +160,15 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         } catch (Exception e) {
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
+    }
+
+    public boolean checkAuthorizedCodeExistsByUserId(String userId) {
+        List<VerifyCode> verifyCodes = verifyCodeRepository.findByUserId(userId);
+        if(verifyCodes==null || verifyCodes.isEmpty()) return false;
+        return verifyCodes.stream().anyMatch(
+            // check 2 first characters of verify code are 'AU'
+            verifyCode -> verifyCode.getVerifyCode().substring(0, 2).equals(VerifyCodeType.AUTHORIZE.getType())
+        );
+
     }
 }

@@ -22,4 +22,5 @@ public interface UserService {
     List<UserResponse> getAllUsers();
 
     void deleteUser(String id);
+
 }
