@@ -70,7 +70,7 @@ const Menu = ({ toggleIsPostPopup }) => {
         onMouseLeave={() => setShowPreviewMessage(false)}
         onClick={() => {
           setActive("message");
-          navigate("/message");
+          //navigate("/message");
         }}
         variants={activeVariants}
         animate={active === "message" ? "active" : "inactive"}
