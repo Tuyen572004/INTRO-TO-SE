@@ -1,0 +1,29 @@
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	position: absolute;
+	width: 10vw;
+	height: 15vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	top: -5vw;
+	left: 100%;
+	z-index: 10;
+}
+
+.change_password_button {
+	width: 100%;
+	font-size: 13px;
+	color: white;
+	font-weight: bold;
+	padding: 5px 10px;
+	border: 1px solid #D9D9D9;
+	border-radius: 10px;
+	background: black;
+}

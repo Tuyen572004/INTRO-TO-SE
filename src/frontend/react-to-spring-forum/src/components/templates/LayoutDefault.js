@@ -7,9 +7,11 @@ import PostForm from "../molecules/PostForm/PostForm";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import MessageWindow from "../organisms/MessageWindow/MessageWindow";
+import ChangePasswordModal from "../molecules/ChangePasswordModal/ChangePasswordModal";
 const LayoutDefault = () => {
 	const [isPostPopup, setIsPostPopup] = useState(false);
 	const [isMessageWindowOpen, setIsMessageWindowOpen] = useState(false);
+	const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
 	const toggleIsPostPopup = () => {
 		setIsPostPopup(!isPostPopup);
@@ -17,11 +19,14 @@ const LayoutDefault = () => {
 	const toggleIsMessageWindowOpen = () => {
 		setIsMessageWindowOpen(!isMessageWindowOpen);
 	};
+	const toggleIsChangePasswordModalOpen = () => {
+		setIsChangePasswordModalOpen(!isChangePasswordModalOpen);
+	};
 
 	return (
 		<div className="d-flex justify-content-between">
 			<div className="col-1">
-				<NavigationBar toggleIsPostPopup={toggleIsPostPopup} />
+				<NavigationBar toggleIsPostPopup={toggleIsPostPopup} toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen} />
 			</div>
 			<div className="col-10 d-flex justify-content-center flex-column">
 				<div className="d-flex justify-content-center">
@@ -40,6 +45,9 @@ const LayoutDefault = () => {
 			</div>
 			<AnimatePresence>
 				{isPostPopup && <PostForm toggleIsPostPopup={toggleIsPostPopup} />}
+			</AnimatePresence>
+			<AnimatePresence>
+				{isChangePasswordModalOpen && <ChangePasswordModal toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen} />}
 			</AnimatePresence>
 		</div>
 	);

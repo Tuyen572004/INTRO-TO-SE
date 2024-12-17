@@ -7,7 +7,7 @@ import PrimaryButton from "../../atoms/PrimaryButton/PrimaryButton";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../store/userSlice";
-const LoginForm = ({ isNotLogIn }) => {
+const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -90,8 +90,11 @@ const LoginForm = ({ isNotLogIn }) => {
             <input type="checkbox"></input>
             <span>Remember me</span>
           </div>
-          <div className={s.forgot_password}>
-            <Link to="/forgot-password">Forgot password?</Link>
+          <div
+            className={s.forgot_password}
+            onClick={() => toggleIsForgotPasswordModalOpen()}
+          >
+            Forgot password?
           </div>
         </div>
 
