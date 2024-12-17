@@ -1,11 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { X, Images } from 'lucide-react';
+import { Images } from 'lucide-react';
 import { uploadFile } from "../../../utils/uploadImageFile";
-import {addReactStatus, setReactCounter, updateReactStatus} from "../../../store/reactCounterSlice";
-import { setCommentCounter } from "../../../store/commentCounterSlice";
-import { addPost } from "../../../store/postSlice";
-import { addMyPost } from "../../../store/myPostSlice";
+import { addNewPost as addNewPostToPostSlice } from "../../../store/postSlice";
+import { addNewPost as addNewPostToMyPostSlice } from "../../../store/myPostSlice";
 import { useDispatch } from "react-redux";
 import { PostAPI } from "../../../api/PostAPI";
 
@@ -50,14 +48,8 @@ const PostForm = ({ show, toggleIsPostFormVisible, userProfile, user }) => {
             setImageList([]);
 
             if (response.code === 1000) {
-                dispatch(addPost(response.data));
-                dispatch(addMyPost(response.data));
-
-                console.log(response.data);
-                console.log(response.data.id);
-                dispatch(setReactCounter({ postId: response.data.id, count: 0 }));
-                dispatch(setCommentCounter({ postId: response.data.id, count: 0 }));
-                dispatch(addReactStatus(response.data.id));
+                dispatch(addNewPostToPostSlice(response.data));
+                dispatch(addNewPostToMyPostSlice(response.data));
 
                 toggleIsPostFormVisible();
             }

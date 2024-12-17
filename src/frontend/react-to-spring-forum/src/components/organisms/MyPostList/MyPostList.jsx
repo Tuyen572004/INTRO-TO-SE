@@ -1,63 +1,47 @@
-import React, { useEffect, useState } from "react";
+import {useEffect} from "react";
 import PostItem from "../../molecules/PostItem/PostItem";
 import InfiniteScroll from "react-infinite-scroll-component";
-import NewPost from "../../molecules/NewPost/NewPost";
-import PostForm from "../../molecules/PostForm/PostForm";
 import { useDispatch, useSelector } from "react-redux";
-import { AnimatePresence } from "framer-motion";
-import { setMyPosts } from "../../../store/myPostSlice";
+import { appendMyPosts } from "../../../store/myPostSlice";
 import { PostAPI } from "../../../api/PostAPI";
-import { OrbitProgress } from "react-loading-indicators";
-import { v4 } from "uuid";
+import Spinner from "react-bootstrap/Spinner";
 
 const MyPostList = ({ scrollableTarget }) => {
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-
-    const myPosts = useSelector((state) => state.myPostSlice.myPosts);
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
+    const { myPosts, hasMore, page } = useSelector((state) => state.myPostSlice);
 
-    useEffect(() => {
-        const fetchMyPosts = async () => {
-            try {
-                const response = await PostAPI.getMyPosts(page);
-                if (response.length === 0) {
-                    setHasMore(false);
-                } else {
-                    dispatch(setMyPosts([...myPosts, ...response]));
-                }
-            } catch (error) {
-                console.error("Error fetching my posts:", error);
-            }
-        };
-
-        fetchMyPosts().then(() => setLoading(false));
-    }, [page]);
-
-    const loadMorePosts = () => {
-        setPage((prevPage) => prevPage + 1);
+    const fetchMyPosts = async () => {
+        try {
+            const response = await PostAPI.getMyPosts(page);
+            dispatch(
+                appendMyPosts({
+                    posts: response.data,
+                    hasMore: page < response.totalPages,
+                    nextPage: page + 1
+                })
+            );
+        } catch (error) {
+            console.error("Error fetching my posts:", error);
+        }
     };
 
-    if (loading) {
-        return (
-            <div className="text-center">
-                <OrbitProgress variant="disc" dense color="#000000" size="small" text="" textColor="" />
-            </div>
-        );
-    }
+    useEffect(() => {
+        if (myPosts.length === 0) {
+            fetchMyPosts();
+        }
+    }, [myPosts.length]);
 
     return (
         <div>
-            <NewPost />
-
             <InfiniteScroll
                 dataLength={myPosts.length}
-                next={loadMorePosts}
+                next={fetchMyPosts}
                 hasMore={hasMore}
                 loader={
                     <div className="text-center">
-                        <OrbitProgress variant="disc" dense color="#000000" size="small" text="" textColor="" />
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
                     </div>
                 }
                 endMessage={
@@ -68,7 +52,7 @@ const MyPostList = ({ scrollableTarget }) => {
                 scrollableTarget={scrollableTarget}
             >
                 {myPosts.map((post) => (
-                    <PostItem key={v4()} post={post} />
+                    <PostItem key={post.id} post={post} />
                 ))}
             </InfiniteScroll>
         </div>

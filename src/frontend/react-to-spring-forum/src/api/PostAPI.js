@@ -43,12 +43,9 @@ export class PostAPI {
 
 	static async getAll(page = 1, size = 10) {
 		try {
-			const response = await AuthorizedAxios.get(`/api/posts/dashboard?page=${page}&size=${size}`);
-			const posts = response.data.data.data;
-
-			// Shuffle the posts randomly
-			const shuffledPosts = posts.sort(() => Math.random() - 0.5);
-			return shuffledPosts;
+			const response = await AuthorizedAxios.get(`/api/posts/random?size=${size}`);
+			console.log(response.data.data);
+			return response.data.data;
 		} catch (error) {
 			console.error("API Error:", error.response || error.message);
 			throw error;
@@ -58,8 +55,8 @@ export class PostAPI {
 	static async getMyPosts(page = 1, size = 10) {
 		try {
 			const response = await AuthorizedAxios.get(`/api/posts/my-posts?page=${page}&size=${size}`);
-			console.log(response.data.data.data);
-			return response.data.data.data;
+			console.log(response.data.data);
+			return response.data.data;
 		} catch (error) {
 			console.error("API Error:", error.response || error.message);
 			throw error;

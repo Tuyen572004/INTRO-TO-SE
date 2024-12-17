@@ -5,18 +5,15 @@ import { UserProfileAPI } from '../../../api/UserProfileAPI';
 import { UserAPI } from '../../../api/UserAPI';
 import EditProfileModal from "../../molecules/EditProfileModal/EditProfileModal";
 import UserIcon from "../../../assets/User_Icon.png"
-import {PostAPI} from "../../../api/PostAPI";
-import {useDispatch} from "react-redux";
-import {setMyPosts} from "../../../store/myPostSlice";
 import MyPostList from "../../organisms/MyPostList/MyPostList";
+import NewPost from "../../molecules/NewPost/NewPost";
 
 const User = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [userProfile, setUserProfile] = useState({});
     const [user, setUser] = useState({});
-    const [loading, setLoading] = useState(true);
 
-    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchMyProfile = async () => {
@@ -29,12 +26,7 @@ const User = () => {
             setUser(response.data);
         };
 
-        const fetchMyPosts = async () => {
-            const response = await PostAPI.getMyPosts();
-            dispatch(setMyPosts(response));
-        }
-
-        Promise.all([fetchMyProfile(), fetchMyAccount(), fetchMyPosts()]).then(() => setLoading(false));
+        Promise.all([fetchMyProfile(), fetchMyAccount()]).then(() => setLoading(false));
     }, []);
 
     const openInNewWindow = (url) => {
@@ -84,8 +76,11 @@ const User = () => {
 
 
                 <hr className={"mt-4 mb-4"}/>
-
                 <div className="m-3">
+                    <NewPost/>
+                </div>
+
+                <div className="p-3">
                     <MyPostList scrollableTarget="user"/>
                 </div>
             </div>

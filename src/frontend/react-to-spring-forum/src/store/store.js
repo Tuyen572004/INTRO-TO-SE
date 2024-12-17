@@ -2,8 +2,6 @@ import { userReducer } from "./userSlice";
 import { postReducer } from "./postSlice";
 import { myPostReducer } from "./myPostSlice";
 import { commentReducer } from "./commentSlice";
-import { commentCounterReducer } from "./commentCounterSlice";
-import { reactCounterReducer } from "./reactCounterSlice";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import {
@@ -22,8 +20,6 @@ const rootReducer = combineReducers({
 	postSlice: postReducer,
 	myPostSlice: myPostReducer,
 	commentSlice: commentReducer,
-	commentCounterSlice: commentCounterReducer,
-	reactCounterSlice: reactCounterReducer,
 });
 
 const persistConfig = {
