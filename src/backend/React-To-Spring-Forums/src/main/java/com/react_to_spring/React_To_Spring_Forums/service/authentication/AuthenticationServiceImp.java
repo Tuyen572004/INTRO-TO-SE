@@ -89,7 +89,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_USERNAME_PASSWORD));
 
-        if (verifyCodeRepository.existsByUserId(user.getId())) {
+        if (verifyCodeService.checkAuthorizedCodeExistsByUserId(user.getId())) {
             throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFIED);
         }
 
@@ -161,7 +161,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     @Override
     public void forgetPassword(ForgetPasswordRequest request) {
         User user = verifyCodeService.verifyCode(request.getVerificationCode());
-        user.setPassword(request.getNewPassword());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
 
