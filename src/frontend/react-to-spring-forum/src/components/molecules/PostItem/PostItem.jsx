@@ -12,35 +12,14 @@ import CustomToggle from "../../atoms/CustomToggle/CustomToggle";
 import EditPostModal from "../EditPostModal/EditPostModal";
 import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModal";
 import { PostAPI } from "../../../api/PostAPI";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deletePost } from "../../../store/postSlice";
 import { deleteMyPost } from "../../../store/myPostSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
-import { setCommentCounter } from "../../../store/commentCounterSlice";
-import { setReactCounter, updateReactStatus} from "../../../store/reactCounterSlice";
-import GoBack from "../../atoms/GoBack/GoBack";
 
 const PostItem = ({ post }) => {
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        dispatch(setCommentCounter({
-            postId: post.id,
-            count: post.commentCounts
-        }));
-        dispatch(setReactCounter({
-            postId: post.id,
-            count: post.reactCounts
-        }));
-        dispatch(updateReactStatus({
-            postId: post.id,
-            isReacted: post.isReacted
-        }));
-
-        setLoading(false);
-    }, [post, dispatch]);
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -66,10 +45,6 @@ const PostItem = ({ post }) => {
         dispatch(deleteMyPost(post.id));
         setShowDeleteModal(false);
     };
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <>

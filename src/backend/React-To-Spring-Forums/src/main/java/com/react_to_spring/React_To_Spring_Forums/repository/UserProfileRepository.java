@@ -21,4 +21,5 @@ public interface UserProfileRepository extends MongoRepository<UserProfile, Stri
     Page<UserProfile> findAllByUserIdIn(List<String> friendIds, Pageable pageable);
 
     List<UserProfile> findAllByUserIdIn(List<String> userIds);
+
 }

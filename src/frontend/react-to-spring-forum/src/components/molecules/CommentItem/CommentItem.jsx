@@ -7,7 +7,6 @@ import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModa
 import { CommentAPI } from "../../../api/CommentAPI";
 import { useDispatch } from "react-redux";
 import { removeComment } from "../../../store/commentSlice";
-import { decrement } from "../../../store/commentCounterSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
 
@@ -30,7 +29,7 @@ function CommentItem({ comment, postId }) {
     const confirmDelete = async () => {
         await CommentAPI.delete(comment.id);
         dispatch(removeComment(comment.id));
-        dispatch(decrement(postId));
+
         setShowDeleteModal(false);
     };
 

@@ -1,57 +1,66 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { PiShareFat } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { ReactAPI } from "../../../api/ReactAPI";
-import { decrement, increment, updateReactStatus } from "../../../store/reactCounterSlice";
-
+import { PostAPI } from "../../../api/PostAPI";
 import s from "./style.module.css";
+import {useSelector} from "react-redux";
 
 const ReactBar = ({ postId }) => {
-    const commentCounter = useSelector(state => state.commentCounterSlice.commentCounter);
-    const reactCounter = useSelector(state => state.reactCounterSlice.reactCounter);
-    const reactedPosts = useSelector(state => state.reactCounterSlice.reactedPosts);
-    const dispatch = useDispatch();
+    const [post, setPost] = useState(null);
+    const reloadReactBar = useSelector(state => state.commentSlice.reloadReactBar);
+
+    const fetchPost = async () => {
+        try {
+            const response = await PostAPI.get(postId);
+            setPost(response.data);
+        } catch (error) {
+            console.error("Error fetching post:", error);
+        }
+    };
+  
+    useEffect(() => {
+        fetchPost();
+    }, [postId, reloadReactBar]);
 
     const handleReactClick = async () => {
         try {
-            if (reactedPosts[postId]) {
+            if (post.isReacted) {
                 await ReactAPI.delete(postId);
-
-                dispatch(decrement(postId));
-                dispatch(updateReactStatus({ postId, isReacted: false }));
             } else {
                 await ReactAPI.create(postId);
-                dispatch(increment(postId));
-                dispatch(updateReactStatus({ postId, isReacted: true }));
             }
+            fetchPost();
         } catch (error) {
             console.error("Error handling react:", error);
         }
     };
 
+    if (!post) {
+        return <div>Loading...</div>;
+    }
+
     return (
-        <>
-            <div className={s.container}>
-                <div className={s.reaction} onClick={handleReactClick}>
-                    {reactedPosts[postId] ? (
-                        <FaHeart className={s.reacted + ' ' + s.reactIcon} />
-                    ) : (
-                        <FaRegHeart className={s.reactIcon} />
-                    )}
-                    <span>{reactCounter[postId] || 0}</span>
-                </div>
-                <Link to={`/post/${postId}`} style={{ textDecoration: 'none', color: 'black' }}>
-                    <div className={s.reaction}>
-                        <FaRegComment className={s.reactIcon} />
-                        <span>{commentCounter[postId] || 0}</span>
-                    </div>
-                </Link>
-                <div className={s.reaction}>
-                    <PiShareFat className={s.reactIcon} />
-                </div>
+        <div className={s.container}>
+            <div className={s.reaction} onClick={handleReactClick}>
+                {post.isReacted ? (
+                    <FaHeart className={s.reacted + ' ' + s.reactIcon} />
+                ) : (
+                    <FaRegHeart className={s.reactIcon} />
+                )}
+                <span>{post.reactCounts}</span>
             </div>
-        </>
+            <Link to={`/post/${postId}`} style={{ textDecoration: 'none', color: 'black' }}>
+                <div className={s.reaction}>
+                    <FaRegComment className={s.reactIcon} />
+                    <span>{post.commentCounts}</span>
+                </div>
+            </Link>
+            <div className={s.reaction}>
+                <PiShareFat className={s.reactIcon} />
+            </div>
+        </div>
     );
 };
 
