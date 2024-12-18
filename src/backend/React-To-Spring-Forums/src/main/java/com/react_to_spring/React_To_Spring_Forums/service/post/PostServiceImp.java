@@ -163,7 +163,7 @@ public class PostServiceImp implements PostService {
 
         post = postRepository.save(post);
 
-        //notificationService.sendPostCreationNotification(userId,post.getId());
+        notificationService.sendPostCreationNotification(userId,post.getId());
 
         return postConverter.buildPostResponse(post);
     }

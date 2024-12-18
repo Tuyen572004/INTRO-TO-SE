@@ -52,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
     CommentRepository commentRepository;
     private final UserMapperImpl userMapperImpl;
     @NonFinal
-    String defaultSortField = "sentAt";
+    String defaultSortField = "sendAt";
 
     NotificationRepository notificationRepository;
     NotificationRecipientRepository notificationRecipientRepository;
@@ -68,6 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .map(recipientId -> NotificationRecipient.builder()
                         .notificationId(notification.getId())
                         .recipientId(recipientId)
+                        .sendAt(notification.getSendAt())
                         .build())
                 .collect(Collectors.toList());
         notificationRecipientRepository.saveAll(recipients);
@@ -114,7 +115,6 @@ public class NotificationServiceImpl implements NotificationService {
                             .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
                     NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
                     notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
-
                     UserInfoResponse userInfo = buildUserInfoResponse(notification.getActorId());
                     if(userInfo == null){
                         throw new AppException(ErrorCode.ACTOR_NOT_FOUND);
