@@ -73,9 +73,12 @@ public class NotificationServiceImpl implements NotificationService {
                 .collect(Collectors.toList());
         notificationRecipientRepository.saveAll(recipients);
 
+        UserInfoResponse actor = buildUserInfoResponse(notification.getActorId());
+
         recipientIds.forEach(recipientId -> {
             NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
             notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
+            notificationResponse.setActor(actor);
             simpMessagingTemplate.convertAndSendToUser(recipientId, "/queue/notifications", notificationResponse);
         });
     }
@@ -187,12 +190,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendCommentCreationNotification(String userId, String postOwnerId, String commentId) {
-        sendNotification(NotificationTemplate.CREATE_COMMENT, userId, commentId, List.of(postOwnerId), false, false);
+        sendNotification(NotificationTemplate.CREATE_COMMENT, userId, commentId, List.of(postOwnerId), false, true);
     }
 
     @Override
     public void sendReactToPostCreationNotification(String userId, String postOwnerId, String reactId) {
-        sendNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, reactId, List.of(postOwnerId), false, false);
+        sendNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, reactId, List.of(postOwnerId), false, true);
     }
 
     @Override
@@ -201,33 +204,33 @@ public class NotificationServiceImpl implements NotificationService {
                 .orElseThrow(() -> new AppException(ErrorCode.ADD_FRIEND_REQUEST_NOT_FOUND));
         User friend = userRepository.findById(addFriendRequest.getReceivingUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        sendNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, addFriendRequestId, List.of(friend.getId()), false, false);
+        sendNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, addFriendRequestId, List.of(friend.getId()), false, true);
     }
 
     @Override
     public void sendAcceptFriendNotification(String userId, String friendId) {
-        sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, userId, List.of(friendId), false, false);
+        sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, userId, List.of(friendId), false, true);
     }
 
     @Override
     public void sendMessageNotification(String userId, String recipient, String messageId) {
-        sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId, List.of(recipient), false, false);
+        sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId, List.of(recipient), false, true);
     }
 
     @Override
     public void sendReportViolatingPostNotification(String userId, String reportId) {
-        sendNotification(NotificationTemplate.SEND_REPORT_REQUEST, userId, reportId, null, true, false);
+        sendNotification(NotificationTemplate.SEND_REPORT_REQUEST, userId, reportId, null, true, true);
     }
 
     @Override
     public void sendAcceptReportViolatingPostNotification(String adminId, String reportId) {
         ReportViolatingPostRequest report = reportViolatingPostRequestRepository.findById(reportId)
                 .orElseThrow(() -> new AppException(ErrorCode.REPORT_VIOLATING_POST_NOT_FOUND));
-        sendNotification(NotificationTemplate.ACCEPT_REPORT_REQUEST, adminId, reportId, List.of(report.getSendingUserId()), false, false);
+        sendNotification(NotificationTemplate.ACCEPT_REPORT_REQUEST, adminId, reportId, List.of(report.getSendingUserId()), false, true);
     }
 
     @Override
     public void sendDeletePostNotification(String adminId, String ownerOfPostId) {
-        sendNotification(NotificationTemplate.DELETE_POST, adminId, null, List.of(ownerOfPostId), false, false);
+        sendNotification(NotificationTemplate.DELETE_POST, adminId, null, List.of(ownerOfPostId), false, true);
     }
 }
