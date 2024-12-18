@@ -32,6 +32,7 @@ public class SecurityConfig {
     String[] PUBLIC_POST_ENDPOINTS = {
             "/users", "/auth", "/auth/introspect", "/auth/logout", "/auth/refresh",
             "/verify/send-code", "/verify/send-link","/auth/forget-password",
+            "/ws/**"
 //            "/posts", "/posts/**", "/comments", "/comments/**", "/reacts", "/reacts/**"
     };
 
@@ -40,6 +41,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/posts", "/posts/**", "/comments", "/comments/**", "/reacts", "/reacts/**","/verify**",
+            "/ws/**",
     };
 
     @Bean
@@ -81,6 +83,7 @@ public class SecurityConfig {
         config.addAllowedOrigin(clientUrl);
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", config);

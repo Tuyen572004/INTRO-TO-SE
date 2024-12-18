@@ -3,6 +3,7 @@ package com.react_to_spring.React_To_Spring_Forums.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -17,5 +18,5 @@ public class MessageResponse {
     List<UserProfileResponse> recipientProfiles;
     String content;
     List<String> images;
-    String formattedSentTime;
+    Date formattedSentTime;
 }
