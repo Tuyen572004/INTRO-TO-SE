@@ -12,7 +12,7 @@ public class NotificationResponse {
     String message;
     String notificationType; // POST, COMMENT, REPORT, DELETE_POST
     String notificationEntityId; // postId, commentId, reportId, post reported id (postId)
-    String actorId;
+    UserInfoResponse actor;
     String formattedSentTime;
 }
 

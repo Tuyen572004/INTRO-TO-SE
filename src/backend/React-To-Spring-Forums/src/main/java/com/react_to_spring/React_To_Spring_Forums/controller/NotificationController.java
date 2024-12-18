@@ -28,9 +28,10 @@ public class NotificationController {
     @GetMapping
     @Operation(summary = "Get notifications for a user",
             description = "Get all notifications for a user by userId")
-    public ApiResponse<PageResponse<NotificationResponse>> getNotifications(String userId, int page, int size) {
+    public ApiResponse<PageResponse<NotificationResponse>> getNotifications(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                                            @RequestParam(value = "size", required = false, defaultValue = "5") int size){
         return ApiResponse.<PageResponse<NotificationResponse>>builder()
-                .data(notificationService.findNotificationsByRecipientId(userId, page, size))
+                .data(notificationService.findNotifications(page, size))
                 .build();
     }
 
