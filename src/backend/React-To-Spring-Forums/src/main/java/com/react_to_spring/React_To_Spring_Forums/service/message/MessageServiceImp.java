@@ -14,7 +14,6 @@ import com.react_to_spring.React_To_Spring_Forums.repository.MessageRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.chatroom.ChatRoomService;
 import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
-import com.react_to_spring.React_To_Spring_Forums.utils.formatter.DateFormatter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,7 +26,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -45,8 +46,6 @@ public class MessageServiceImp implements MessageService {
     ChatRoomService chatRoomService;
 
     MessageMapper messageMapper;
-
-    DateFormatter dateFormatter;
 
     SimpMessagingTemplate simpMessagingTemplate;
 
@@ -104,7 +103,7 @@ public class MessageServiceImp implements MessageService {
         List<UserProfile> recipients = userProfileRepository.findAllByUserIdIn(message.getRecipientIds());
 
         MessageResponse messageResponse = messageMapper.toMessageResponse(message);
-        messageResponse.setFormattedSentTime(dateFormatter.format(message.getSentAt()));
+        messageResponse.setFormattedSentTime(Date.from(message.getSentAt().toInstant(ZoneOffset.UTC)));
         messageResponse.setSenderProfile(userProfilerMapper.toUserProfileResponse(sender));
         messageResponse.setRecipientProfiles(recipients.stream().map(userProfilerMapper::toUserProfileResponse).toList());
 
