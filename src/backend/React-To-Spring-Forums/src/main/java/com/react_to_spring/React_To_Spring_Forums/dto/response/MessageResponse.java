@@ -13,8 +13,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageResponse {
     String chatId;
-    String senderId;
-    List<String> recipientIds;
+    UserProfileResponse senderProfile;
+    List<UserProfileResponse> recipientProfiles;
     String content;
     List<String> images;
     String formattedSentTime;

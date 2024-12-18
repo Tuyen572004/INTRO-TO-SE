@@ -1,25 +1,32 @@
 import s from "./style.module.css";
+import {useNavigate} from "react-router-dom";
 
 const ActivityItem = ({ activity }) => {
-  return (
-    <div className={s.activity_item}>
-      <div className={s.avatar}>
-        <div className={s.inner_avatar}>
-          <img src={activity.user.avatar} alt={activity.user.name} />
-        </div>
-      </div>
-      <div className={s.content}>
-        <div className={s.header}>
-          <span className={s.username}>{activity.user.name}</span>
-          <span className={s.type}>{activity.type}</span>
-        </div>
-        <div className={s.text}>{activity.text}</div>
-      </div>
-      {activity.type === "follow" && (
-        <button className={s.follow_button}>Follow</button>
-      )}
-    </div>
-  );
+    if (activity.notificationType === "POST" || activity.notificationType === "COMMENT") {
+        return (
+            <div className={s.activity_item}>
+                <div className={s.avatar}>
+                    <img src={activity.actor.avatar} alt={activity.actor.name} />
+                </div>
+                <div className={s.content}>
+                    <div className={s.header}>
+                        <span className={s.username}>{activity.actor.username}</span>
+                        <span className={s.type}>{activity.formattedSentTime}</span>
+                    </div>
+                    <div className={s.text}>
+                        {activity.actor.name + " " +
+                            (activity.notificationType === "POST" ?
+                                "reacted to your post" :
+                                "commented on your post"
+                            )
+                        }
+                    </div>
+                </div>
+            </div>
+        );
+    } else {
+        return null;
+    }
 };
 
 export default ActivityItem;
