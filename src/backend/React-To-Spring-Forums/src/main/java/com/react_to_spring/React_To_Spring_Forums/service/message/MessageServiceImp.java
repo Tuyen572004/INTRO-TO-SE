@@ -5,8 +5,13 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.message.SaveMessag
 import com.react_to_spring.React_To_Spring_Forums.dto.response.MessageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Message;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
+import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
+import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.MessageMapper;
+import com.react_to_spring.React_To_Spring_Forums.mapper.UserProfilerMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.MessageRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.chatroom.ChatRoomService;
 import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
 import com.react_to_spring.React_To_Spring_Forums.utils.formatter.DateFormatter;
@@ -31,9 +36,11 @@ import java.util.List;
 public class MessageServiceImp implements MessageService {
 
     @NonFinal
-    String defaultSortField = "sentAt";
+    String DEFAULT_SORT_FIELD = "sentAt";
 
     MessageRepository messageRepository;
+
+    UserProfileRepository userProfileRepository;
 
     ChatRoomService chatRoomService;
 
@@ -44,6 +51,8 @@ public class MessageServiceImp implements MessageService {
     SimpMessagingTemplate simpMessagingTemplate;
 
     NotificationService notificationService;
+
+    UserProfilerMapper userProfilerMapper;
 
     @Override
     public MessageResponse saveMessage(SaveMessageRequest request) {
@@ -73,16 +82,12 @@ public class MessageServiceImp implements MessageService {
 
     @Override
     public PageResponse<MessageResponse> getMessages(String chatId, int page, int size) {
-        Sort sort = Sort.by(Sort.Order.asc(defaultSortField));
+        Sort sort = Sort.by(Sort.Order.asc(DEFAULT_SORT_FIELD));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<Message> messages = messageRepository.findByChatId(chatId, pageable);
 
         List<MessageResponse> messageResponses = messages.getContent().stream()
-                .map(message -> {
-                    MessageResponse messageResponse = messageMapper.toMessageResponse(message);
-                    messageResponse.setFormattedSentTime(dateFormatter.format(message.getSentAt()));
-                    return messageResponse;
-                }).toList();
+                .map(this::buildMessageResponse).toList();
 
         return PageResponse.<MessageResponse>builder()
                 .page(page)
@@ -93,4 +98,16 @@ public class MessageServiceImp implements MessageService {
                 .build();
     }
 
+    private MessageResponse buildMessageResponse(Message message) {
+        UserProfile sender = userProfileRepository.findByUserId(message.getSenderId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        List<UserProfile> recipients = userProfileRepository.findAllByUserIdIn(message.getRecipientIds());
+
+        MessageResponse messageResponse = messageMapper.toMessageResponse(message);
+        messageResponse.setFormattedSentTime(dateFormatter.format(message.getSentAt()));
+        messageResponse.setSenderProfile(userProfilerMapper.toUserProfileResponse(sender));
+        messageResponse.setRecipientProfiles(recipients.stream().map(userProfilerMapper::toUserProfileResponse).toList());
+
+        return messageResponse;
+    }
 }
