@@ -4,6 +4,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.reportpost.Respons
 import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationRecipientResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.NotificationResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Notification;
 import com.react_to_spring.React_To_Spring_Forums.entity.NotificationRecipient;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
@@ -14,6 +15,7 @@ import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.NotificationMapper;
 import com.react_to_spring.React_To_Spring_Forums.mapper.NotificationRecipientMapper;
+import com.react_to_spring.React_To_Spring_Forums.mapper.UserMapperImpl;
 import com.react_to_spring.React_To_Spring_Forums.repository.*;
 import com.react_to_spring.React_To_Spring_Forums.utils.formatter.DateFormatter;
 import lombok.AccessLevel;
@@ -25,11 +27,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,6 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
     AddFriendRequestRepository addFriendRequestRepository;
     NotificationRecipientMapper notificationRecipientMapper;
     CommentRepository commentRepository;
+    private final UserMapperImpl userMapperImpl;
     @NonFinal
     String defaultSortField = "sentAt";
 
@@ -73,10 +79,33 @@ public class NotificationServiceImpl implements NotificationService {
         });
     }
 
+    private UserInfoResponse buildUserInfoResponse(String userId) {
+        UserInfoResponse userInfo = UserInfoResponse.builder().name("").username("").avatar("").build();
+        userInfo.setId(userId);
+
+        Optional<UserProfile> userProfile = userProfileRepository.findByUserId(userId);
+        Optional<User> user = userRepository.findById(userId);
+
+        if (userProfile.isEmpty() || user.isEmpty()) return null;
+
+        userProfile.ifPresent(value -> {
+            userInfo.setName(value.getFirstName() + " " + value.getLastName());
+            userInfo.setAvatar(value.getProfileImgUrl());
+        });
+
+        user.ifPresent(value -> {
+            userInfo.setUsername(value.getUsername());
+        });
+
+        return userInfo;
+    }
+
     @Override
-    public PageResponse<NotificationResponse> findNotificationsByRecipientId(String userId, int page, int size) {
+    public PageResponse<NotificationResponse> findNotifications(int page, int size) {
         Sort sort = Sort.by(Sort.Order.desc(defaultSortField));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
         Page<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findAllByRecipientId(userId, pageable);
 
         List<NotificationResponse> notificationResponses = notificationRecipients.getContent().stream()
@@ -85,6 +114,13 @@ public class NotificationServiceImpl implements NotificationService {
                             .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
                     NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
                     notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
+
+                    UserInfoResponse userInfo = buildUserInfoResponse(notification.getActorId());
+                    if(userInfo == null){
+                        throw new AppException(ErrorCode.ACTOR_NOT_FOUND);
+                    }
+
+                    notificationResponse.setActor(userInfo);
                     return notificationResponse;
                 }).toList();
 

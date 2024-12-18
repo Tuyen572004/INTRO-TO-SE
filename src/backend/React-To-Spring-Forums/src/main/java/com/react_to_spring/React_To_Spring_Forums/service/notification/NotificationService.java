@@ -10,7 +10,7 @@ import java.util.List;
 public interface NotificationService {
     //Notification createNotification(String actorId, String notificationType, String message);
     void sendNotification(Notification notification, List<String> recipientIds);
-    PageResponse<NotificationResponse> findNotificationsByRecipientId(String userId, int page, int size);
+    PageResponse<NotificationResponse> findNotifications(int page, int size);
     NotificationRecipientResponse markAsRead(String notificationId);
 
     void sendPostCreationNotification(String userId,String postId);
