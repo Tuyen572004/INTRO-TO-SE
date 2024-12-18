@@ -35,6 +35,10 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     UserRepository userRepository;
 
     @NonFinal
+    @Value("${client.url}")
+    String CLIENT_URL;
+
+    @NonFinal
     @Value("${client.verification-success-page}")
     String SUCCESS_REDIRECT_URL;
 
@@ -117,7 +121,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     @Override
     @Transactional
     public String buildRedirectUrl(boolean success){
-        StringBuilder url = success ? new StringBuilder(SUCCESS_REDIRECT_URL) : new StringBuilder(FAIL_REDIRECT_URL);
+        StringBuilder url = new StringBuilder(CLIENT_URL);
+        url.append(success ? SUCCESS_REDIRECT_URL : FAIL_REDIRECT_URL);
 
         Instant expirationTime = Instant.now().plus(1, ChronoUnit.HOURS);
         String expirationTimeStr = String.valueOf(expirationTime.toEpochMilli());
