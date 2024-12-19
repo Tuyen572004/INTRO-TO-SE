@@ -17,8 +17,12 @@ import { deletePost } from "../../../store/postSlice";
 import { deleteMyPost } from "../../../store/myPostSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
+import {jwtDecode} from "jwt-decode";
 
 const PostItem = ({ post }) => {
+    const auth = jwtDecode(localStorage.getItem('accessToken').toString());
+    const myId = auth.user.userId;
+
     const dispatch = useDispatch();
 
     const [showEditModal, setShowEditModal] = useState(false);
@@ -67,13 +71,23 @@ const PostItem = ({ post }) => {
                             <div className={s.username}>@{post.user?.username}</div>
                         </div>
                         <div>
-                            <Dropdown className="dropdown">
-                                <Dropdown.Toggle as={CustomToggle} />
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={handleEditClick}>Edit</Dropdown.Item>
-                                    <Dropdown.Item onClick={handleDeleteClick}>Delete</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            {myId === post.user.id ? (
+                                <Dropdown className="dropdown">
+                                    <Dropdown.Toggle as={CustomToggle} />
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={handleEditClick}>Edit</Dropdown.Item>
+                                        <Dropdown.Item onClick={handleDeleteClick}>Delete</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            ) : (
+                                <Dropdown className="dropdown">
+                                    <Dropdown.Toggle as={CustomToggle} />
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item>Report</Dropdown.Item>
+                                        <Dropdown.Item>Save</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )}
                         </div>
                     </div>
                 </div>

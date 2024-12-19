@@ -1,6 +1,6 @@
 import LayoutDefault from "./components/templates/LayoutDefault";
 import Dashboard from "./components/pages/Dashboard/Dashboard";
-import User from "./components/pages/User/User";
+import MyAccount from "./components/pages/MyAccount/MyAccount";
 import Activity from "./components/pages/Activity/Activity";
 import Search from "./components/pages/Search/Search";
 import LoginRegister from "./components/pages/LoginRegister/LoginRegister";
@@ -15,6 +15,7 @@ import AdminDashboard from "./components/pages/Admin/AdminDashboard/AdminDashboa
 import ViolatingUser from "./components/pages/Admin/ViolatingUser/ViolatingUser";
 import ViolatingPost from "./components/pages/Admin/ViolatingPost/ViolatingPost";
 import CommentPost from "./components/organisms/CommentPost/CommentPost";
+import User from "./components/pages/User/User";
 
 const AuthorizedRoutes = () => {
     const authorized = localStorage.getItem("accessToken")?.length > 0;
@@ -34,10 +35,12 @@ const App = () => {
             <Route path="message" element={<Message />} />
             <Route path="/" element={<LayoutDefault />}>
                 <Route index element={<Dashboard />} />
-                <Route path="user" element={<User />} />
+                <Route path="my-account" element={<MyAccount />} />
                 <Route path="activity" element={<Activity />} />
                 <Route path="search" element={<Search />} />
                 <Route path="post/:id" element={<CommentPost />} />
+                <Route path="user/:id" element={<User />} />
+
 
                 <Route path="admin" element={<Admin />}>
                     <Route index element={<AdminDashboard />} />

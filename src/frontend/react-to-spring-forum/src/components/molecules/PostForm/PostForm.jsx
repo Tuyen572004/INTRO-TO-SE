@@ -29,7 +29,7 @@ const PostForm = ({ show, toggleIsPostFormVisible }) => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await UserProfileAPI.get();
+                const response = await UserProfileAPI.getMyProfile();
                 setUserProfile(response.data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
@@ -159,7 +159,9 @@ const PostForm = ({ show, toggleIsPostFormVisible }) => {
                                     Add to your post
                                 </div>
                                 <label htmlFor="image-upload-for-new-post" className="col-2">
-                                    <Images strokeWidth={2.5}/>
+                                    <div className={s.addImageButton}>
+                                        <Images strokeWidth={2.5}/>
+                                    </div>
                                 </label>
                                 <input
                                     type="file"

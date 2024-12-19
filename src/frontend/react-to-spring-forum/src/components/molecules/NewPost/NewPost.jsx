@@ -15,7 +15,7 @@ const NewPost = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await UserProfileAPI.get();
+                const response = await UserProfileAPI.getMyProfile();
                 setUserProfile(response.data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);

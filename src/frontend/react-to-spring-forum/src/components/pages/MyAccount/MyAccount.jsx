@@ -3,31 +3,31 @@ import s from './style.module.css';
 import { FaFacebookSquare, FaInstagram } from 'react-icons/fa';
 import { UserProfileAPI } from '../../../api/UserProfileAPI';
 import { UserAPI } from '../../../api/UserAPI';
+import EditProfileModal from "../../molecules/EditProfileModal/EditProfileModal";
 import UserIcon from "../../../assets/User_Icon.png"
-import { useParams } from "react-router-dom";
-import UserPostList from "../../organisms/UserPostList/UserPostList";
+import MyPostList from "../../organisms/MyPostList/MyPostList";
+import NewPost from "../../molecules/NewPost/NewPost";
 
-const User = () => {
-    const { id } = useParams();
-
+const MyAccount = () => {
+    const [showEditModal, setShowEditModal] = useState(false);
     const [userProfile, setUserProfile] = useState({});
     const [user, setUser] = useState({});
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            const response = await UserProfileAPI.getProfileById(id);
+        const fetchMyProfile = async () => {
+            const response = await UserProfileAPI.getMyProfile();
             setUserProfile(response.data);
         };
 
-        const fetchUserAccount = async () => {
-            const response = await UserAPI.getUserById(id);
+        const fetchMyAccount = async () => {
+            const response = await UserAPI.getMyAccount();
             setUser(response.data);
         };
 
-        Promise.all([fetchUserProfile(), fetchUserAccount()]).then(() => setLoading(false));
-    }, [id]);
+        Promise.all([fetchMyProfile(), fetchMyAccount()]).then(() => setLoading(false));
+    }, []);
 
     const openInNewWindow = (url) => {
         window.open(url, '_blank', 'noopener,noreferrer');
@@ -39,7 +39,7 @@ const User = () => {
 
     return (
         <>
-            <div className={s.container} id="user">
+            <div className={s.container} id="my-account">
                 <div className={s.user_card}>
                     <div className={s.user_information}>
                         <div className={s.inner_information}>
@@ -71,18 +71,28 @@ const User = () => {
                     </div>
                 </div>
                 <div className={s.edit_button}>
-                    <div className={s.button}>Edit Profile</div>
+                    <div className={s.button} onClick={() => setShowEditModal(true)}>Edit Profile</div>
                 </div>
 
 
                 <hr className={"mt-4 mb-4"}/>
+                <div className="m-3">
+                    <NewPost/>
+                </div>
 
                 <div className="p-3">
-                    <UserPostList scrollableTarget="user" userId={id}/>
+                    <MyPostList scrollableTarget="my-account"/>
                 </div>
             </div>
+
+            <EditProfileModal
+                show={showEditModal}
+                onHide={() => setShowEditModal(false)}
+                userProfile={userProfile}
+                setUserProfile={setUserProfile}
+            />
         </>
     );
-}
+};
 
-export default User;
+export default MyAccount;

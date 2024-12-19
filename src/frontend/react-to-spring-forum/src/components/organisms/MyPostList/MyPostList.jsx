@@ -13,6 +13,7 @@ const MyPostList = ({ scrollableTarget }) => {
     const fetchMyPosts = async () => {
         try {
             const response = await PostAPI.getMyPosts(page);
+            console.log(response);
             dispatch(
                 appendMyPosts({
                     posts: response.data,
@@ -32,7 +33,7 @@ const MyPostList = ({ scrollableTarget }) => {
     }, [myPosts.length]);
 
     return (
-        <div>
+        <div className="my-post-list" id="my-post-list">
             <InfiniteScroll
                 dataLength={myPosts.length}
                 next={fetchMyPosts}

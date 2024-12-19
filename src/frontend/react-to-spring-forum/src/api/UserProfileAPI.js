@@ -11,9 +11,19 @@ export class UserProfileAPI {
         }
     }
 
-    static async get() {
+    static async getMyProfile() {
         try {
             const response = await AuthorizedAxios.get("/api/user-profiles/my-profile");
+            return response.data;
+        } catch (error) {
+            console.error("API Error:", error.response || error.message);
+            throw error;
+        }
+    }
+
+    static async getProfileById(id) {
+        try {
+            const response = await AuthorizedAxios.get(`/api/user-profiles?userId=${id}`);
             return response.data;
         } catch (error) {
             console.error("API Error:", error.response || error.message);

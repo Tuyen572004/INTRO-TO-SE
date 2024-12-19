@@ -3,8 +3,8 @@ import s from "./style.module.css";
 
 const Activity = () => {
     return (
-        <div className={s.container} id="activity">
-            <ActivityList scrollableTarget="activity"/>
+        <div className={s.container}>
+            <ActivityList />
         </div>
     );
 };

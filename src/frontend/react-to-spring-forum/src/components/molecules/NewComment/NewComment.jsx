@@ -12,7 +12,7 @@ import {useDispatch} from "react-redux";
 import s from "./style.module.css";
 
 function NewComment({ postId }) {
-    const [userProfile, setUserProfile] = useState();
+    const [userProfile, setUserProfile] = useState({});
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState("");
     const [imageList, setImageList] = useState([]);
@@ -22,7 +22,7 @@ function NewComment({ postId }) {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await UserProfileAPI.get();
+                const response = await UserProfileAPI.getMyProfile();
                 setUserProfile(response.data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);

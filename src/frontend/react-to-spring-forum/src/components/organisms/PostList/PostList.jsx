@@ -29,7 +29,7 @@ const PostList = ({ scrollableTarget }) => {
     }
 
     return (
-        <div className={`${s.container} post_list`} id="post_list">
+        <div className={s.container} id="post_list">
             <NewPost />
 
             <InfiniteScroll

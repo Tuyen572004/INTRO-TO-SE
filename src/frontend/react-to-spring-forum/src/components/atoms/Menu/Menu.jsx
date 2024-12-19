@@ -112,7 +112,7 @@ const Menu = ({toggleIsPostFormVisible}) => {
                 className={`${s.user} ${active === "user" ? s.active : ""}`}
                 onClick={() => {
                     setActive("user");
-                    navigate("/user");
+                    navigate("/my-account");
                 }}
                 variants={activeVariants}
                 animate={active === "user" ? "active" : "inactive"}
