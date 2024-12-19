@@ -18,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,13 +32,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MessageServiceImp implements MessageService {
 
     @NonFinal
-    String DEFAULT_SORT_FIELD = "sentAt";
+    String DEFAULT_SORT_FIELD = "sent_at";
 
     MessageRepository messageRepository;
 
@@ -70,18 +72,22 @@ public class MessageServiceImp implements MessageService {
         message.setSentAt(LocalDateTime.now());
         message.setReadStatus(false);
 
+        MessageResponse messageResponse = buildMessageResponse(messageRepository.save(message));
+
         String destination = "/queue/messages" + chatId;
-        simpMessagingTemplate.convertAndSendToUser(request.getSenderId(), destination, messageMapper.toMessageResponse(message));
+        log.info("Sending message to destination: /{}{}", request.getSenderId(), destination);
+        simpMessagingTemplate.convertAndSendToUser(request.getSenderId(), destination, messageResponse);
         for (String recipientId : request.getRecipientIds()) {
-            simpMessagingTemplate.convertAndSendToUser(recipientId, destination, messageMapper.toMessageResponse(message));
+            log.info("Sending message to destination: /{}{}", recipientId, destination);
+            simpMessagingTemplate.convertAndSendToUser(recipientId, destination, messageResponse);
             notificationService.sendMessageNotification(request.getSenderId(),recipientId, message.getId());
         }
-        return messageMapper.toMessageResponse(messageRepository.save(message));
+        return messageResponse;
     }
 
     @Override
     public PageResponse<MessageResponse> getMessages(String chatId, int page, int size) {
-        Sort sort = Sort.by(Sort.Order.asc(DEFAULT_SORT_FIELD));
+        Sort sort = Sort.by(Sort.Order.desc(DEFAULT_SORT_FIELD));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<Message> messages = messageRepository.findByChatId(chatId, pageable);
 
