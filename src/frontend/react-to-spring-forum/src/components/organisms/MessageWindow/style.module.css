@@ -151,6 +151,7 @@
 
 .message_bar {
   display: flex;
+  flex-direction: column;
   gap: 12px;
   padding: 16px;
   border-top: 1px solid #e5e5e5;
@@ -329,4 +330,43 @@
   display: inline-block;
   width: 20px;
   animation: loading-dots 1.5s infinite;
+}
+
+.message_images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.message_image {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.image_upload_label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.image_upload_label:hover {
+  color: #333;
+}
+
+.hidden_input {
+  display: none;
+}
+
+.message_input_container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  gap: 8px;
 }
