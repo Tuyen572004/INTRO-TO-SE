@@ -99,7 +99,9 @@ const EditCommentModal = ({ show, onHide, comment }) => {
                                 Add more to your comment
                             </div>
                             <label htmlFor="image-upload-for-edit-comment" className="col-2">
-                                <Images strokeWidth={2.5}/>
+                                <div className={s.addImageButton}>
+                                    <Images strokeWidth={2.5}/>
+                                </div>
                             </label>
                             <input
                                 type="file"

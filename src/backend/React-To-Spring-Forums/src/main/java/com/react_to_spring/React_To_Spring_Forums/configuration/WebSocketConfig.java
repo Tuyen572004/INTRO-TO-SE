@@ -1,6 +1,7 @@
 package com.react_to_spring.React_To_Spring_Forums.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.*;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -15,16 +16,19 @@ import java.util.List;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    @Value("${client.url}")
+    private String CLIENT_URL;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/chatroom", "/topic", "/queue");
+        config.enableSimpleBroker("/chatroom", "/topic", "/queue", "/user");
         config.setUserDestinationPrefix("/user");
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:3000").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins(CLIENT_URL).withSockJS();
     }
 
     @Override

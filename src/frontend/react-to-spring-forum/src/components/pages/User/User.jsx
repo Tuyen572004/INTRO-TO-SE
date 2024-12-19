@@ -3,43 +3,36 @@ import s from './style.module.css';
 import { FaFacebookSquare, FaInstagram } from 'react-icons/fa';
 import { UserProfileAPI } from '../../../api/UserProfileAPI';
 import { UserAPI } from '../../../api/UserAPI';
-import EditProfileModal from "../../molecules/EditProfileModal/EditProfileModal";
 import UserIcon from "../../../assets/User_Icon.png"
-import {PostAPI} from "../../../api/PostAPI";
-import {useDispatch} from "react-redux";
-import {setMyPosts} from "../../../store/myPostSlice";
-import MyPostList from "../../organisms/MyPostList/MyPostList";
+import { useParams } from "react-router-dom";
+import UserPostList from "../../organisms/UserPostList/UserPostList";
 
 const User = () => {
-    const [showEditModal, setShowEditModal] = useState(false);
+    const { id } = useParams();
+
     const [userProfile, setUserProfile] = useState({});
     const [user, setUser] = useState({});
+
     const [loading, setLoading] = useState(true);
 
-    const dispatch = useDispatch();
-
     useEffect(() => {
-        const fetchMyProfile = async () => {
-            const response = await UserProfileAPI.get();
+        const fetchUserProfile = async () => {
+            const response = await UserProfileAPI.getProfileById(id);
             setUserProfile(response.data);
         };
 
-        const fetchMyAccount = async () => {
-            const response = await UserAPI.getMyAccount();
+        const fetchUserAccount = async () => {
+            const response = await UserAPI.getUserById(id);
             setUser(response.data);
         };
 
-        const fetchMyPosts = async () => {
-            const response = await PostAPI.getMyPosts();
-            dispatch(setMyPosts(response));
-        }
-
-        Promise.all([fetchMyProfile(), fetchMyAccount(), fetchMyPosts()]).then(() => setLoading(false));
-    }, []);
+        Promise.all([fetchUserProfile(), fetchUserAccount()]).then(() => setLoading(false));
+    }, [id]);
 
     const openInNewWindow = (url) => {
         window.open(url, '_blank', 'noopener,noreferrer');
     };
+
 
     if (loading) {
         return <div></div>;
@@ -52,7 +45,7 @@ const User = () => {
                     <div className={s.user_information}>
                         <div className={s.inner_information}>
                             <div className={s.name}>{userProfile.firstName + ' ' + userProfile.lastName}</div>
-                            <div className={s.username}>{user.username}</div>
+                            <div className={s.username}>@{user.username}</div>
                         </div>
                         <div className={s.inner_avatar}>
                             {userProfile.profileImgUrl
@@ -79,25 +72,18 @@ const User = () => {
                     </div>
                 </div>
                 <div className={s.edit_button}>
-                    <div className={s.button} onClick={() => setShowEditModal(true)}>Edit Profile</div>
+                    <div className={s.button}>Edit Profile</div>
                 </div>
 
 
                 <hr className={"mt-4 mb-4"}/>
 
-                <div className="m-3">
-                    <MyPostList scrollableTarget="user"/>
+                <div className="p-3">
+                    <UserPostList scrollableTarget="user" userId={id}/>
                 </div>
             </div>
-
-            <EditProfileModal
-                show={showEditModal}
-                onHide={() => setShowEditModal(false)}
-                userProfile={userProfile}
-                setUserProfile={setUserProfile}
-            />
         </>
     );
-};
+}
 
 export default User;

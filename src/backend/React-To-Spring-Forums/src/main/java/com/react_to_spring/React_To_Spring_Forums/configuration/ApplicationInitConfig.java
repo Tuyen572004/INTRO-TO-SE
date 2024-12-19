@@ -2,7 +2,9 @@ package com.react_to_spring.React_To_Spring_Forums.configuration;
 
 import com.react_to_spring.React_To_Spring_Forums.entity.Role;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.repository.RoleRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationInitConfig {
 
     UserRepository userRepository;
+    UserProfileRepository userProfileRepository;
     RoleRepository roleRepository;
 
     PasswordEncoder passwordEncoder;
@@ -61,7 +64,15 @@ public class ApplicationInitConfig {
                         .build();
 
                 roleRepository.save(adminRole);
-                userRepository.save(admin);
+                admin = userRepository.save(admin);
+
+                UserProfile adminProfile = UserProfile.builder()
+                        .userId(admin.getId())
+                        .firstName("Admin")
+                        .lastName("Admin")
+                        .build();
+
+                userProfileRepository.save(adminProfile);
             }
         };
     }

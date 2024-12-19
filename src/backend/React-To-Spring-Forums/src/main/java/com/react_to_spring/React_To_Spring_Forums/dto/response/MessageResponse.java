@@ -3,6 +3,7 @@ package com.react_to_spring.React_To_Spring_Forums.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -12,10 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageResponse {
+    String id;
     String chatId;
-    String senderId;
-    List<String> recipientIds;
+    UserProfileResponse senderProfile;
+    List<UserProfileResponse> recipientProfiles;
     String content;
     List<String> images;
-    String formattedSentTime;
+    Date formattedSentTime;
 }

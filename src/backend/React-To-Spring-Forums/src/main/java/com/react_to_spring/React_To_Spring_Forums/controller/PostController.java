@@ -71,6 +71,17 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/random")
+    @Operation(summary = "Get random posts",
+            description = "The results will include information about the post and the user who created it")
+    public ApiResponse<List<PostResponse>> getRandomPosts(
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
+        return ApiResponse.<List<PostResponse>>builder()
+                .data(postService.getRandomPosts(size))
+                .build();
+    }
+
     @GetMapping
     @Operation(summary = "Get all posts by title",
             description = "The results will include information about the post and the user who created it")

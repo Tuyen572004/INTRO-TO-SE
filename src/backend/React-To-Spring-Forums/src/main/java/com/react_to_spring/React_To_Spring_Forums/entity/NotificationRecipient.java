@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.time.LocalDateTime;
+
 @Document("notification_receivers")
 @Getter
 @Setter
@@ -24,4 +26,7 @@ public class NotificationRecipient {
 
     @Field("read_status")
     Boolean readStatus = false;
+
+    @Field("send_at")
+    LocalDateTime sendAt;
 }

@@ -130,7 +130,9 @@ const EditPostModal = ({ show, onHide, post }) => {
                                 Add to your post
                             </div>
                             <label htmlFor="image-upload-for-edit-post" className="col-2">
-                                <Images strokeWidth={2.5}/>
+                                <div className={s.addImageButton}>
+                                    <Images strokeWidth={2.5} />
+                                </div>
                             </label>
                             <input
                                 type="file"

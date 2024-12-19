@@ -1,51 +1,51 @@
 .container {
-	display: flex;
-	flex-direction: column;
-	overflow-y: auto;
-	height: 46rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 46rem;
 }
 
 .user_card {
-	padding: 16px 24px 10px;
+    padding: 16px 24px 10px;
 
 }
 
 .user_information {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .inner_information {}
 
 .username {
-	color: rgb(103, 99, 99);
-	font-weight: 400;
-	font-size: 18px;
+    color: rgb(103, 99, 99);
+    font-weight: 400;
+    font-size: 18px;
 }
 
 .name {
-	font-weight: 600;
-	font-size: 28px;
+    font-weight: 600;
+    font-size: 28px;
 }
 
 .inner_avatar img {
-	height: 100px;
-	width: 100px;
-	border-radius: 100%;
-	border: 1px solid #D9D9D9;
+    height: 100px;
+    width: 100px;
+    border-radius: 100%;
+    border: 1px solid #D9D9D9;
 }
 
 .description {}
 
 .sub_information {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .total_follower {}
@@ -53,38 +53,38 @@
 .link {}
 
 .inner_link {
-	display: flex;
-	justify-content: space-evenly;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .link_button {
-	border-radius: 30%;
-	padding: 1px 7px;
-	margin: 0px 5px;
-	font-size: 25px;
-	transition: background-color ease 0.5 s;
-	cursor: pointer;
+    border-radius: 30%;
+    padding: 1px 7px;
+    margin: 0px 5px;
+    font-size: 25px;
+    transition: background-color ease 0.5s;
+    cursor: pointer;
 }
 
 .link_button:hover {
-	background-color: #D9D9D9;
+    background-color: #D9D9D9;
 }
 
 .edit_button {
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	padding: 12px 24px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 12px 24px;
 }
 
 .button {
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	padding: 5px 16px;
-	border: 1px solid #D9D9D9;
-	border-radius: 10px;
-	cursor: pointer;
-	color: white;
-	background-color: black;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 5px 16px;
+    border: 1px solid #D9D9D9;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    background-color: black;
 }

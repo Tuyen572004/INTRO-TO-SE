@@ -77,3 +77,10 @@
 	outline: none;
 	background: #333333;
 }
+
+.addImageButton:hover {
+	cursor: pointer;
+	border-radius: 100%;
+	transition: 0.3s;
+	transform: scale(1.2);
+}

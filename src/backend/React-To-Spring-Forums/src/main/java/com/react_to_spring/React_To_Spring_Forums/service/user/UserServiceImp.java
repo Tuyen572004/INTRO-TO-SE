@@ -4,15 +4,18 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.user.UserCreationR
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.verifycode.SendVerificationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.SearchUserResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Role;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
+import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.RoleMapper;
 import com.react_to_spring.React_To_Spring_Forums.mapper.UserMapper;
 import com.react_to_spring.React_To_Spring_Forums.mapper.UserProfilerMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.RoleRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.userprofile.UserProfileService;
 import com.react_to_spring.React_To_Spring_Forums.service.verifycode.VerifyCodeService;
@@ -30,6 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,6 +44,7 @@ import java.util.List;
 public class UserServiceImp implements UserService{
 
     UserRepository userRepository;
+    UserProfileRepository userProfileRepository;
     RoleRepository roleRepository;
 
     UserProfileService userProfileService;
@@ -112,6 +117,27 @@ public class UserServiceImp implements UserService{
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return buildUserResponse(user);
+    }
+
+    @Override
+    public List<SearchUserResponse> searchUserbyUsernameContaining(String text) {
+        List<User> users = userRepository.findByUsernameContaining(text);
+
+        List<SearchUserResponse> responses = new ArrayList<>();
+
+        for (User user : users) {
+            UserProfile userProfile = userProfileRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+
+            SearchUserResponse searchUserResponse = SearchUserResponse.builder()
+                    .user(userMapper.toUserResponse(user))
+                    .userProfile(userProfilerMapper.toUserProfileResponse(userProfile))
+                    .build();
+
+            responses.add(searchUserResponse);
+        }
+
+        return responses;
     }
 
     // page starts from 1

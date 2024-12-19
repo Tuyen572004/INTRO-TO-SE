@@ -17,5 +17,7 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
 
     Page<ChatRoom> findChatRoomByParticipantIdsContaining(List<String> participantIds, Pageable pageable);
 
+    Optional<ChatRoom> findChatRoomByParticipantIds(List<String> participantIds);
+
     void deleteByChatId(String chatId);
 }

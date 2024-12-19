@@ -10,7 +10,7 @@ const postSlice = createSlice({
 			state.posts = action.payload;
 		},
 
-		addPost: (state, action) => {
+		addNewPost: (state, action) => {
 			state.posts.unshift(action.payload);
 		},
 
@@ -24,8 +24,18 @@ const postSlice = createSlice({
 		deletePost: (state, action) => {
 			state.posts = state.posts.filter((post) => post.id !== action.payload);
 		},
+
+		appendPosts: (state, action) => {
+			state.posts = [...state.posts, ...action.payload];
+		}
 	},
 });
 
-export const { setPosts, addPost, updatePost, deletePost } = postSlice.actions;
+export const {
+	setPosts,
+	addNewPost,
+	updatePost,
+	deletePost,
+	appendPosts
+} = postSlice.actions;
 export const postReducer = postSlice.reducer;

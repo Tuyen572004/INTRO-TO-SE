@@ -19,6 +19,10 @@
 	width: 100%;
 }
 
+.inner_user_information:hover {
+	cursor: pointer;
+}
+
 .avatar {
 	height: 50px;
 	width: 50px;
@@ -32,6 +36,10 @@
 	width: 50px;
 	border-radius: 50%;
 	object-fit: cover;
+}
+
+.avatar .inner_avatar:hover {
+	cursor: pointer;
 }
 
 .name {

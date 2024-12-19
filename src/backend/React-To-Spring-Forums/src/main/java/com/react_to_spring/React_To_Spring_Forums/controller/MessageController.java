@@ -9,10 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/messages")
@@ -30,7 +27,9 @@ public class MessageController {
     }
 
     @GetMapping
-    public ApiResponse<PageResponse<MessageResponse>> getMessages(String chatId, int page, int size) {
+    public ApiResponse<PageResponse<MessageResponse>> getMessages(@RequestParam("chatId") String chatId,
+                                                                  @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                                  @RequestParam(value = "size", required = false, defaultValue = "5") int size) {
         return ApiResponse.<PageResponse<MessageResponse>>builder()
                 .data(messageService.getMessages(chatId, page, size))
                 .build();

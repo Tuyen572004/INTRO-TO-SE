@@ -3,6 +3,7 @@ package com.react_to_spring.React_To_Spring_Forums.controller;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.user.UserCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ApiResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.SearchUserResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -85,6 +86,15 @@ public class UserController {
         userService.deleteUser(id);
         return ApiResponse.<Void>builder()
                 .message(DELETE_SUCCESS)
+                .build();
+    }
+
+    @GetMapping("/username/{text}")
+    @Operation(summary = "Search for a user by username",
+            description = "Search for a user by username")
+    public ApiResponse<List<SearchUserResponse>> searchUser(@PathVariable("text") String text) {
+        return ApiResponse.<List<SearchUserResponse>>builder()
+                .data(userService.searchUserbyUsernameContaining(text))
                 .build();
     }
 }

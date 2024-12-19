@@ -1,9 +1,11 @@
 import s from "./style.module.css";
-import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import { UserProfileAPI } from "../../../api/UserProfileAPI";
+import {motion} from "framer-motion";
+import React, {useEffect, useState} from "react";
+import {UserProfileAPI} from "../../../api/UserProfileAPI";
 import UserIcon from "../../../assets/User_Icon.png";
-import PostForm from "../PostForm/PostForm"; // Import the PostForm component
+import PostForm from "../PostForm/PostForm"; 
+import {UserAPI} from "../../../api/UserAPI";
+import * as promise from "axios"; // Import the PostForm component
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -13,23 +15,22 @@ const NewPost = () => {
   const [isPostFormVisible, setIsPostFormVisible] = useState(false);
   const user = useSelector((state) => state.userSlice.user);
   const navigate = useNavigate();
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await UserProfileAPI.getMyProfile();
+                setUserProfile(response.data);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await UserProfileAPI.get();
-        setUserProfile(response.data);
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
+        promise.all([fetchUserProfile()]).then(() => setLoading(false));
+    }, []);
+
+    const toggleIsPostFormVisible = () => {
+        setIsPostFormVisible(!isPostFormVisible);
     };
-
-    fetchUserProfile().then(() => setLoading(false));
-  }, []);
-
-  const toggleIsPostFormVisible = () => {
-    setIsPostFormVisible(!isPostFormVisible);
-  };
 
   if (loading) {
     return <div></div>;

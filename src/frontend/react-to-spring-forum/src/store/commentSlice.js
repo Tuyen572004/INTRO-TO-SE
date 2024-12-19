@@ -4,10 +4,12 @@ const commentSlice = createSlice({
     name: 'commentSlice',
     initialState: {
         comments: [],
+        reloadReactBar: false,
     },
     reducers: {
         addComment: (state, action) => {
             state.comments.unshift(action.payload);
+            state.reloadReactBar = !state.reloadReactBar;
         },
         setComments: (state, action) => {
             state.comments = action.payload;
@@ -22,5 +24,10 @@ const commentSlice = createSlice({
     },
 });
 
-export const {addComment, setComments, removeComment, updateComment} = commentSlice.actions;
+export const {
+    addComment,
+    setComments,
+    removeComment,
+    updateComment
+} = commentSlice.actions;
 export const commentReducer = commentSlice.reducer;

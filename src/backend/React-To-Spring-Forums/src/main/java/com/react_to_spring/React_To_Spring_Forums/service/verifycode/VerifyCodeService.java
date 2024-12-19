@@ -13,4 +13,8 @@ public interface VerifyCodeService {
     String buildRedirectUrl(boolean success);
 
     void deleteVerifyCode(String userId, String verificationCode);
+
+    User verifyCode(String verificationCode);
+
+    boolean checkAuthorizedCodeExistsByUserId(String userId);
 }

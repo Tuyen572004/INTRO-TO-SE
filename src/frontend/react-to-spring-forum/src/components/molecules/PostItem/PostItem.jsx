@@ -12,35 +12,20 @@ import CustomToggle from "../../atoms/CustomToggle/CustomToggle";
 import EditPostModal from "../EditPostModal/EditPostModal";
 import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModal";
 import { PostAPI } from "../../../api/PostAPI";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deletePost } from "../../../store/postSlice";
 import { deleteMyPost } from "../../../store/myPostSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
-import { setCommentCounter } from "../../../store/commentCounterSlice";
-import { setReactCounter, updateReactStatus} from "../../../store/reactCounterSlice";
-import GoBack from "../../atoms/GoBack/GoBack";
+import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 const PostItem = ({ post }) => {
+    const auth = jwtDecode(localStorage.getItem('accessToken').toString());
+    const myId = auth.user.userId;
+
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        dispatch(setCommentCounter({
-            postId: post.id,
-            count: post.commentCounts
-        }));
-        dispatch(setReactCounter({
-            postId: post.id,
-            count: post.reactCounts
-        }));
-        dispatch(updateReactStatus({
-            postId: post.id,
-            isReacted: post.isReacted
-        }));
-
-        setLoading(false);
-    }, [post, dispatch]);
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -67,8 +52,12 @@ const PostItem = ({ post }) => {
         setShowDeleteModal(false);
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
+    const navigateToProfile = () => {
+        if (myId === post.user.id) {
+            navigate('/my-account');
+        } else {
+            navigate(`/user/${post.user.id}`);
+        }
     }
 
     return (
@@ -76,7 +65,7 @@ const PostItem = ({ post }) => {
             <div className={s.container}>
                 <div className={s.header}>
                     <div className={s.avatar}>
-                        <div className={s.inner_avatar}>
+                        <div className={s.inner_avatar} onClick={navigateToProfile}>
                             {post.user.avatar
                                 ? <img src={post.user.avatar} alt={post.user.name} />
                                 : <img src={UserIcon} alt={post.user.name} />}
@@ -84,7 +73,7 @@ const PostItem = ({ post }) => {
                     </div>
 
                     <div className={s.user_information}>
-                        <div className={s.inner_user_information}>
+                        <div className={s.inner_user_information} onClick={navigateToProfile}>
                             <div className={s.name}>
                                 {post.user?.name}
                                 <span className={s.postTime}>{formatDistanceToNow(new Date(post.createdDate), { addSuffix: true })}</span>
@@ -92,13 +81,23 @@ const PostItem = ({ post }) => {
                             <div className={s.username}>@{post.user?.username}</div>
                         </div>
                         <div>
-                            <Dropdown className="dropdown">
-                                <Dropdown.Toggle as={CustomToggle} />
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={handleEditClick}>Edit</Dropdown.Item>
-                                    <Dropdown.Item onClick={handleDeleteClick}>Delete</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            {myId === post.user.id ? (
+                                <Dropdown className="dropdown">
+                                    <Dropdown.Toggle as={CustomToggle} />
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={handleEditClick}>Edit</Dropdown.Item>
+                                        <Dropdown.Item onClick={handleDeleteClick}>Delete</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            ) : (
+                                <Dropdown className="dropdown">
+                                    <Dropdown.Toggle as={CustomToggle} />
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item>Report</Dropdown.Item>
+                                        <Dropdown.Item>Save</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )}
                         </div>
                     </div>
                 </div>

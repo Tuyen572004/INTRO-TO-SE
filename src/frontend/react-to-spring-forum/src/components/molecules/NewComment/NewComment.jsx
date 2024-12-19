@@ -6,14 +6,13 @@ import { UserIcon } from "lucide-react";
 import {uploadFile} from "../../../utils/uploadImageFile";
 import {CommentAPI} from "../../../api/CommentAPI";
 import {addComment} from "../../../store/commentSlice";
-import {increment} from "../../../store/commentCounterSlice";
 import ImageList from "../ImageList/ImageList";
 import {useDispatch} from "react-redux";
 
 import s from "./style.module.css";
 
 function NewComment({ postId }) {
-    const [userProfile, setUserProfile] = useState();
+    const [userProfile, setUserProfile] = useState({});
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState("");
     const [imageList, setImageList] = useState([]);
@@ -23,7 +22,7 @@ function NewComment({ postId }) {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await UserProfileAPI.get();
+                const response = await UserProfileAPI.getMyProfile();
                 setUserProfile(response.data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
@@ -71,9 +70,9 @@ function NewComment({ postId }) {
 
             if (response.code === 1000) {
                 dispatch(addComment(response.data));
-                dispatch(increment(postId));
                 setContent("");
                 setImageList([]);
+
             }
         } catch (error) {
             console.error("Error creating comment:", error);

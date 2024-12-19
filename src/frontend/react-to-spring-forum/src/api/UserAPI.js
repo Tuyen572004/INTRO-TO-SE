@@ -58,6 +58,26 @@ export class UserAPI {
 		}
 	}
 
+	static async getUserById(id) {
+		try {
+			const response = await AuthorizedAxios.get(`/api/users?id=${id}`);
+			return response.data;
+		} catch (error) {
+			console.error("API Error:", error.response || error.message);
+			throw error;
+		}
+	}
+
+	static async getUserByUsernameContaining(text) {
+		try {
+			const response = await AuthorizedAxios.get(`/api/users/username/${text}`);
+			return response.data;
+		} catch (error) {
+			console.error("API Error:", error.response || error.message);
+			throw error;
+		}
+	}
+
 	static async refreshToken(data) {
 		const response = await Axios.post("/api/auth/refresh", {
 			refreshToken: data,
