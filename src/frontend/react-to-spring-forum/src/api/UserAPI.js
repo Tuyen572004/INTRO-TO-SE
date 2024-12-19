@@ -21,7 +21,7 @@ export class UserAPI {
 
 	static async changePassword(data) {
 		console.log("data", data);
-		
+
 		const response = await AuthorizedAxios.patch("/api/auth/change-password", {
 			oldPassword: data.currentPassword,
 			newPassword: data.newPassword,
@@ -84,6 +84,11 @@ export class UserAPI {
 
 	static async verifyCode(data) {
 		const response = await Axios.get(`/api/verify?userId=${data.userId}&verificationCode=${data.verificationCode}`);
+		return response.data;
+	}
+
+	static async getAllUsers() {
+		const response = await AuthorizedAxios.get("/api/users/all");
 		return response.data;
 	}
 	// static async resendVerificationEmail(data) {
