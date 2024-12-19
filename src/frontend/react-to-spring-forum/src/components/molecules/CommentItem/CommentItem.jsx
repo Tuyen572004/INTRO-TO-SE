@@ -11,9 +11,15 @@ import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
 
 import s from "./style.module.css";
+import {useNavigate} from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
-function CommentItem({ comment, postId }) {
+function CommentItem({ comment }) {
+    const auth = jwtDecode(localStorage.getItem('accessToken').toString());
+    const myId = auth.user.userId;
+
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -33,9 +39,17 @@ function CommentItem({ comment, postId }) {
         setShowDeleteModal(false);
     };
 
+    const navigateToProfile = () => {
+        if (myId === comment.user.id) {
+            navigate('/my-account');
+        } else {
+            navigate(`/user/${comment.user.id}`);
+        }
+    }
+
     return (
         <div className={s.commentContainer}>
-            <div className={s.avatar}>
+            <div className={s.avatar} onClick={navigateToProfile}>
                 {comment.user.avatar ? (
                     <img src={comment.user.avatar} alt={comment.user.name}/>
                 ) : (
@@ -46,20 +60,29 @@ function CommentItem({ comment, postId }) {
             <div className={s.contentWrapper}>
                 <div className={s.header}>
                     <div className={s.userInfo}>
-                        <span className={s.name}>{comment.user.name}</span>
-                        <span className={s.username}>@{comment.user.username}</span>
+                        <span className={s.name} onClick={navigateToProfile}>{comment.user.name}</span>
+                        <span className={s.username} onClick={navigateToProfile}>@{comment.user.username}</span>
                         <span className={s.createdDate}>
                             {formatDistanceToNow(new Date(comment.createdDate), { addSuffix: true })}
                         </span>
                     </div>
 
-                    <Dropdown className={s.dropdown}>
-                        <Dropdown.Toggle as={CustomToggle} />
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={handleEditClick}> Edit </Dropdown.Item>
-                            <Dropdown.Item onClick={handleDeleteClick}> Delete </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    {myId === comment.user.id ? (
+                        <Dropdown className={s.dropdown}>
+                            <Dropdown.Toggle as={CustomToggle} />
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={handleEditClick}> Edit </Dropdown.Item>
+                                <Dropdown.Item onClick={handleDeleteClick}> Delete </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ) : (
+                        <Dropdown className={s.dropdown}>
+                            <Dropdown.Toggle as={CustomToggle} />
+                            <Dropdown.Menu>
+                                <Dropdown.Item> Report </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    )}
                 </div>
 
                 <div className={s.content}>{comment.content}</div>
