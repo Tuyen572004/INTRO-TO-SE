@@ -1,16 +1,34 @@
+import { useSelector } from "react-redux";
 import Logo from "../../atoms/Logo/Logo";
 import Menu from "../../atoms/Menu/Menu";
 import Setting from "../../atoms/Setting/Setting";
 import s from "./style.module.css";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-const Navigation = ({ toggleIsPostFormVisible, toggleIsChangePasswordModalOpen }) => {
+const Navigation = ({ toggleIsPostPopup, toggleIsChangePasswordModalOpen }) => {
+  const user = useSelector((state) => state.userSlice.user);
+  const navigate = useNavigate();
   return (
     <div className={s.container}>
       <Logo />
-      <Menu toggleIsPostFormVisible={toggleIsPostFormVisible} />
-      <Setting
-        toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen}
-      />
+      {user && <Menu toggleIsPostPopup={toggleIsPostPopup} />}
+      {user && (
+        <Setting
+          toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen}
+        />
+      )}
+      {!user && (
+        <motion.button
+          className={s.login_button}
+          type="button"
+          onClick={() => navigate("/login")}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          Login
+        </motion.button>
+      )}
     </div>
   );
 };

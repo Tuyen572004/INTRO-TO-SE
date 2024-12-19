@@ -5,15 +5,18 @@ import s from "./style.module.css";
 import { UserAPI } from "../../../api/UserAPI";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { deleteUser } from "../../../store/userSlice";
 import SettingOptions from "../../molecules/SettingOptions/SettingOptions";
 
 const Setting = ({ toggleIsChangePasswordModalOpen }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleLogout = () => {
     UserAPI.logout({ token: localStorage.getItem("accessToken") });
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-
+    dispatch(deleteUser());
     navigate("/login");
   };
 
