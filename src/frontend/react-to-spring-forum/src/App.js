@@ -29,8 +29,8 @@ const App = () => {
             <Route element={<AuthorizedRoutes />}>
                 <Route path="login" element={<LoginRegister />} />
             </Route>
-            <Route path="verification-success" element={<VerificationSuccess />} />
-            <Route path="verification-failed" element={<VerificationFailed />} />
+            <Route path="verification-success/*" element={<VerificationSuccess />} />
+            <Route path="verification-failed/*" element={<VerificationFailed />} />
             <Route path="message" element={<Message />} />
             <Route path="/" element={<LayoutDefault />}>
                 <Route index element={<Dashboard />} />

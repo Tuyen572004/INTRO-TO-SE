@@ -273,6 +273,36 @@
   scrollbar-color: #888 #f1f1f1;
 }
 
+.no_chat_rooms {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+  margin-top: 20px;
+}
+
+.no_chat_selected {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.create_chat_room_button {
+  padding: 10px 20px;
+  background-color: black;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 1rem;
+}
+
+.create_chat_room_button:hover {
+  background-color: #0056b3;
+}
+
 @keyframes loading-dots {
 
   0%,
