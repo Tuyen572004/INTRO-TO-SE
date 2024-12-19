@@ -9,31 +9,20 @@ import * as promise from "axios"; // Import the PostForm component
 
 const NewPost = () => {
     const [userProfile, setUserProfile] = useState();
-    const [user, setUser] = useState();
     const [loading, setLoading] = useState(true);
     const [isPostFormVisible, setIsPostFormVisible] = useState(false);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await UserProfileAPI.get();
+                const response = await UserProfileAPI.getMyProfile();
                 setUserProfile(response.data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
             }
         };
 
-        const fetchUser = async () => {
-            try {
-                const response = await UserAPI.getMyAccount();
-                setUser(response.data);
-            } catch (error) {
-                console.error("Error fetching user profile:", error);
-            }
-        }
-
-        promise.all([fetchUserProfile(), fetchUser()])
-            .then(() => setLoading(false));
+        promise.all([fetchUserProfile()]).then(() => setLoading(false));
     }, []);
 
     const toggleIsPostFormVisible = () => {
@@ -70,8 +59,6 @@ const NewPost = () => {
                 <PostForm
                     show={isPostFormVisible}
                     toggleIsPostFormVisible={toggleIsPostFormVisible}
-                    userProfile={userProfile}
-                    user={user}
                 />
             )}
         </div>

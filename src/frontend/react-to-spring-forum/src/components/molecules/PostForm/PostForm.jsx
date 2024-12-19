@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Images } from 'lucide-react';
 import { uploadFile } from "../../../utils/uploadImageFile";
@@ -9,15 +9,46 @@ import { PostAPI } from "../../../api/PostAPI";
 
 import s from './style.module.css';
 import ImageList from "../ImageList/ImageList";
+import {UserProfileAPI} from "../../../api/UserProfileAPI";
+import {UserAPI} from "../../../api/UserAPI";
+import * as promise from "axios";
+import Loading from "../../atoms/Loading/Loading";
 
-const PostForm = ({ show, toggleIsPostFormVisible, userProfile, user }) => {
+const PostForm = ({ show, toggleIsPostFormVisible }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [imageList, setImageList] = useState([]);
     const titleRef = useRef(null);
     const contentRef = useRef(null);
+    const [userProfile, setUserProfile] = useState({});
+    const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await UserProfileAPI.getMyProfile();
+                setUserProfile(response.data);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
+
+        const fetchUser = async () => {
+            try {
+                const response = await UserAPI.getMyAccount();
+                setUser(response.data);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        }
+
+        promise.all([fetchUserProfile(), fetchUser()])
+            .then(() => setLoading(false));
+    }, []);
+
 
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -63,6 +94,10 @@ const PostForm = ({ show, toggleIsPostFormVisible, userProfile, user }) => {
         ref.current.style.height = ref.current.scrollHeight + 'px';
     };
 
+    if (loading) {
+        <Loading />
+    }
+
     return (
         <>
             <Modal show={show} onHide={toggleIsPostFormVisible} centered>
@@ -75,7 +110,7 @@ const PostForm = ({ show, toggleIsPostFormVisible, userProfile, user }) => {
                                 className={s.avatar}
                             />
                         </div>
-                        <div className="col-10">
+                        <div className="col-9 ml-2">
                             <div className="row">
                                 <div className="col-12">
                                     <div className={s.name}>{userProfile.firstName + ' ' + userProfile.lastName}</div>
@@ -124,7 +159,9 @@ const PostForm = ({ show, toggleIsPostFormVisible, userProfile, user }) => {
                                     Add to your post
                                 </div>
                                 <label htmlFor="image-upload-for-new-post" className="col-2">
-                                    <Images strokeWidth={2.5}/>
+                                    <div className={s.addImageButton}>
+                                        <Images strokeWidth={2.5}/>
+                                    </div>
                                 </label>
                                 <input
                                     type="file"

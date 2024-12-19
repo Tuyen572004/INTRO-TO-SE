@@ -55,7 +55,16 @@ export class PostAPI {
 	static async getMyPosts(page = 1, size = 10) {
 		try {
 			const response = await AuthorizedAxios.get(`/api/posts/my-posts?page=${page}&size=${size}`);
-			console.log(response.data.data);
+			return response.data.data;
+		} catch (error) {
+			console.error("API Error:", error.response || error.message);
+			throw error;
+		}
+	}
+
+	static async getPostsByUserId(userId, page = 1, size = 10) {
+		try {
+			const response = await AuthorizedAxios.get(`/api/posts/pagination/users/${userId}?page=${page}&size=${size}`);
 			return response.data.data;
 		} catch (error) {
 			console.error("API Error:", error.response || error.message);

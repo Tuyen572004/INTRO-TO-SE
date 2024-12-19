@@ -5,6 +5,7 @@ import {NotificationAPI} from "../../../api/NotificationAPI";
 import Loading from "../../atoms/Loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "react-bootstrap/Spinner";
+import {v4} from "uuid";
 
 const ActivityList = () => {
     const [activities, setActivities] = useState([]);
@@ -15,8 +16,8 @@ const ActivityList = () => {
 
     const fetchActivities = async () => {
         try {
-            const response = await NotificationAPI.getNotifications();
-            setActivities(response.data);
+            const response = await NotificationAPI.getNotifications(page);
+            setActivities([...activities, ...response.data]);
 
             setPage(page + 1);
             setHasMore(page < response.totalPages);
@@ -35,7 +36,7 @@ const ActivityList = () => {
         <Loading />
     }
     return (
-        <div className={s.activity_list}>
+        <div className={s.activity_list} id="activity-list">
             <InfiniteScroll
                 dataLength={activities.length}
                 next={fetchActivities}
@@ -47,15 +48,10 @@ const ActivityList = () => {
                         </Spinner>
                     </div>
                 }
-                scrollableTarget={"activity"}
-                endMessage={
-                    <p style={{textAlign: "center"}}>
-                        <b>Yay! You have seen it all</b>
-                    </p>
-                }
+                scrollableTarget="activity-list"
             >
                 {activities.map((activity) => (
-                    <ActivityItem key={activity.id} activity={activity} />
+                    <ActivityItem key={v4()} activity={activity} />
                 ))}
 
             </InfiniteScroll>
