@@ -18,11 +18,13 @@ import { deleteMyPost } from "../../../store/myPostSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
 import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 const PostItem = ({ post }) => {
     const auth = jwtDecode(localStorage.getItem('accessToken').toString());
     const myId = auth.user.userId;
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [showEditModal, setShowEditModal] = useState(false);
@@ -50,12 +52,20 @@ const PostItem = ({ post }) => {
         setShowDeleteModal(false);
     };
 
+    const navigateToProfile = () => {
+        if (myId === post.user.id) {
+            navigate('/my-account');
+        } else {
+            navigate(`/user/${post.user.id}`);
+        }
+    }
+
     return (
         <>
             <div className={s.container}>
                 <div className={s.header}>
                     <div className={s.avatar}>
-                        <div className={s.inner_avatar}>
+                        <div className={s.inner_avatar} onClick={navigateToProfile}>
                             {post.user.avatar
                                 ? <img src={post.user.avatar} alt={post.user.name} />
                                 : <img src={UserIcon} alt={post.user.name} />}
@@ -63,7 +73,7 @@ const PostItem = ({ post }) => {
                     </div>
 
                     <div className={s.user_information}>
-                        <div className={s.inner_user_information}>
+                        <div className={s.inner_user_information} onClick={navigateToProfile}>
                             <div className={s.name}>
                                 {post.user?.name}
                                 <span className={s.postTime}>{formatDistanceToNow(new Date(post.createdDate), { addSuffix: true })}</span>

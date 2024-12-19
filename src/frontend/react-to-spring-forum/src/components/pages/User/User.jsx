@@ -33,6 +33,7 @@ const User = () => {
         window.open(url, '_blank', 'noopener,noreferrer');
     };
 
+
     if (loading) {
         return <div></div>;
     }

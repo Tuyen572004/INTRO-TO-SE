@@ -25,6 +25,10 @@
     border-radius: 50%;
 }
 
+.avatar:hover {
+    cursor: pointer;
+}
+
 .contentWrapper {
     flex-grow: 1;
     min-width: 0;
@@ -49,6 +53,14 @@
     margin-right: 6px;
 
     margin-left: 5px;
+}
+
+.userInfo .username:hover {
+    cursor: pointer;
+}
+
+.userInfo .name:hover {
+    cursor: pointer;
 }
 
 .name {
