@@ -80,8 +80,6 @@ public class ChatRoomServiceImp implements ChatRoomService {
         List<ChatRoomResponse> chatRoomResponses = chatRooms.getContent().stream()
                 .map(this::buildChatRoomResponse).toList();
 
-
-
         return PageResponse.<ChatRoomResponse>builder()
                 .page(page)
                 .size(size)
@@ -110,12 +108,19 @@ public class ChatRoomServiceImp implements ChatRoomService {
     }
 
     private ChatRoomResponse buildChatRoomResponse(ChatRoom chatRoom) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         ChatRoomResponse chatRoomResponse = chatRoomMapper.toChatRoomResponse(chatRoom);
+
         List<UserProfileResponse> participantProfiles = new ArrayList<>();
         for (String participantId : chatRoom.getParticipantIds()) {
             UserProfile userProfile = UserProfileRepository.findByUserId(participantId).orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
             participantProfiles.add(userProfilerMapper.toUserProfileResponse(userProfile));
+            if (!participantId.equals(authentication.getName()) && chatRoomResponse.getChatRoomUrl() == null) {
+                chatRoomResponse.setChatRoomUrl(userProfile.getProfileImgUrl());
+            }
         }
+
         chatRoomResponse.setParticipantProfiles(participantProfiles);
 
         if ( chatRoom.getChatRoomName() == null || chatRoom.getChatRoomName().isEmpty()) {
