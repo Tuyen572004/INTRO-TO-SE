@@ -3,10 +3,12 @@ package com.react_to_spring.React_To_Spring_Forums.controller;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ApiResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserProfileResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.userprofile.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -60,11 +62,11 @@ public class UserProfileController {
     }
 
     @GetMapping("/all-friends")
-    @Operation(summary = "Get all friends",
-            description = "Get all friends")
-    public ApiResponse<List<UserProfileResponse>> getAllFriends() {
-        return ApiResponse.<List<UserProfileResponse>>builder()
-                .data(userProfileService.getAllFriends())
+    @Operation(summary = "Get all friends by user ID",
+            description = "Get all friends by user ID")
+    public ApiResponse<List<UserInfoResponse>> getAllFriendsByUserID(@RequestParam("userId") String userId) {
+        return ApiResponse.<List<UserInfoResponse>>builder()
+                .data(userProfileService.getFriendsByUserID(userId))
                 .build();
     }
 

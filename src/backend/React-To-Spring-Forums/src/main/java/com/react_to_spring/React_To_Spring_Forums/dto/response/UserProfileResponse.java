@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -17,4 +19,5 @@ public class UserProfileResponse {
     String lastName;
     String address;
     String profileImgUrl;
+    List<String> friendIds;
 }

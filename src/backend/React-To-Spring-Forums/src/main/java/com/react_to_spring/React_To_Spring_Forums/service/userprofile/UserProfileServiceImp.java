@@ -3,12 +3,15 @@ package com.react_to_spring.React_To_Spring_Forums.service.userprofile;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserProfileResponse;
+import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.UserProfilerMapper;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,6 +33,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserProfileServiceImp implements UserProfileService{
 
+    UserRepository userRepository;
     UserProfileRepository userProfileRepository;
 
     UserProfilerMapper userProfilerMapper;
@@ -169,16 +173,29 @@ public class UserProfileServiceImp implements UserProfileService{
     }
 
     @Override
-    public List<UserProfileResponse> getAllFriends() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserProfile userProfile = userProfileRepository.findByUserId(authentication.getName())
+    public List<UserInfoResponse> getFriendsByUserID(String userId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+
         List<String> friendIds = userProfile.getFriendIds();
-        if(friendIds == null){
-            friendIds = new ArrayList<>();
+        List<UserInfoResponse> userInfos = new ArrayList<>();
+
+        for (String friendId : friendIds) {
+            UserProfile friendProfile = userProfileRepository.findByUserId(friendId)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+            User user = userRepository.findById(friendId)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+            UserInfoResponse userInfo = UserInfoResponse.builder()
+                    .id(user.getId())
+                    .name(friendProfile.getFirstName() + " " + friendProfile.getLastName())
+                    .username(user.getUsername())
+                    .avatar(friendProfile.getProfileImgUrl())
+                    .build();
+
+            userInfos.add(userInfo);
         }
 
-        List<UserProfile> userProfiles = userProfileRepository.findAllByUserIdIn(friendIds);
-        return userProfiles.stream().map(userProfilerMapper::toUserProfileResponse).toList();
+        return userInfos;
     }
 }

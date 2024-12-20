@@ -57,6 +57,11 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
             throw new AppException(ErrorCode.ALREADY_FRIEND);
         }
 
+        boolean isAddFriendRequestReceived = addFriendRequestRepository.existsBySendingUserIdAndReceivingUserId(friendId, authentication.getName());
+        if(isAddFriendRequestReceived) {
+            throw new AppException(ErrorCode.ALREADY_RECEIVED_ADD_FRIEND_REQUEST);
+        }
+
         AddFriendRequest addFriendRequest = AddFriendRequest.builder()
                 .sendingUserId(authentication.getName())
                 .receivingUserId(friendId)
