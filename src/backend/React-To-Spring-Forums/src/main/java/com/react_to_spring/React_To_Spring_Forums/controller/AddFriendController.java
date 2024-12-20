@@ -74,7 +74,7 @@ public class AddFriendController {
     }
 
 
-    @PatchMapping("/unsend-add-friend-request")
+    @DeleteMapping("/unsend-add-friend-request")
     @Operation(summary = "Unsend add friend request",
             description = "Unsend add friend request to another user")
     public ApiResponse<Void> unsendAddFriendRequest(@RequestParam("friendId") String friendId) {
@@ -85,8 +85,8 @@ public class AddFriendController {
     @GetMapping("/is-friend")
     @Operation(summary = "Check if user is friend",
             description = "Check if user is friend")
-    public ApiResponse<Boolean> isFriend(@RequestParam("friendId") String friendId) {
-        return ApiResponse.<Boolean>builder().data(addFriendRequestService.isFriend(friendId)).build();
+    public ApiResponse<String> isFriend(@RequestParam("friendId") String friendId) {
+        return ApiResponse.<String>builder().data(addFriendRequestService.isFriend(friendId)).build();
     }
 
     @GetMapping("/is-add-friend-request-sent")

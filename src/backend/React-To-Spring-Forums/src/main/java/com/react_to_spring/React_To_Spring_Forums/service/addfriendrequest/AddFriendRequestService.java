@@ -12,9 +12,10 @@ public interface AddFriendRequestService {
     PageResponse<AddFriendRequestResponse> getAllOfMyAddFriendRequests(int page, int size);
 
     void unfriend(String friendId);
+
     void unsendAddFriendRequest(String friendId);
 
-    boolean isFriend(String friendId);
+    String isFriend(String friendId);
 
     boolean isAddFriendRequestSent(String friendId);
 }

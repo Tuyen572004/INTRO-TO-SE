@@ -129,12 +129,29 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
     }
 
     @Override
-    public boolean isFriend(String friendId) {
+    public String isFriend(String friendId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> friends = userProfileRepository.findByUserId(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND))
                 .getFriendIds();
-        return friends != null && friends.contains(friendId);
+
+        String result = "";
+        if(friends != null && friends.contains(friendId)) {
+            result = "FRIEND";
+        } else {
+            boolean isAddFriendRequestSent = addFriendRequestRepository.existsBySendingUserIdAndReceivingUserId(authentication.getName(), friendId);
+            boolean isAddFriendRequestReceived = addFriendRequestRepository.existsBySendingUserIdAndReceivingUserId(friendId, authentication.getName());
+
+            if(isAddFriendRequestSent) {
+                result = "ADD_FRIEND_REQUEST_SENT";
+            }else if(isAddFriendRequestReceived) {
+                result = "ADD_FRIEND_REQUEST_RECEIVED";
+            } else {
+                result = "NOT_FRIEND";
+            }
+        }
+
+        return result;
     }
 
     @Override
