@@ -2,12 +2,15 @@ package com.react_to_spring.React_To_Spring_Forums.service.addfriendrequest;
 
 import com.react_to_spring.React_To_Spring_Forums.dto.response.AddFriendRequestResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.AddFriendRequest;
+import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.repository.AddFriendRequestRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
+import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
 import com.react_to_spring.React_To_Spring_Forums.service.notification.NotificationService;
 import com.react_to_spring.React_To_Spring_Forums.service.userprofile.UserProfileService;
 import lombok.AccessLevel;
@@ -17,11 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.addfriend.ResponseAddFriendRequest;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +37,7 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AddFriendRequestServiceImpl implements AddFriendRequestService {
 
+    UserRepository userRepository;
     UserProfileRepository userProfileRepository;
     AddFriendRequestRepository addFriendRequestRepository;
 
@@ -65,6 +71,7 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
         AddFriendRequest addFriendRequest = AddFriendRequest.builder()
                 .sendingUserId(authentication.getName())
                 .receivingUserId(friendId)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         addFriendRequest =  addFriendRequestRepository.save(addFriendRequest);
@@ -92,32 +99,53 @@ public class AddFriendRequestServiceImpl implements AddFriendRequestService {
     }
 
     @Override
-    public PageResponse<AddFriendRequestResponse> getAllOfMyAddFriendRequests(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+    public PageResponse<UserInfoResponse> getAllOfMyAddFriendRequests(String type, int page, int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Page<AddFriendRequest> addFriendRequests =
-                addFriendRequestRepository.findAllByReceivingUserId(authentication.getName(), pageable);
-        List<AddFriendRequest> addFriendRequestList = addFriendRequests.getContent();
-        List<AddFriendRequestResponse> addFriendRequestResponseList = new ArrayList<>();
+        String userId = authentication.getName();
 
-        for(AddFriendRequest addFriendRequest : addFriendRequestList){
-            AddFriendRequestResponse addFriendRequestResponse = new AddFriendRequestResponse();
+        Sort sort = Sort.by(Sort.Order.desc("createdAt"));
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-            UserProfile userProfile = userProfileRepository.findByUserId(addFriendRequest.getSendingUserId())
-                    .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
-            addFriendRequestResponse.setSendingUserName(
-                    String.format("%s %s", userProfile.getFirstName(), userProfile.getLastName()));
+        List<String> friendIds = new ArrayList<>();
 
-            addFriendRequestResponse.setSendingUserId(addFriendRequest.getSendingUserId());
-            addFriendRequestResponse.setReceivingUserId(addFriendRequest.getReceivingUserId());
-            addFriendRequestResponseList.add(addFriendRequestResponse);
+        Page<AddFriendRequest> addFriendRequests = null;
+
+        if (type.equals("RECEIVED")) {
+            addFriendRequests = addFriendRequestRepository.findAllByReceivingUserId(userId, pageable);
+            for (AddFriendRequest item : addFriendRequests.getContent()) {
+                friendIds.add(item.getSendingUserId());
+            }
+        } else if (type.equals("SENT")) {
+            addFriendRequests = addFriendRequestRepository.findAllBySendingUserId(userId, pageable);
+            for (AddFriendRequest item : addFriendRequests.getContent()) {
+                friendIds.add(item.getReceivingUserId());
+            }
         }
-        return PageResponse.<AddFriendRequestResponse>builder()
+
+        List<UserInfoResponse> responses = new ArrayList<>();
+        for (String id : friendIds) {
+            UserProfile friendProfile = userProfileRepository.findByUserId(id)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+            UserInfoResponse userInfo = UserInfoResponse.builder()
+                    .id(user.getId())
+                    .name(friendProfile.getFirstName() + " " + friendProfile.getLastName())
+                    .username(user.getUsername())
+                    .avatar(friendProfile.getProfileImgUrl())
+                    .build();
+
+            responses.add(userInfo);
+        }
+
+
+        return PageResponse.<UserInfoResponse>builder()
                 .page(page)
                 .size(size)
                 .totalElements(addFriendRequests.getTotalElements())
                 .totalPages(addFriendRequests.getTotalPages())
-                .data(addFriendRequestResponseList)
+                .data(responses)
                 .build();
     }
 

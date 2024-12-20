@@ -10,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AddFriendRequestResponse {
-    String sendingUserName;
-    String sendingUserId;
-    String receivingUserId;
+    String friendId;
+    String name;
+    String username;
+    String avatar;
 }
