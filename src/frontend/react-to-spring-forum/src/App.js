@@ -26,6 +26,17 @@ const AuthorizedRoutes = () => {
     if (authorized) return <Navigate to="/" replace={true} />;
     return <Outlet />;
 }
+
+const ProtectedRoute = () => {
+    const isAuthenticated = localStorage.getItem("accessToken")?.length > 0;
+
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace={true} />;
+    }
+
+    return <Outlet />;
+};
+
 const App = () => {
     useTokenRefresher();
     return (
@@ -36,19 +47,19 @@ const App = () => {
             <Route path="verification-success/*" element={<VerificationSuccess />} />
             <Route path="verification-failed/*" element={<VerificationFailed />} />
             <Route path="message" element={<Message />} />
+            <Route path="user/:id" element={<User />} />
             <Route path="/" element={<LayoutDefault />}>
                 <Route index element={<Dashboard />} />
-                <Route path="my-account" element={<MyAccount />} />
-                <Route path="activity" element={<Activity />} />
-                <Route path="search" element={<Search />} />
-                <Route path="post/:id" element={<CommentPost />} />
-                <Route path="user/:id" element={<User />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route path="my-account" element={<MyAccount />} />
+                    <Route path="activity" element={<Activity />} />
+                    <Route path="search" element={<Search />} />
+                    <Route path="post/:id" element={<CommentPost />} />
 
                 <Route path="friend" element={<Friend />}>
                     <Route index element={<Navigate to="request-received" />} />
                     <Route path="request-sent" element={<RequestSent />} />
                     <Route path="request-received" element={<RequestReceived />} />
-
                 </Route>
 
                 <Route path="admin" element={<Admin />}>
@@ -57,6 +68,7 @@ const App = () => {
                     <Route path="violating-posts" element={<ViolatingPost />} />
                 </Route>
             </Route>
+
             <Route path="*" element={<h1>404 NOT FOUND</h1>} />
         </Routes>
     );

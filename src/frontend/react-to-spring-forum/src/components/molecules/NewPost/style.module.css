@@ -46,3 +46,22 @@
 	background: black;
 	border-radius: 10px;
 }
+
+.login_prompt {
+	margin-top: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+}
+
+.login_button {
+	background-color: black;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	cursor: pointer;
+	font-size: 16px;
+}
