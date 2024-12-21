@@ -1,10 +1,17 @@
 import s from './style.module.css'
 import {useState} from "react";
 import {AddFriendAPI} from "../../../api/AddFriendAPI";
+import {useNavigate} from "react-router-dom";
 
 const AddFriendRequestItem = ({ friend, type }) => {
     const [stateReceive, setStateReceive] = useState("DEFAULT");
     const [stateSend, setStateSend] = useState("DEFAULT");
+
+    const navigate = useNavigate();
+
+    const navigateToProfile = () => {
+        navigate(`/user/${friend.id}`);
+    }
 
     const Accept = async () => {
         try {
@@ -39,10 +46,10 @@ const AddFriendRequestItem = ({ friend, type }) => {
     return (
         <div>
             <div className={s.friend_item}>
-                <div className={s.avatar}>
+                <div className={s.avatar} onClick={navigateToProfile}>
                     <img src={friend.avatar} alt={friend.name}/>
                 </div>
-                <div className={s.infomation}>
+                <div className={s.information} onClick={navigateToProfile}>
                     <div className={s.name}>{friend.name}</div>
                     <div className={s.username}>@{friend.username}</div>
                 </div>

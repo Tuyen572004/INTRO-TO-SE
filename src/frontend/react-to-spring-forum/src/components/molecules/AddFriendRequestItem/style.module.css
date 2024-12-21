@@ -24,7 +24,11 @@
     object-fit: cover;
 }
 
-.infomation {
+.avatar:hover, .information:hover{
+    cursor: pointer;
+}
+
+.information {
     display: flex;
     flex-direction: column;
 }
