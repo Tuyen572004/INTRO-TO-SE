@@ -11,7 +11,7 @@ import {v4} from "uuid";
 
 const PostList = ({ scrollableTarget }) => {
     const dispatch = useDispatch();
-    const posts = useSelector((state) => state.postSlice.posts);
+    const { posts, hasMore, page } = useSelector((state) => state.postSlice);
 
     useEffect(() => {
         if (posts.length === 0) {
@@ -21,8 +21,14 @@ const PostList = ({ scrollableTarget }) => {
 
     const fetchPosts = async () => {
         try {
-            const response = await PostAPI.getAll();
-            dispatch(appendPosts(response));
+            const response = await PostAPI.getAll(page);
+            dispatch(
+                appendPosts({
+                    posts: response.data,
+                    hasMore: page < response.totalPages,
+                    nextPage: page + 1
+                }
+            ));
         } catch (error) {
             console.error("Error fetching posts:", error);
         }
@@ -35,7 +41,7 @@ const PostList = ({ scrollableTarget }) => {
             <InfiniteScroll
                 dataLength={posts.length}
                 next={fetchPosts}
-                hasMore={true}
+                hasMore={hasMore}
                 loader={
                     <div className="text-center">
                         <Spinner animation="border" role="status">

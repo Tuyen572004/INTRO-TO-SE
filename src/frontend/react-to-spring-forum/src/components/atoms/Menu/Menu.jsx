@@ -1,7 +1,7 @@
 import {GrHomeOption} from "react-icons/gr";
 import {FaPlus} from "react-icons/fa6";
 import {FiMessageSquare} from "react-icons/fi";
-import {FaRegHeart} from "react-icons/fa";
+import {FaRegHeart, FaUserFriends} from "react-icons/fa";
 import {FaRegUser} from "react-icons/fa";
 import {RiAdminFill} from "react-icons/ri";
 import {useNavigate} from "react-router-dom";
@@ -105,6 +105,22 @@ const Menu = ({toggleIsPostFormVisible}) => {
             >
                 <motion.div variants={iconVariants}>
                     <FaRegHeart/>
+                </motion.div>
+            </motion.div>
+
+            <motion.div
+                className={`${s.friend} ${active === "friend" ? s.active : ""}`}
+                onClick={() => {
+                    setActive("friend");
+                    navigate("/friend");
+                }}
+                variants={activeVariants}
+                animate={active === "friend" ? "active" : "inactive"}
+                whileHover="hover"
+                whileTap="tap"
+            >
+                <motion.div variants={iconVariants}>
+                    <FaUserFriends />
                 </motion.div>
             </motion.div>
 

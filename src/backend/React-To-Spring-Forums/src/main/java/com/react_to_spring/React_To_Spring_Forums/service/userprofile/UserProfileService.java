@@ -3,8 +3,8 @@ package com.react_to_spring.React_To_Spring_Forums.service.userprofile;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileCreationRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.request.userprofile.UserProfileUpdateRequest;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserProfileResponse;
-import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 
 import java.util.List;
 
@@ -28,5 +28,5 @@ public interface UserProfileService {
 
     PageResponse<UserProfileResponse> getFriends(int page, int size);
 
-    List<UserProfileResponse> getAllFriends();
+    List<UserInfoResponse> getFriendsByUserID(String userId);
 }

@@ -70,14 +70,14 @@
     background-color: #D9D9D9;
 }
 
-.edit_button {
+.friendStatus {
     width: 100%;
     display: flex;
     justify-content: center;
     padding: 12px 24px;
 }
 
-.button {
+.buttonBlack {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -87,4 +87,20 @@
     cursor: pointer;
     color: white;
     background-color: black;
+}
+
+.buttonWhite {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 5px 16px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #000000;
+    background-color: #f3efef;
+}
+
+.buttonWhite:hover {
+    background-color: #e7e4e4;
 }

@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.time.LocalDateTime;
+
 @Document("add_friend_requests")
 @Getter
 @Setter
@@ -23,4 +25,6 @@ public class AddFriendRequest {
     @Field("receiving_user_id")
     String receivingUserId;
 
+    @Field("created_at")
+    LocalDateTime createdAt;
 }

@@ -38,7 +38,7 @@ const ReactBar = ({ postId }) => {
     };
 
     if (!post) {
-        return <div>Loading...</div>;
+        return <div></div>;
     }
 
     return (

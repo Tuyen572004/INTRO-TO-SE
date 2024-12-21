@@ -7,6 +7,7 @@ import EditProfileModal from "../../molecules/EditProfileModal/EditProfileModal"
 import UserIcon from "../../../assets/User_Icon.png"
 import MyPostList from "../../organisms/MyPostList/MyPostList";
 import NewPost from "../../molecules/NewPost/NewPost";
+import FriendList from "../../organisms/FriendList/FriendList";
 
 const MyAccount = () => {
     const [showEditModal, setShowEditModal] = useState(false);
@@ -18,6 +19,7 @@ const MyAccount = () => {
     useEffect(() => {
         const fetchMyProfile = async () => {
             const response = await UserProfileAPI.getMyProfile();
+            console.log(response.data);
             setUserProfile(response.data);
         };
 
@@ -55,7 +57,7 @@ const MyAccount = () => {
                     </div>
                     <div className={s.description}><b>Address:</b> {userProfile.address}</div>
                     <div className={s.sub_information}>
-                        <div className={s.total_follower}><b>Followers:</b> BE chưa làm</div>
+                        <FriendList userId={user.id}/>
                         <div className={s.link}>
                             <div className={s.inner_link}>
                                 <div className={s.link_button}

@@ -4,6 +4,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.addfriend.Response
 import com.react_to_spring.React_To_Spring_Forums.dto.response.AddFriendRequestResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ApiResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
+import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
 import com.react_to_spring.React_To_Spring_Forums.service.addfriendrequest.AddFriendRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AccessLevel;
@@ -54,13 +55,15 @@ public class AddFriendController {
     @GetMapping("/all-add-friend")
     @Operation(summary = "Get all add friend requests by user ID",
             description = "Get all add friend requests by user ID")
-    public ApiResponse<PageResponse<AddFriendRequestResponse>> getAllOfMyAddFriendRequests(
+    public ApiResponse<PageResponse<UserInfoResponse>> getAllOfMyAddFriendRequests(
+            @RequestParam(value = "type", required = true, defaultValue = "RECEIVED") String type,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
             @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
-        PageResponse<AddFriendRequestResponse> responses =
-                addFriendRequestService.getAllOfMyAddFriendRequests(page, size);
 
-        return ApiResponse.<PageResponse<AddFriendRequestResponse>>builder()
+        PageResponse<UserInfoResponse> responses =
+                addFriendRequestService.getAllOfMyAddFriendRequests(type, page, size);
+
+        return ApiResponse.<PageResponse<UserInfoResponse>>builder()
                 .data(responses)
                 .build();
     }
@@ -74,7 +77,7 @@ public class AddFriendController {
     }
 
 
-    @PatchMapping("/unsend-add-friend-request")
+    @DeleteMapping("/unsend-add-friend-request")
     @Operation(summary = "Unsend add friend request",
             description = "Unsend add friend request to another user")
     public ApiResponse<Void> unsendAddFriendRequest(@RequestParam("friendId") String friendId) {
@@ -85,8 +88,8 @@ public class AddFriendController {
     @GetMapping("/is-friend")
     @Operation(summary = "Check if user is friend",
             description = "Check if user is friend")
-    public ApiResponse<Boolean> isFriend(@RequestParam("friendId") String friendId) {
-        return ApiResponse.<Boolean>builder().data(addFriendRequestService.isFriend(friendId)).build();
+    public ApiResponse<String> isFriend(@RequestParam("friendId") String friendId) {
+        return ApiResponse.<String>builder().data(addFriendRequestService.isFriend(friendId)).build();
     }
 
     @GetMapping("/is-add-friend-request-sent")

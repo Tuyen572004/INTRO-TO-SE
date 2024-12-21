@@ -1,0 +1,22 @@
+.title {
+    font-weight: bold;
+    color: #757474;
+
+}
+
+.title:hover {
+    text-decoration: underline;
+    cursor: pointer;
+
+}
+
+.modalTitle {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.noFriend {
+    text-align: center;
+    color: #757474;
+}

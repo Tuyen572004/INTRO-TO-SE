@@ -4,6 +4,8 @@ const postSlice = createSlice({
 	name: "postSlice",
 	initialState: {
 		posts: [],
+		hasMore: true,
+		page: 1
 	},
 	reducers: {
 		setPosts: (state, action) => {
@@ -26,7 +28,9 @@ const postSlice = createSlice({
 		},
 
 		appendPosts: (state, action) => {
-			state.posts = [...state.posts, ...action.payload];
+			state.posts = [...state.posts, ...action.payload.posts];
+			state.hasMore = action.payload.hasMore;
+			state.page = action.payload.nextPage;
 		}
 	},
 });
