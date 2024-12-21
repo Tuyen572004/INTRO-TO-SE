@@ -178,6 +178,9 @@ public class UserProfileServiceImp implements UserProfileService{
                 .orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
 
         List<String> friendIds = userProfile.getFriendIds();
+        if(friendIds == null){
+            friendIds = new ArrayList<>();
+        }
         List<UserInfoResponse> userInfos = new ArrayList<>();
 
         for (String friendId : friendIds) {

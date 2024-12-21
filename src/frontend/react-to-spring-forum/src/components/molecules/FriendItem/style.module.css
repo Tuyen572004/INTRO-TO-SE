@@ -24,6 +24,16 @@
     object-fit: cover;
 }
 
+.avatar:hover {
+    cursor: pointer;
+    scale: 1.1;
+    transition: 0.3s;
+}
+
+.infomation:hover {
+    cursor: pointer;
+}
+
 .infomation {
     display: flex;
     flex-direction: column;
@@ -34,8 +44,12 @@
     font-size: 18px;
 }
 
-.username {
+.name:hover {
+    text-decoration: underline;
+}
 
+.username:hover {
+    text-decoration: underline;
 }
 
 .button {

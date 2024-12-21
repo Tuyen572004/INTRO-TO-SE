@@ -47,19 +47,21 @@ const App = () => {
             <Route path="verification-success/*" element={<VerificationSuccess />} />
             <Route path="verification-failed/*" element={<VerificationFailed />} />
             <Route path="message" element={<Message />} />
-            <Route path="user/:id" element={<User />} />
             <Route path="/" element={<LayoutDefault />}>
                 <Route index element={<Dashboard />} />
+
                 <Route element={<ProtectedRoute />}>
                     <Route path="my-account" element={<MyAccount />} />
                     <Route path="activity" element={<Activity />} />
                     <Route path="search" element={<Search />} />
                     <Route path="post/:id" element={<CommentPost />} />
+                    <Route path="user/:id" element={<User />} />
 
-                <Route path="friend" element={<Friend />}>
-                    <Route index element={<Navigate to="request-received" />} />
-                    <Route path="request-sent" element={<RequestSent />} />
-                    <Route path="request-received" element={<RequestReceived />} />
+                    <Route path="friend" element={<Friend />}>
+                        <Route index element={<Navigate to="request-received" />} />
+                        <Route path="request-sent" element={<RequestSent />} />
+                        <Route path="request-received" element={<RequestReceived />} />
+                    </Route>
                 </Route>
 
                 <Route path="admin" element={<Admin />}>
@@ -68,7 +70,6 @@ const App = () => {
                     <Route path="violating-posts" element={<ViolatingPost />} />
                 </Route>
             </Route>
-
             <Route path="*" element={<h1>404 NOT FOUND</h1>} />
         </Routes>
     );

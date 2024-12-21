@@ -1,13 +1,11 @@
 import s from "./style.module.css";
-import {jwtDecode} from "jwt-decode";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect} from "react";
+import {useSelector} from "react-redux";
 
 const UserSearchItem = ({ user }) => {
-
-    console.log(user.user.id);
-    const auth = jwtDecode(localStorage.getItem('accessToken').toString());
-    const myId = auth.user.userId;
+    const myAccount = useSelector((state) => state.userSlice.user);
+    const myId = myAccount.userId;
 
     const { id } = useParams();
 
@@ -36,7 +34,9 @@ const UserSearchItem = ({ user }) => {
                             <div className={s.name}>{user.userProfile.firstName + " " + user.userProfile.lastName}</div>
                             <div className={s.username}>@{user.user.username}</div>
                         </div>
-                        <button className={s.follow_button}>Follow</button>
+                        <button className={s.follow_button} onClick={navigateToProfile}>
+                            View Profile
+                        </button>
                     </div>
                 </div>
             </div>

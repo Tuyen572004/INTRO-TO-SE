@@ -19,10 +19,6 @@
 	width: 100%;
 }
 
-.inner_user_information:hover {
-	cursor: pointer;
-}
-
 .avatar {
 	height: 50px;
 	width: 50px;
@@ -40,14 +36,21 @@
 
 .avatar .inner_avatar:hover {
 	cursor: pointer;
+	scale: 1.1;
+	transition: 0.3s;
 }
 
-.name {
+.fullName {
 	font-size: large;
 	font-weight: bold;
 }
 
 .username {}
+
+.fullName:hover, .username:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
 
 
 .title {

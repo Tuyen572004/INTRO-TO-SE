@@ -15,7 +15,7 @@ import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
 import com.react_to_spring.React_To_Spring_Forums.mapper.NotificationMapper;
 import com.react_to_spring.React_To_Spring_Forums.mapper.NotificationRecipientMapper;
-import com.react_to_spring.React_To_Spring_Forums.mapper.UserMapperImpl;
+
 import com.react_to_spring.React_To_Spring_Forums.repository.*;
 import com.react_to_spring.React_To_Spring_Forums.utils.formatter.DateFormatter;
 import lombok.AccessLevel;
@@ -50,7 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
     AddFriendRequestRepository addFriendRequestRepository;
     NotificationRecipientMapper notificationRecipientMapper;
     CommentRepository commentRepository;
-    private final UserMapperImpl userMapperImpl;
+
     @NonFinal
     String defaultSortField = "sendAt";
 

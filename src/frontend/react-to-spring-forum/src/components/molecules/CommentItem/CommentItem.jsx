@@ -5,7 +5,7 @@ import { Heart, MessageCircle, Send } from "lucide-react";
 import EditCommentModal from "../EditCommentModal/EditCommentModal";
 import ConfirmDeleteModal from "../../atoms/ConfirmDeleteModal/ConfirmDeleteModal";
 import { CommentAPI } from "../../../api/CommentAPI";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { removeComment } from "../../../store/commentSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
@@ -15,8 +15,8 @@ import {useNavigate} from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 
 function CommentItem({ comment }) {
-    const auth = jwtDecode(localStorage.getItem('accessToken').toString());
-    const myId = auth.user.userId;
+    const user = useSelector((state) => state.userSlice.user);
+    const myId = user.userId;
 
     const dispatch = useDispatch();
     const navigate = useNavigate();

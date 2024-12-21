@@ -24,8 +24,10 @@
     object-fit: cover;
 }
 
-.avatar:hover, .information:hover{
+.avatar:hover{
     cursor: pointer;
+    scale: 1.1;
+    transition: 0.3s;
 }
 
 .information {
@@ -38,8 +40,14 @@
     font-size: 18px;
 }
 
-.username {
+.name:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
 
+.username:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .buttonWrapper {

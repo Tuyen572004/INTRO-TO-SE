@@ -27,6 +27,8 @@
 
 .avatar:hover {
     cursor: pointer;
+    scale: 1.1;
+    transition: 0.3s;
 }
 
 .contentWrapper {
@@ -57,10 +59,12 @@
 
 .userInfo .username:hover {
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .userInfo .name:hover {
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .name {
