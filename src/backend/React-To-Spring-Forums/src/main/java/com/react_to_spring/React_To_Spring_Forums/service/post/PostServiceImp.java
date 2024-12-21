@@ -124,9 +124,12 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PageResponse<PostResponse> getPostsDashboard(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Sort sort = Sort.by(Sort.Order.desc("createdDate"));
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
+
         Page<Post> posts = postRepository.findByNotUserId(userId, pageable);
         List<PostResponse> postResponses = postConverter.convertToPostResponses(posts.getContent());
 

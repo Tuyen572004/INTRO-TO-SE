@@ -43,7 +43,7 @@ export class PostAPI {
 
 	static async getAll(page = 1, size = 10) {
 		try {
-			const response = await AuthorizedAxios.get(`/api/posts/random?size=${size}`);
+			const response = await AuthorizedAxios.get(`/api/posts/dashboard?page=${page}&size=${size}`);
 			console.log(response.data.data);
 			return response.data.data;
 		} catch (error) {
