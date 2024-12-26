@@ -20,8 +20,6 @@ export class UserAPI {
 	}
 
 	static async changePassword(data) {
-		console.log("data", data);
-
 		const response = await AuthorizedAxios.patch("/api/auth/change-password", {
 			oldPassword: data.currentPassword,
 			newPassword: data.newPassword,
@@ -30,6 +28,15 @@ export class UserAPI {
 		return response.data;
 	}
 
+	static async changeEmail(data) {
+		const response = await AuthorizedAxios.patch("/api/auth/change-email", {
+			newEmail: data.newEmail,
+			oldPassword: data.password,
+			verificationCode: data.verificationCode,
+		});
+		return response.data;
+	}
+	
 	static async forgotPassword(data) {
 		const response = await Axios.post("/api/auth/forget-password", {
 			newPassword: data.newPassword,

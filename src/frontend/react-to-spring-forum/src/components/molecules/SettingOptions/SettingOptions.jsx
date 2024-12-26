@@ -1,19 +1,26 @@
 import s from "./style.module.css";
 import { motion } from "framer-motion";
-import ChangePasswordModal from "../ChangePasswordModal/ChangePasswordModal";
-import { useState } from "react";
 
-const SettingOptions = ({ toggleIsChangePasswordModalOpen }) => {
+const SettingOptions = ({ toggleIsChangePasswordModalOpen, toggleIsChangeEmailModalOpen }) => {
   return (
     <>
       <div className={s.container}>
         <motion.button
-          className={s.change_password_button}
+          className={s.button}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => toggleIsChangePasswordModalOpen(true)}
         >
           Change Password
+        </motion.button>
+
+        <motion.button
+          className={s.button}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => toggleIsChangeEmailModalOpen(true)}
+        >
+          Change Email
         </motion.button>
       </div>
     </>
