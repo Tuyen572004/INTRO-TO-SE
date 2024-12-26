@@ -158,16 +158,19 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
     >
       <form onSubmit={handleSubmit} className={s.container_form} action="">
         <h1>Register here</h1>
-        <Input
-          placeholder="First Name"
-          onTextChange={handleChange}
-          setFunction={setFirstName}
-        />
-        <Input
-          placeholder="Last Name"
-          onTextChange={handleChange}
-          setFunction={setLastName}
-        />
+        <div className="d-flex gap-2">
+          <Input
+            placeholder="First Name"
+            onTextChange={handleChange}
+            setFunction={setFirstName}
+          />
+          <Input
+            placeholder="Last Name"
+            onTextChange={handleChange}
+            setFunction={setLastName}
+          />
+        </div>
+
         <Input
           placeholder="Address"
           onTextChange={handleChange}
