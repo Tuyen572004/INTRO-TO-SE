@@ -15,11 +15,8 @@ const Overlay = ({ isNotLogIn, toggle }) => {
             isNotLogIn ? `${s.is_not_log_in}` : ""
           }`}
         >
-          <h1 className={s.title}>Join Us Today!</h1>
-          <p>
-            Don’t have an account yet? Sign up now to start your journey with
-            us.
-          </p>
+          <h1 className={s.title}>Welcome Back!</h1>
+          <p>Already part of our community? Log in now to continue the fun.</p>
           <GhostButton
             title={"Login"}
             onClick={() => {
@@ -33,8 +30,12 @@ const Overlay = ({ isNotLogIn, toggle }) => {
             isNotLogIn ? "is_not_log_in" : ""
           }`}
         >
-          <h1 className={s.title}>Welcome Back!</h1>
-          <p>Already part of our community? Log in now to continue the fun.</p>
+          <h1 className={s.title}>Join Us Today!</h1>
+          <p>
+            Don’t have an account yet? Sign up now to start your journey with
+            us.
+          </p>
+
           <GhostButton
             title={"Register"}
             onClick={() => {

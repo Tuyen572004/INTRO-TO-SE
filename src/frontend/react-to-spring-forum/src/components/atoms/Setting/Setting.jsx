@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { deleteUser } from "../../../store/userSlice";
 import SettingOptions from "../../molecules/SettingOptions/SettingOptions";
 
-const Setting = ({ toggleIsChangePasswordModalOpen }) => {
+const Setting = ({ toggleIsChangePasswordModalOpen, toggleIsChangeEmailModalOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
@@ -49,6 +49,7 @@ const Setting = ({ toggleIsChangePasswordModalOpen }) => {
         {showSettingOption && (
           <SettingOptions
             toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen}
+            toggleIsChangeEmailModalOpen={toggleIsChangeEmailModalOpen}
           />
         )}
       </motion.div>
