@@ -5,6 +5,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.request.post.PostUpdateReq
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.entity.Post;
+import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.enums.NotificationTemplate;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
@@ -206,21 +207,22 @@ public class PostServiceImp implements PostService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
-        String postOwnerId = post.getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        if (!postOwnerId.equals(userId)) {
+        String role = user.getRole().getName();
+        String postOwnerId = post.getUserId();
+        if (!postOwnerId.equals(userId) && !role.equals("ADMIN")) {
             throw new AppException(ErrorCode.USER_NOT_POST_OWNER);
         }
 
         commentRepository.deleteAllByPostId(id);
         reactRepository.deleteAllByPostId(id);
-
         postRepository.deleteById(id);
 
-        // sendNotification to owner of post if post is deleted by admin
-        // UNCOMMENT IT AFTER FIXING THE ERROR : IF ADMIN DELETE THE POST
-        // --> THEN IT WILL THROW EXCEPTION : USER NOT POST OWNER AT LINE 206
-        // notificationService.sendDeletePostNotification(userId, postOwnerId);
+        if (role.equals("ADMIN")) {
+            notificationService.sendDeletePostNotification(userId, postOwnerId);
+        }
     }
 
 

@@ -54,7 +54,9 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
       navigate(from, { replace: true });
       if (response.code === 1000) {
         navigate("/");
-        dispatch(setUser(decoded.user));
+        const role = decoded.scope;
+        const user = {...decoded.user, "role": role};
+        dispatch(setUser(user));
       }
     } catch (error) {
       if (error.response?.data?.code === 5002) {

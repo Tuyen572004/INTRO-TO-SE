@@ -17,7 +17,6 @@ import {deletePost} from "../../../store/postSlice";
 import {deleteMyPost} from "../../../store/myPostSlice";
 import UserIcon from "./../../../assets/User_Icon.png";
 import {formatDistanceToNow} from "date-fns";
-import {jwtDecode} from "jwt-decode";
 import {useNavigate} from "react-router-dom";
 
 const PostItem = ({post}) => {
@@ -90,27 +89,74 @@ const PostItem = ({post}) => {
                             </div>
                         </div>
                         <div>
-                            {user.userId === post.user.id ? (
-                                <Dropdown className="dropdown">
-                                    <Dropdown.Toggle as={CustomToggle}/>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={handleEditClick}>
-                                            Edit
-                                        </Dropdown.Item>
-                                        <Dropdown.Item onClick={handleDeleteClick}>
-                                            Delete
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
+                            {/*{user.userId === post.user.id ? (*/}
+                            {/*    <Dropdown className="dropdown">*/}
+                            {/*        <Dropdown.Toggle as={CustomToggle}/>*/}
+                            {/*        <Dropdown.Menu>*/}
+                            {/*            <Dropdown.Item onClick={handleEditClick}>*/}
+                            {/*                Edit*/}
+                            {/*            </Dropdown.Item>*/}
+                            {/*            <Dropdown.Item onClick={handleDeleteClick}>*/}
+                            {/*                Delete*/}
+                            {/*            </Dropdown.Item>*/}
+                            {/*        </Dropdown.Menu>*/}
+                            {/*    </Dropdown>*/}
+                            {/*) : (*/}
+                            {/*    <Dropdown className="dropdown">*/}
+                            {/*        <Dropdown.Toggle as={CustomToggle}/>*/}
+                            {/*        <Dropdown.Menu>*/}
+                            {/*            <Dropdown.Item>Report</Dropdown.Item>*/}
+                            {/*            <Dropdown.Item>Save</Dropdown.Item>*/}
+                            {/*        </Dropdown.Menu>*/}
+                            {/*    </Dropdown>*/}
+                            {/*)}*/}
+
+                            {user.role === "ROLE_ADMIN" ? (
+                                (user.userId === post.user.id) ? (
+                                    <Dropdown className="dropdown">
+                                        <Dropdown.Toggle as={CustomToggle}/>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={handleEditClick}>
+                                                Edit
+                                            </Dropdown.Item>
+                                            <Dropdown.Item onClick={handleDeleteClick}>
+                                                Delete
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                ) : (
+                                    <Dropdown className="dropdown">
+                                        <Dropdown.Toggle as={CustomToggle}/>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={handleDeleteClick}>
+                                                Delete
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                )
                             ) : (
-                                <Dropdown className="dropdown">
-                                    <Dropdown.Toggle as={CustomToggle}/>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item>Report</Dropdown.Item>
-                                        <Dropdown.Item>Save</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
+                                (user.userId === post.user.id) ? (
+                                    <Dropdown className="dropdown">
+                                        <Dropdown.Toggle as={CustomToggle}/>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={handleEditClick}>
+                                                Edit
+                                            </Dropdown.Item>
+                                            <Dropdown.Item onClick={handleDeleteClick}>
+                                                Delete
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                ) : (
+                                    <Dropdown className="dropdown">
+                                        <Dropdown.Toggle as={CustomToggle}/>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item>Report</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                )
                             )}
+
                         </div>
                     </div>
                 </div>
