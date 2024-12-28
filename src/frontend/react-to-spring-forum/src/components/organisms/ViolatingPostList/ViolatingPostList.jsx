@@ -1,14 +1,17 @@
 import {useEffect, useState} from 'react';
-import PostModal from "../../molecules/PostModal/PostModal";
 import ViolatingPostItem from "../../molecules/ViolatingPostItem/ViolatingPostItem";
 
 import s from './style.module.css';
 import {ReportPostAPI} from "../../../api/ReportPostAPI";
 import {v4} from "uuid";
+import Spinner from "react-bootstrap/Spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Loading from "../../atoms/Loading/Loading";
 
 function ViolatingPostList() {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     const [violatingPosts, setViolatingPosts] = useState([]);
 
@@ -26,14 +29,31 @@ function ViolatingPostList() {
     }
 
     useEffect(() => {
-        fetchViolatingPosts();
+        fetchViolatingPosts().then(() => setLoading(false));
     }, []);
 
+    if (loading) {
+        return <Loading />;
+    }
     return (
-        <div className={s.violatingPostList}>
-            {violatingPosts && violatingPosts.map(violatingPost =>
-                <ViolatingPostItem key={v4()} item={violatingPost}/>
-            )}
+        <div className={s.violatingPostList} id="violating-post-list">
+            <InfiniteScroll
+                dataLength={violatingPosts.length}
+                next={fetchViolatingPosts}
+                hasMore={hasMore}
+                loader={
+                    <div className="text-center">
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                }
+                scrollableTarget="violating-post-list"
+            >
+                {violatingPosts && violatingPosts.map(violatingPost =>
+                    <ViolatingPostItem key={v4()} item={violatingPost} setViolatingPosts={setViolatingPosts}/>
+                )}
+            </InfiniteScroll>
 
         </div>
     );

@@ -17,8 +17,7 @@ const ActivityList = () => {
     const fetchActivities = async () => {
         try {
             const response = await NotificationAPI.getNotifications(page);
-            //setActivities([...activities, ...response.data]);
-            setActivities((prev) => [...prev, ...response.data]);
+            setActivities([...activities, ...response.data]);
 
             setPage(page + 1);
             setHasMore(page < response.totalPages);
@@ -34,10 +33,10 @@ const ActivityList = () => {
 
 
     if (loading) {
-        <Loading />
+        return <Loading />;
     }
     return (
-        <div className={s.activity_list}>
+        <div className={s.activity_list} id="activity-list">
             <InfiniteScroll
                 dataLength={activities.length}
                 next={fetchActivities}
@@ -49,7 +48,7 @@ const ActivityList = () => {
                         </Spinner>
                     </div>
                 }
-                scrollableTarget="activity"
+                scrollableTarget="activity-list"
             >
                 {activities.map((activity) => (
                     <ActivityItem key={v4()} activity={activity} />

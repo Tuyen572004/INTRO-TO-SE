@@ -36,7 +36,6 @@ const PostItem = ({post}) => {
 
     const checkReport = async () => {
         const response = await ReportPostAPI.isReported(post.id);
-        console.log("Check report response:", response);
         setIsReported(response.data);
     };
 

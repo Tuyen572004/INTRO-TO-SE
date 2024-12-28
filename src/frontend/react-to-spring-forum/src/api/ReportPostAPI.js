@@ -51,10 +51,20 @@ export class ReportPostAPI {
         }
     }
 
-    static async getReports(page, size = 10) {
+    static async getReports(page, size = 50) {
         try {
             const response = await AuthorizedAxios.get(`/api/report-posts/all?page=${page}&size=${size}`);
             return response.data.data;
+        } catch (error) {
+            console.error("API Error:", error.response || error.message);
+            throw error;
+        }
+    }
+
+    static async countReports() {
+        try {
+            const response = await AuthorizedAxios.get(`/api/report-posts/count`);
+            return response.data;
         } catch (error) {
             console.error("API Error:", error.response || error.message);
             throw error;

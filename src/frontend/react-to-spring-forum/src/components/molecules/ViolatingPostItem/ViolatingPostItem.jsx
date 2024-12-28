@@ -4,7 +4,7 @@ import PostModal from "../PostModal/PostModal";
 import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 
-function ViolatingPostItem({item}) {
+function ViolatingPostItem({item, setViolatingPosts}) {
     const myProfile = useSelector((state) => state.userSlice.user);
     const myId = myProfile.userId;
 
@@ -64,6 +64,7 @@ function ViolatingPostItem({item}) {
                 show={showPostModal}
                 onHide={() => setShowPostModal(false)}
                 navigateToPost={navigateToPost}
+                setViolatingPosts={setViolatingPosts}
             />
         </>
     );

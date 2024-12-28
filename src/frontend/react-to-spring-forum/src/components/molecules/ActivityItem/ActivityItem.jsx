@@ -5,18 +5,11 @@ import {useSelector} from "react-redux";
 const ActivityItem = ({ activity }) => {
     const user = useSelector((state) => state.userSlice.user);
     const myId = user.userId;
-    const role = user.role;
-
-    console.log(role);
 
     const navigate = useNavigate();
 
     const navigateToProfile = () => {
         navigate(`/user/${activity.actor.id}`);
-    }
-
-    if (activity.actor.id === myId) {
-        return null;
     }
 
     if (activity.notificationType === "POST" || activity.notificationType === "COMMENT" || activity.notificationType === "USER" || activity.notificationType === "REPORT_SEND") {

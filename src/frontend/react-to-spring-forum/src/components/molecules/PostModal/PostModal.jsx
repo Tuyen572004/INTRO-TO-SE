@@ -7,7 +7,7 @@ import {EffectCoverflow, Pagination} from "swiper/modules";
 import React, {useState} from "react";
 import {ReportPostAPI} from "../../../api/ReportPostAPI";
 
-const PostModal = ({ post, reportID, show, onHide, navigateToPost }) => {
+const PostModal = ({ post, reportID, show, onHide, navigateToPost, setViolatingPosts }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleReadMore = () => {
@@ -24,6 +24,7 @@ const PostModal = ({ post, reportID, show, onHide, navigateToPost }) => {
                 }
             );
             onHide();
+            setViolatingPosts((prev) => prev.filter((item) => item.id !== reportID));
             console.log(response);
         } catch (error) {
             console.error(error);

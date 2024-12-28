@@ -1,7 +1,7 @@
 import AuthorizedAxios  from "./AuthorizedAxios";
 
 export class NotificationAPI {
-    static async getNotifications(page = 1, size = 10) {
+    static async getNotifications(page = 1, size = 50) {
         try {
             const response = await AuthorizedAxios.get(`/api/notifications?page=${page}&size=${size}`);
             return response.data.data;
