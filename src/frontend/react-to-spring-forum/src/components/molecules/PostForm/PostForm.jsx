@@ -182,8 +182,8 @@ const PostForm = ({ show, toggleIsPostFormVisible }) => {
         <Modal.Footer>
           <Button
             onClick={handlePost}
-            disabled={!title && !content}
-            variant={title || content ? "primary" : "secondary"}
+            disabled={!title || !content}
+            variant="dark"
             className={s.postButton}
           >
             Post

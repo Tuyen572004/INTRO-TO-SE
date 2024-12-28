@@ -14,7 +14,7 @@ public enum NotificationTemplate {
     SEND_ADD_FRIEND_REQUEST("ADD_FRIEND", "sent", "User %s %s a friend request to you"),
     ACCEPT_FRIEND_REQUEST("USER", "accepted", "User %s %s your friend request"),
 
-    SEND_REPORT_REQUEST("REPORT", "reported", "User %s %s a post"),
+    SEND_REPORT_REQUEST("REPORT_SEND", "reported", "User %s %s a post"),
     ACCEPT_REPORT_REQUEST("REPORT", "accepted", "Admin%s %s your report. Thank you for your vigilance"),
     DELETE_POST("DELETED_POST", "deleted", "Admin%s %s your post for violating the community guidelines");
 

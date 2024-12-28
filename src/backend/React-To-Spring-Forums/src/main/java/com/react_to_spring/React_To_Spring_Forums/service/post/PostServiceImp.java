@@ -243,5 +243,10 @@ public class PostServiceImp implements PostService {
 
         return postResponses;
     }
+
+    @Override
+    public Long getPostCount() {
+        return postRepository.count();
+    }
 }
 

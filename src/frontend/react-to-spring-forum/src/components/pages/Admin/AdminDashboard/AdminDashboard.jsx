@@ -1,17 +1,40 @@
-import { Users, FileText, AlertTriangle, UserX, Clock, Star } from 'lucide-react';
+import {useEffect, useState} from "react";
+import {UserAPI} from "../../../../api/UserAPI";
+import {PostAPI} from "../../../../api/PostAPI";
+import {ReportPostAPI} from "../../../../api/ReportPostAPI";
+import Loading from "../../../atoms/Loading/Loading";
 import StatCard from "../../../atoms/StatCard/StatCard";
+import {AlertTriangle, FileText, Users} from "lucide-react";
 
 const AdminDashboard = () => {
-    const stats = {
-        totalUsers: 15234,
-        totalPosts: 45678,
-        violatingPosts: 234,
-        violatingUsers: 89,
-        activeUsers: 8976,
-        averagePostsPerDay: 456,
-        topRatedPosts: 789,
-        reportedContent: 123
-    };
+    const [stats, setStats] = useState({});
+
+    const [loading, setLoading] = useState(true);
+
+    const fetchStats = async () => {
+        try {
+            const totalUsers = await UserAPI.countUsers();
+            const totalPosts = await PostAPI.countPosts();
+            const violatingPosts = await ReportPostAPI.countReports();
+
+            setStats({
+                "totalUsers": totalUsers.data,
+                "totalPosts": totalPosts.data,
+                "violatingPosts": violatingPosts.data,
+            })
+
+        } catch (error) {
+            console.error("Error fetching stats", error);
+        }
+    }
+
+    useEffect(() => {
+        fetchStats().then(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return <Loading/>
+    }
 
     return (
         <div className="container px-3">
@@ -41,36 +64,6 @@ const AdminDashboard = () => {
                         title="Violating Posts"
                         value={stats.violatingPosts}
                         bgColor="bg-danger"
-                        textColor="text-white"
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <StatCard
-                        icon={UserX}
-                        title="Violating Users"
-                        value={stats.violatingUsers}
-                        bgColor="bg-warning"
-                        textColor="text-white"
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <StatCard
-                        icon={Clock}
-                        title="Average Posts/Day"
-                        value={stats.averagePostsPerDay}
-                        bgColor="bg-secondary"
-                        textColor="text-white"
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <StatCard
-                        icon={Star}
-                        title="Top Rated Posts"
-                        value={stats.topRatedPosts}
-                        bgColor="bg-dark"
                         textColor="text-white"
                     />
                 </div>

@@ -32,11 +32,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,24 +105,35 @@ public class NotificationServiceImpl implements NotificationService {
     public PageResponse<NotificationResponse> findNotifications(int page, int size) {
         Sort sort = Sort.by(Sort.Order.desc(defaultSortField));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
+
         Page<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findAllByRecipientId(userId, pageable);
 
         List<NotificationResponse> notificationResponses = notificationRecipients.getContent().stream()
                 .map(notificationRecipient -> {
                     Notification notification = notificationRepository.findById(notificationRecipient.getNotificationId())
                             .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
                     NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
                     notificationResponse.setFormattedSentTime(dateFormatter.format(notification.getSendAt()));
+
                     UserInfoResponse userInfo = buildUserInfoResponse(notification.getActorId());
                     if(userInfo == null){
                         throw new AppException(ErrorCode.ACTOR_NOT_FOUND);
                     }
 
                     notificationResponse.setActor(userInfo);
+
+                    if (userInfo.getId().equals(userId)) {
+                        return null;
+                    }
+
                     return notificationResponse;
-                }).toList();
+                })
+                .filter(Objects::nonNull)
+                .toList();
 
         return PageResponse.<NotificationResponse>builder()
                 .page(page)

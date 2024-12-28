@@ -1,5 +1,5 @@
 import React from 'react';
-import s from "../../molecules/ViolatingPostItem/style.module.css";
+import s from "./style.module.css";
 import {MoreHorizontal} from "lucide-react";
 
 const CustomToggle = React.forwardRef(({ onClick }, ref) => (

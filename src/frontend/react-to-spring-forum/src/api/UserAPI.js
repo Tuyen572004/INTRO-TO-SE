@@ -85,6 +85,16 @@ export class UserAPI {
 		}
 	}
 
+	static async countUsers() {
+		try {
+			const response = await AuthorizedAxios.get("/api/users/count");
+			return response.data;
+		} catch (error) {
+			console.error("API Error:", error.response || error.message);
+			throw error;
+		}
+	}
+
 	static async refreshToken(data) {
 		const response = await Axios.post("/api/auth/refresh", {
 			refreshToken: data,
@@ -108,6 +118,8 @@ export class UserAPI {
 		const response = await AuthorizedAxios.get("/api/users/all");
 		return response.data;
 	}
+
+
 	// static async resendVerificationEmail(data) {
 	// 	const response = await Axios.post("/api/auth/send-link", {
 	// 		email: data.email,

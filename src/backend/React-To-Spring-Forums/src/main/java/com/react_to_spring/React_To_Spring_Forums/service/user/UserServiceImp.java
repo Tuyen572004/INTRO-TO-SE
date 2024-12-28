@@ -173,6 +173,11 @@ public class UserServiceImp implements UserService{
         userRepository.deleteById(id);
     }
 
+    @Override
+    public Long getUserCount() {
+        return userRepository.count();
+    }
+
     private UserResponse buildUserResponse(User user) {
         UserResponse userResponse = userMapper.toUserResponse(user);
         userResponse.setRole(roleMapper.toRoleResponse(user.getRole()));

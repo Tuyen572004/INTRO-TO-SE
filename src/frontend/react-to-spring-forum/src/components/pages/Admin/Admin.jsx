@@ -5,9 +5,6 @@ import s from './style.module.css';
 import {useSelector} from "react-redux";
 
 const Admin = () => {
-    const user = useSelector((state) => state.userSlice.user);
-    console.log("Useterr:", user.role);
-
     return (
         <div className="container-fluid">
             <header>

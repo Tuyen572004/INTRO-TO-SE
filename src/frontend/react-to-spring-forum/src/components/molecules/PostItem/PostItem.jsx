@@ -18,16 +18,30 @@ import {deleteMyPost} from "../../../store/myPostSlice";
 import UserIcon from "./../../../assets/User_Icon.png";
 import {formatDistanceToNow} from "date-fns";
 import {useNavigate} from "react-router-dom";
+import ReportModal from "../ReportModal/ReportModal";
+import {ReportPostAPI} from "../../../api/ReportPostAPI";
 
 const PostItem = ({post}) => {
     const user = useSelector((state) => state.userSlice.user);
+
+    const [isReported, setIsReported] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
+
+    const checkReport = async () => {
+        const response = await ReportPostAPI.isReported(post.id);
+        setIsReported(response.data);
+    };
+
+    useEffect(() => {
+        checkReport();
+    }, []);
 
     const handleEditClick = () => {
         setShowEditModal(true);
@@ -36,6 +50,20 @@ const PostItem = ({post}) => {
     const handleDeleteClick = () => {
         setShowDeleteModal(true);
     };
+
+    const handleReportClick = () => {
+        setShowReportModal(true);
+    }
+
+    const handleDeleteReport = async () => {
+        try {
+            const response = await ReportPostAPI.unReport(post.id);
+            console.log("Delete report response:", response);
+            setIsReported(false);
+        } catch (error) {
+            console.error("Delete report error:", error);
+        }
+    }
 
     const toggleReadMore = () => {
         setIsExpanded(!isExpanded);
@@ -57,6 +85,7 @@ const PostItem = ({post}) => {
             navigate(`/user/${post.user.id}`);
         }
     };
+
 
     return (
         <>
@@ -89,28 +118,6 @@ const PostItem = ({post}) => {
                             </div>
                         </div>
                         <div>
-                            {/*{user.userId === post.user.id ? (*/}
-                            {/*    <Dropdown className="dropdown">*/}
-                            {/*        <Dropdown.Toggle as={CustomToggle}/>*/}
-                            {/*        <Dropdown.Menu>*/}
-                            {/*            <Dropdown.Item onClick={handleEditClick}>*/}
-                            {/*                Edit*/}
-                            {/*            </Dropdown.Item>*/}
-                            {/*            <Dropdown.Item onClick={handleDeleteClick}>*/}
-                            {/*                Delete*/}
-                            {/*            </Dropdown.Item>*/}
-                            {/*        </Dropdown.Menu>*/}
-                            {/*    </Dropdown>*/}
-                            {/*) : (*/}
-                            {/*    <Dropdown className="dropdown">*/}
-                            {/*        <Dropdown.Toggle as={CustomToggle}/>*/}
-                            {/*        <Dropdown.Menu>*/}
-                            {/*            <Dropdown.Item>Report</Dropdown.Item>*/}
-                            {/*            <Dropdown.Item>Save</Dropdown.Item>*/}
-                            {/*        </Dropdown.Menu>*/}
-                            {/*    </Dropdown>*/}
-                            {/*)}*/}
-
                             {user.role === "ROLE_ADMIN" ? (
                                 (user.userId === post.user.id) ? (
                                     <Dropdown className="dropdown">
@@ -143,17 +150,30 @@ const PostItem = ({post}) => {
                                                 Edit
                                             </Dropdown.Item>
                                             <Dropdown.Item onClick={handleDeleteClick}>
-                                                Delete
+                                                <span style={{color: "red"}}>Delete</span>
                                             </Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 ) : (
-                                    <Dropdown className="dropdown">
-                                        <Dropdown.Toggle as={CustomToggle}/>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item>Report</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                                    isReported ? (
+                                        <Dropdown className="dropdown">
+                                            <Dropdown.Toggle as={CustomToggle}/>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item onClick={handleDeleteReport}>
+                                                    <span style={{color: "red"}}>Reported</span>
+                                                </Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    ) : (
+                                        <Dropdown className="dropdown">
+                                            <Dropdown.Toggle as={CustomToggle}/>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item onClick={handleReportClick}>
+                                                    Report
+                                                </Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    )
                                 )
                             )}
 
@@ -167,8 +187,8 @@ const PostItem = ({post}) => {
                 </div>
                 {post.content.length > 100 && (
                     <span className={s.readMore} onClick={toggleReadMore}>
-            {isExpanded ? "show less" : "read more"}
-          </span>
+                        {isExpanded ? "show less" : "read more"}
+                    </span>
                 )}
 
                 <div className={s.image_list}>
@@ -208,6 +228,13 @@ const PostItem = ({post}) => {
                 show={showDeleteModal}
                 onHide={() => setShowDeleteModal(false)}
                 onConfirm={confirmDelete}
+            />
+
+            <ReportModal
+                show={showReportModal}
+                onHide={() => setShowReportModal(false)}
+                postId={post.id}
+                setIsReported={setIsReported}
             />
         </>
     );

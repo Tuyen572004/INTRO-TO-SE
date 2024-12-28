@@ -5,4 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ReportViolatingPostRequestRepository extends MongoRepository<ReportViolatingPostRequest, String> {
     boolean existsBySendingUserIdAndPostId(String name, String postId);
+    void deleteBySendingUserIdAndPostId(String name, String postId);
 }

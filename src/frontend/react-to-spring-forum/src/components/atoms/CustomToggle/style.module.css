@@ -1,0 +1,27 @@
+.dropdown {
+    flex-shrink: 0;
+}
+
+.dropdownToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.dropdownToggle:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.moreIcon {
+    width: 20px;
+    height: 20px;
+    color: #262626;
+}
+
