@@ -31,12 +31,22 @@ public class ReportViolatingPostsController {
     }
 
     @DeleteMapping("/report")
-    @Operation(summary = "Delete Report Violating Post",
-            description = "Delete a report of a violating post")
+    @Operation(summary = "Un-Report Report Violating Post",
+            description = "Un-Report a report of a violating post")
     public ApiResponse<Void> deleteReportViolatingPost(@RequestParam("postId") String postId) {
         reportViolatingPostsService.deleteReportViolatingPost(postId);
         return ApiResponse.<Void>builder().message("Un-Report submitted successfully").build();
     }
+
+    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Delete Report Violating Post by ID",
+            description = "Delete a report of a violating post by ID")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<Void> deleteReportViolatingPostById(@PathVariable("id") String id) {
+        reportViolatingPostsService.deleteReportViolatingPostById(id);
+        return ApiResponse.<Void>builder().message("Report deleted successfully").build();
+    }
+
 
     @GetMapping("/is-reported")
     @Operation(summary = "Check if Post is Reported",

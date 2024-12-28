@@ -3,7 +3,7 @@ import s from "./style.module.css";
 
 const Activity = () => {
     return (
-        <div className={s.container}>
+        <div className={s.container} id="activity">
             <ActivityList />
         </div>
     );

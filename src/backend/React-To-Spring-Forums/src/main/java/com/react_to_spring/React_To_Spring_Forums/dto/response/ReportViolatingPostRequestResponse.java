@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReportViolatingPostRequestResponse {
+    String id;
     UserInfoResponse user;
     PostResponse post;
     String reason;

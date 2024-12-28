@@ -11,4 +11,5 @@ public interface ReportViolatingPostsService {
     PageResponse<ReportViolatingPostRequestResponse> getAllReportViolatingPostRequestResponses(int page, int size);
     boolean isReported(String postId);
     void deleteReportViolatingPost(String postId);
+    void deleteReportViolatingPostById(String id);
 }

@@ -1,54 +1,71 @@
-import React from 'react';
-import { Dropdown } from "react-bootstrap";
-import CustomToggle from "../../atoms/CustomToggle/CustomToggle";
-import { Heart, MessageCircle, Send } from "lucide-react";
+import React, {useState} from 'react';
 import s from './style.module.css';
+import PostModal from "../PostModal/PostModal";
+import {useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
 
-function ViolatingPostItem({post, onClick}) {
-    if (!post?.user) return null;
+function ViolatingPostItem({item}) {
+    const myProfile = useSelector((state) => state.userSlice.user);
+    const myId = myProfile.userId;
+
+    const [showPostModal, setShowPostModal] = useState(false);
+
+    const post = item.post;
+    const user = item.user;
+    const reason = item.reason;
+
+    const navigate = useNavigate();
+
+    const navigateToPost = (id) => {
+        if (myId === id) {
+            navigate('/my-account');
+        } else {
+            navigate(`/user/${id}`);
+        }
+    }
 
     return (
-        <div className={s.violatingPostItem} onClick={() => onClick(post)}>
-            <div className={s.postContainer}>
-                <div>
-                    <img src={post.user.avatar} alt={post.user.name} className={s.avatar}/>
-                </div>
-
-                <div className={s.contentWrapper}>
-                    <div className={s.header}>
-                        <div className={s.userInfo}>
-                            <span className={s.name}>{post.user.name}</span>
-                            <span className={s.username}>@{post.user.username}</span>
-                        </div>
-
-                        <Dropdown className={s.dropdown}>
-                            <Dropdown.Toggle as={CustomToggle} />
-                            <Dropdown.Menu>
-                                <Dropdown.Item> Warning </Dropdown.Item>
-                                <Dropdown.Item> Delete </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+        <>
+            <div className={s.violatingPostItem}>
+                <div className={s.postContainer}>
+                    <div className={s.avatarWrapper}>
+                        <img src={user.avatar} alt={user.name} className={s.avatar}/>
                     </div>
 
-                    <div className={s.title}>{post.title}</div>
+                    <div className={s.contentWrapper}>
+                        <div className={s.header}>
+                            <div className={s.userInfo}>
+                                <span className={s.username}>
+                                    <b onClick={() => navigateToPost(user.id)}>
+                                        @{user.username}
+                                    </b> reported the
+                                    <b onClick={() => navigateToPost(post.user.id)}>
+                                        @{post.user.username}
+                                    </b>'s post
+                                </span>
+                            </div>
 
-                    <div className={s.engagementMetrics}>
-                        <div className={s.metricItem}>
-                            <Heart className={s.metricIcon} size={20} />
-                            <span className={s.metricCount}>{post.reactions.totalReact}</span>
                         </div>
-                        <div className={s.metricItem}>
-                            <MessageCircle className={s.metricIcon} size={20} />
-                            <span className={s.metricCount}>{post.reactions.totalComment}</span>
+
+                        <div className={s.reason}>
+                            <b>Reason: </b>{reason}
                         </div>
-                        <div className={s.metricItem}>
-                            <Send className={s.metricIcon} size={20}/>
-                            <span className={s.metricCount}>{post.reactions.totalShare}</span>
-                        </div>
+                    </div>
+
+                    <div className={s.buttonBlack} onClick={() => setShowPostModal(true)}>
+                        View Details
                     </div>
                 </div>
             </div>
-        </div>
+
+            <PostModal
+                post={post}
+                reportID={item.id}
+                show={showPostModal}
+                onHide={() => setShowPostModal(false)}
+                navigateToPost={navigateToPost}
+            />
+        </>
     );
 }
 

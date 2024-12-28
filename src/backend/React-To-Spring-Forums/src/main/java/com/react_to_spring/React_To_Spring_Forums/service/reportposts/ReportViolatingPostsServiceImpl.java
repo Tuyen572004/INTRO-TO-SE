@@ -70,7 +70,6 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
     public void responseReportViolatingPostRequest(ResponseReportViolatingPostRequest request) {
         ReportViolatingPostRequest reportViolatingPostRequest = reportViolatingPostRequestRepository.findById(request.getReportId())
                 .orElseThrow(() -> new AppException(ErrorCode.REPORT_VIOLATING_POST_NOT_FOUND));
-        reportViolatingPostRequestRepository.deleteById(reportViolatingPostRequest.getId());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -78,7 +77,7 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
            notificationService.sendAcceptReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
         }
 
-
+        reportViolatingPostRequestRepository.deleteById(reportViolatingPostRequest.getId());
     }
 
     @Override
@@ -111,6 +110,7 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
             PostResponse postResponse = postService.getPostById(postId);
 
             ReportViolatingPostRequestResponse response = ReportViolatingPostRequestResponse.builder()
+                    .id(item.getId())
                     .user(userInfoResponse)
                     .post(postResponse)
                     .reason(reason)
@@ -154,5 +154,14 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
         }
 
         reportViolatingPostRequestRepository.deleteBySendingUserIdAndPostId(userId, postId);
+    }
+
+    @Override
+    public void deleteReportViolatingPostById(String id) {
+        if (!reportViolatingPostRequestRepository.existsById(id)) {
+            throw new AppException(ErrorCode.REPORT_VIOLATING_POST_NOT_FOUND);
+        }
+
+        reportViolatingPostRequestRepository.deleteById(id);
     }
 }
