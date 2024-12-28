@@ -75,4 +75,14 @@ public class ReportViolatingPostsController {
         PageResponse<ReportViolatingPostRequestResponse> responses = reportViolatingPostsService.getAllReportViolatingPostRequestResponses(page, size);
         return ApiResponse.<PageResponse<ReportViolatingPostRequestResponse>>builder().data(responses).build();
     }
+
+    @GetMapping("count")
+    @Operation(summary = "Get Count of Report Violating Posts",
+            description = "Get the count of reports of violating posts")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<Long> getReportViolatingPostCount() {
+        return ApiResponse.<Long>builder().
+                data(reportViolatingPostsService.getReportViolatingPostCount())
+                .build();
+    }
 }

@@ -97,4 +97,14 @@ public class UserController {
                 .data(userService.searchUserbyUsernameContaining(text))
                 .build();
     }
+
+
+    @GetMapping("/count")
+    @Operation(summary = "Get the number of users",
+            description = "Get the number of users")
+    public ApiResponse<Long> getUserCount() {
+        return ApiResponse.<Long>builder()
+                .data(userService.getUserCount())
+                .build();
+    }
 }

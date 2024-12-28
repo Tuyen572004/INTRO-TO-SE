@@ -7,9 +7,16 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.ReportViolatingPo
 
 public interface ReportViolatingPostsService {
     void sendReportViolatingPostRequest(ReportViolatingPostRequestDTO request);
+
     void responseReportViolatingPostRequest(ResponseReportViolatingPostRequest request);
+
     PageResponse<ReportViolatingPostRequestResponse> getAllReportViolatingPostRequestResponses(int page, int size);
+
     boolean isReported(String postId);
+
     void deleteReportViolatingPost(String postId);
+
     void deleteReportViolatingPostById(String id);
+
+    Long getReportViolatingPostCount();
 }

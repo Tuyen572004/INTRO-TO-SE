@@ -24,10 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,7 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
                 .postId(request.getPostId())
                 .reason(request.getReason())
                 .sendingUserId(authentication.getName())
+                .createdAt(LocalDateTime.now())
                 .build();
         reportViolatingPostRequest = reportViolatingPostRequestRepository.save(reportViolatingPostRequest);
 
@@ -82,7 +85,9 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
 
     @Override
     public PageResponse<ReportViolatingPostRequestResponse> getAllReportViolatingPostRequestResponses(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Sort sort = Sort.by(Sort.Order.desc("createdAt"));
+
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
         Page<ReportViolatingPostRequest> responses
                 = reportViolatingPostRequestRepository.findAll(pageable);
 
@@ -163,5 +168,10 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
         }
 
         reportViolatingPostRequestRepository.deleteById(id);
+    }
+
+    @Override
+    public Long getReportViolatingPostCount() {
+        return reportViolatingPostRequestRepository.count();
     }
 }
