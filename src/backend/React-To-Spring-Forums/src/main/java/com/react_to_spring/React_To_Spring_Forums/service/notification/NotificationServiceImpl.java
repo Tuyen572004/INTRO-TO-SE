@@ -145,7 +145,7 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationRecipientMapper.toNotificationRecipientResponse(notificationRecipient);
     }
 
-    private void sendNotification(NotificationTemplate template, String userId, String notificationEntityId, List<String> additionalRecipients, boolean includeAdmin, boolean isAnonymous) {
+    private void sendNotification(NotificationTemplate template, String userId, String notificationEntityId, List<String> additionalRecipients, boolean includeAdmin, boolean isAnonymous, boolean includeFriend) {
         String userName = isAnonymous ? "" : userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"))
                 .getUsername();
@@ -163,7 +163,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
 
         List<String> recipientIds = new ArrayList<>();
-        if (!isAnonymous) {
+        if (includeFriend) {
             UserProfile userProfile = userProfileRepository.findByUserId(userId).orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
             List<String> friendIds = userProfile.getFriendIds();
             if(friendIds!=null){
@@ -185,17 +185,17 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendPostCreationNotification(String userId, String postId) {
-        sendNotification(NotificationTemplate.CREATE_POST, userId, postId, null, true, false);
+        sendNotification(NotificationTemplate.CREATE_POST, userId, postId, null, true, false,true);
     }
 
     @Override
     public void sendCommentCreationNotification(String userId, String postOwnerId, String commentId) {
-        sendNotification(NotificationTemplate.CREATE_COMMENT, userId, commentId, List.of(postOwnerId), false, true);
+        sendNotification(NotificationTemplate.CREATE_COMMENT, userId, commentId, List.of(postOwnerId), false, false,false);
     }
 
     @Override
     public void sendReactToPostCreationNotification(String userId, String postOwnerId, String reactId) {
-        sendNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, reactId, List.of(postOwnerId), false, true);
+        sendNotification(NotificationTemplate.CREATE_REACT_TO_POST, userId, reactId, List.of(postOwnerId), false, false,false);
     }
 
     @Override
@@ -204,33 +204,33 @@ public class NotificationServiceImpl implements NotificationService {
                 .orElseThrow(() -> new AppException(ErrorCode.ADD_FRIEND_REQUEST_NOT_FOUND));
         User friend = userRepository.findById(addFriendRequest.getReceivingUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        sendNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, addFriendRequestId, List.of(friend.getId()), false, true);
+        sendNotification(NotificationTemplate.SEND_ADD_FRIEND_REQUEST, userId, addFriendRequestId, List.of(friend.getId()), false, false,false);
     }
 
     @Override
     public void sendAcceptFriendNotification(String userId, String friendId) {
-        sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, userId, List.of(friendId), false, true);
+        sendNotification(NotificationTemplate.ACCEPT_FRIEND_REQUEST, userId, userId, List.of(friendId), false, false,false);
     }
 
     @Override
     public void sendMessageNotification(String userId, String recipient, String messageId) {
-        sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId, List.of(recipient), false, true);
+        sendNotification(NotificationTemplate.CREATE_MESSAGE, userId, messageId, List.of(recipient), false, false,false);
     }
 
     @Override
     public void sendReportViolatingPostNotification(String userId, String reportId) {
-        sendNotification(NotificationTemplate.SEND_REPORT_REQUEST, userId, reportId, null, true, true);
+        sendNotification(NotificationTemplate.SEND_REPORT_REQUEST, userId, reportId, null, true, true,false);
     }
 
     @Override
     public void sendAcceptReportViolatingPostNotification(String adminId, String reportId) {
         ReportViolatingPostRequest report = reportViolatingPostRequestRepository.findById(reportId)
                 .orElseThrow(() -> new AppException(ErrorCode.REPORT_VIOLATING_POST_NOT_FOUND));
-        sendNotification(NotificationTemplate.ACCEPT_REPORT_REQUEST, adminId, reportId, List.of(report.getSendingUserId()), false, true);
+        sendNotification(NotificationTemplate.ACCEPT_REPORT_REQUEST, adminId, reportId, List.of(report.getSendingUserId()), false, true,false);
     }
 
     @Override
     public void sendDeletePostNotification(String adminId, String ownerOfPostId) {
-        sendNotification(NotificationTemplate.DELETE_POST, adminId, null, List.of(ownerOfPostId), false, true);
+        sendNotification(NotificationTemplate.DELETE_POST, adminId, null, List.of(ownerOfPostId), false, true,false);
     }
 }

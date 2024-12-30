@@ -146,6 +146,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findById(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.INCORRECT_PASSWORD);
