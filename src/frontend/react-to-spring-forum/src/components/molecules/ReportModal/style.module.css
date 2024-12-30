@@ -1,0 +1,16 @@
+.textAreaCustom {
+    border: none;
+    resize: none;
+    max-height: 25rem;
+    overflow-y: auto;
+}
+
+.textAreaCustom:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.modalTitle {
+    width: 100%;
+    text-align: center;
+}

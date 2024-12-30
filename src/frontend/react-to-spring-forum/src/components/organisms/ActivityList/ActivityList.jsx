@@ -33,7 +33,7 @@ const ActivityList = () => {
 
 
     if (loading) {
-        <Loading />
+        return <Loading />;
     }
     return (
         <div className={s.activity_list} id="activity-list">

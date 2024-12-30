@@ -157,5 +157,14 @@ public class PostController {
                 .message(DELETE_SUCCESS)
                 .build();
     }
+
+    @GetMapping("/count")
+    @Operation(summary = "Get the number of posts",
+            description = "Get the number of posts in the database")
+    public ApiResponse<Long> getPostCount() {
+        return ApiResponse.<Long>builder()
+                .data(postService.getPostCount())
+                .build();
+    }
 }
 

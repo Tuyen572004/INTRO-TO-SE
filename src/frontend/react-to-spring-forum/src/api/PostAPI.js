@@ -81,4 +81,14 @@ export class PostAPI {
 			throw error;
 		}
 	}
+
+	static async countPosts() {
+		try {
+			const response = await AuthorizedAxios.get("/api/posts/count");
+			return response.data;
+		} catch (error) {
+			console.error("API Error:", error.response || error.message);
+			throw error;
+		}
+	}
 }

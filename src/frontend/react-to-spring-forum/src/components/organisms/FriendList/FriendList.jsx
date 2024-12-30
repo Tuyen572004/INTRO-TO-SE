@@ -26,9 +26,8 @@ const FriendList = ({userId}) => {
     }, [userId, refresh]);
 
     if (loading) {
-        <Loading />
+        return <div></div>
     }
-
 
     return (
         <>

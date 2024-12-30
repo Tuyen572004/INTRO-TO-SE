@@ -31,4 +31,6 @@ public interface PostService {
     void deletePostById(String id);
 
     List<PostResponse> getRandomPosts(int size);
+
+    Long getPostCount();
 }

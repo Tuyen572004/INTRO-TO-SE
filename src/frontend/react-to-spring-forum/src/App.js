@@ -12,7 +12,6 @@ import "./index.css"
 import useTokenRefresher from './hooks/useTokenRefresher';
 import Admin from "./components/pages/Admin/Admin";
 import AdminDashboard from "./components/pages/Admin/AdminDashboard/AdminDashboard";
-import ViolatingUser from "./components/pages/Admin/ViolatingUser/ViolatingUser";
 import ViolatingPost from "./components/pages/Admin/ViolatingPost/ViolatingPost";
 import CommentPost from "./components/organisms/CommentPost/CommentPost";
 import User from "./components/pages/User/User";
@@ -66,7 +65,6 @@ const App = () => {
 
                 <Route path="admin" element={<Admin />}>
                     <Route index element={<AdminDashboard />} />
-                    <Route path="violating-users" element={<ViolatingUser />} />
                     <Route path="violating-posts" element={<ViolatingPost />} />
                 </Route>
             </Route>

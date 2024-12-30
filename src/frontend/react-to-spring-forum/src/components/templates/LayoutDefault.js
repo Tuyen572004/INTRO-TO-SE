@@ -8,10 +8,12 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import MessageWindow from "../organisms/MessageWindow/MessageWindow";
 import ChangePasswordModal from "../molecules/ChangePasswordModal/ChangePasswordModal";
+import ChangeEmailModal from "../molecules/ChangeEmailModal/ChangeEmailModal";
 const LayoutDefault = () => {
 	const [isPostFormVisible, setIsPostFormVisible] = useState(false);
 	const [isMessageWindowOpen, setIsMessageWindowOpen] = useState(false);
 	const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+	const [isChangeEmailModalOpen, setIsChangeEmailModalOpen] = useState(false);
 
 	const toggleIsPostFormVisible = () => {
 		setIsPostFormVisible(!isPostFormVisible);
@@ -20,14 +22,18 @@ const LayoutDefault = () => {
 	const toggleIsMessageWindowOpen = () => {
 		setIsMessageWindowOpen(!isMessageWindowOpen);
 	};
+
 	const toggleIsChangePasswordModalOpen = () => {
 		setIsChangePasswordModalOpen(!isChangePasswordModalOpen);
 	};
 
+	const toggleIsChangeEmailModalOpen = () => {
+		setIsChangeEmailModalOpen(!isChangeEmailModalOpen);
+	};
 	return (
 		<div className="d-flex justify-content-between">
 			<div className="col-1">
-				<NavigationBar toggleIsPostFormVisible={toggleIsPostFormVisible} toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen} />
+				<NavigationBar toggleIsPostFormVisible={toggleIsPostFormVisible} toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen} toggleIsChangeEmailModalOpen={toggleIsChangeEmailModalOpen}/>
 			</div>
 			<div className="col-10 d-flex justify-content-center flex-column">
 				<div className="d-flex justify-content-center">
@@ -49,6 +55,9 @@ const LayoutDefault = () => {
 			</AnimatePresence>
 			<AnimatePresence>
 				{isChangePasswordModalOpen && <ChangePasswordModal toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen} />}
+			</AnimatePresence>
+			<AnimatePresence>
+				{isChangeEmailModalOpen && <ChangeEmailModal toggleIsChangeEmailModalOpen={toggleIsChangeEmailModalOpen} />}
 			</AnimatePresence>
 		</div>
 	);

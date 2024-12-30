@@ -1,7 +1,8 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import {AlertTriangle, UserX, LayoutDashboard} from "lucide-react";
+import {AlertTriangle, LayoutDashboard} from "lucide-react";
 
 import s from './style.module.css';
+import {useSelector} from "react-redux";
 
 const Admin = () => {
     return (
@@ -16,14 +17,6 @@ const Admin = () => {
                         }
                     >
                         <LayoutDashboard className={s.icon}/>
-                    </NavLink>
-                    <NavLink
-                        to="violating-users"
-                        className={({isActive}) =>
-                            `${s.navLink} ${isActive ? s.active : ""}`
-                        }
-                    >
-                        <UserX className={s.icon}/>
                     </NavLink>
                     <NavLink
                         to="violating-posts"

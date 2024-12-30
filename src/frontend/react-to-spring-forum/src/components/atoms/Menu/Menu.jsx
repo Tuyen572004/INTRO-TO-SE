@@ -11,8 +11,12 @@ import {useLocation} from "react-router-dom";
 import s from "./style.module.css";
 import {useState} from "react";
 import PreviewMessage from "../../organisms/PreviewMessage/PreviewMessage";
+import {useSelector} from "react-redux";
 
 const Menu = ({toggleIsPostFormVisible}) => {
+    const user = useSelector((state) => state.userSlice.user);
+    const role = user.role;
+
     const location = useLocation();
     const navigate = useNavigate();
     const [active, setActive] = useState(
@@ -33,50 +37,52 @@ const Menu = ({toggleIsPostFormVisible}) => {
 
     return (
         <div className={s.container}>
-            <motion.div
-                className={`${s.home} ${active === "admin" ? s.active : ""}`}
-                onClick={() => {
-                    setActive("admin");
-                    navigate("/admin");
-                }}
-                variants={activeVariants}
-                animate={active === "admin" ? "active" : "inactive"}
-                whileHover="hover"
-                whileTap="tap"
-            >
-                <motion.div variants={iconVariants}>
-                    <RiAdminFill/>
+            {role === "ROLE_ADMIN" && (
+                <motion.div
+                    className={`${s.home} ${active === "admin" ? s.active : ""}`}
+                    onClick={() => {
+                        setActive("admin");
+                        navigate("/admin");
+                    }}
+                    variants={activeVariants}
+                    animate={active === "admin" ? "active" : "inactive"}
+                    whileHover="hover"
+                    whileTap="tap"
+                >
+                    <motion.div variants={iconVariants}>
+                        <RiAdminFill/>
+                    </motion.div>
                 </motion.div>
-            </motion.div>
+            )}
 
-            <motion.div
+                <motion.div
                 className={`${s.home} ${active === "home" ? s.active : ""}`}
-                onClick={() => {
-                    setActive("home");
-                    navigate("/");
-                }}
-                variants={activeVariants}
-                animate={active === "home" ? "active" : "inactive"}
-                whileHover="hover"
-                whileTap="tap"
-            >
-                <motion.div variants={iconVariants}>
-                    <GrHomeOption/>
-                </motion.div>
+             onClick={() => {
+                 setActive("home");
+                 navigate("/");
+             }}
+             variants={activeVariants}
+             animate={active === "home" ? "active" : "inactive"}
+             whileHover="hover"
+             whileTap="tap"
+        >
+            <motion.div variants={iconVariants}>
+                <GrHomeOption/>
             </motion.div>
-            <motion.div
-                className={`${s.message} ${active === "message" ? s.active : ""}`}
-                onMouseEnter={() => setShowPreviewMessage(true)}
-                onMouseLeave={() => setShowPreviewMessage(false)}
-                onClick={() => {
-                    setActive("message");
-                    //navigate("/message");
-                }}
-                variants={activeVariants}
-                animate={active === "message" ? "active" : "inactive"}
-                whileHover="hover"
-                whileTap="tap"
-            >
+        </motion.div>
+    <motion.div
+        className={`${s.message} ${active === "message" ? s.active : ""}`}
+        onMouseEnter={() => setShowPreviewMessage(true)}
+        onMouseLeave={() => setShowPreviewMessage(false)}
+        onClick={() => {
+            setActive("message");
+            //navigate("/message");
+        }}
+        variants={activeVariants}
+        animate={active === "message" ? "active" : "inactive"}
+        whileHover="hover"
+        whileTap="tap"
+    >
                 <motion.div variants={iconVariants}>
                     <FiMessageSquare/>
                     {showPreviewMessage && <PreviewMessage/>}
