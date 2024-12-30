@@ -94,8 +94,8 @@ app:
         add-friend-success: "Add friend request is sent successfully"
         unfriend-success: "Unfriend successfully"
     notification:
-        response:
-            mark-as-read-success: "Mark as read successfully"
+      response:
+        mark-as-read-success: "Mark as read successfully"
   email:
     verification:
       expiration: 5 # in minute
@@ -107,7 +107,7 @@ app:
     subject: "React To Spring Forums"
     sender:
       email: ${SENDER_EMAIL}
-      name : ${SENDER_NAME}
+      name: ${SENDER_NAME}
   time:
     EXPIRATION_TIME_KEY: ${EXPIRATION_TIME_KEY}
 
