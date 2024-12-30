@@ -6,13 +6,17 @@ import s from "./style.module.css";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const Navigation = ({ toggleIsPostPopup, toggleIsChangePasswordModalOpen, toggleIsChangeEmailModalOpen }) => {
+const Navigation = ({
+  toggleIsPostFormVisible,
+  toggleIsChangePasswordModalOpen,
+  toggleIsChangeEmailModalOpen,
+}) => {
   const user = useSelector((state) => state.userSlice.user);
   const navigate = useNavigate();
   return (
     <div className={s.container}>
       <Logo />
-      {user && <Menu toggleIsPostPopup={toggleIsPostPopup} />}
+      {user && <Menu toggleIsPostFormVisible={toggleIsPostFormVisible} />}
       {user && (
         <Setting
           toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen}
