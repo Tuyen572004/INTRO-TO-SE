@@ -8,14 +8,20 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteUser } from "../../../store/userSlice";
 import SettingOptions from "../../molecules/SettingOptions/SettingOptions";
+import { disconnectWebSocket } from "../../../config/webSocket";
 
-const Setting = ({ toggleIsChangePasswordModalOpen, toggleIsChangeEmailModalOpen }) => {
+const Setting = ({
+  client,
+  toggleIsChangePasswordModalOpen,
+  toggleIsChangeEmailModalOpen,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
     UserAPI.logout({ token: localStorage.getItem("accessToken") });
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    disconnectWebSocket(client);
     dispatch(deleteUser());
     navigate("/login");
   };

@@ -4,12 +4,24 @@ import Newsfeed from "../organisms/Newsfeed/Newfeeds";
 import MessageButton from "../atoms/MessageButton/MessageButton";
 import Header from "../atoms/Header/Header";
 import PostForm from "../molecules/PostForm/PostForm";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import MessageWindow from "../organisms/MessageWindow/MessageWindow";
 import ChangePasswordModal from "../molecules/ChangePasswordModal/ChangePasswordModal";
 import ChangeEmailModal from "../molecules/ChangeEmailModal/ChangeEmailModal";
+import { useSelector } from "react-redux";
+import { connectWebSocket } from "../../config/webSocket";
+import { NotificationContext } from "../../context/NotificationContext";
+
 const LayoutDefault = () => {
+	const user = useSelector((state) => state.userSlice.user);
+	const handleNotification = useContext(NotificationContext);
+	console.log("handleNotification", handleNotification);
+	let client = null
+	if (user) {
+		client = connectWebSocket(user.userId, handleNotification);
+	}
+
 	const [isPostFormVisible, setIsPostFormVisible] = useState(false);
 	const [isMessageWindowOpen, setIsMessageWindowOpen] = useState(false);
 	const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
@@ -33,7 +45,7 @@ const LayoutDefault = () => {
 	return (
 		<div className="d-flex justify-content-between">
 			<div className="col-1">
-				<NavigationBar toggleIsPostFormVisible={toggleIsPostFormVisible} toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen} toggleIsChangeEmailModalOpen={toggleIsChangeEmailModalOpen}/>
+				<NavigationBar socketClient={client} toggleIsPostFormVisible={toggleIsPostFormVisible} toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen} toggleIsChangeEmailModalOpen={toggleIsChangeEmailModalOpen} />
 			</div>
 			<div className="col-10 d-flex justify-content-center flex-column">
 				<div className="d-flex justify-content-center">
@@ -47,6 +59,7 @@ const LayoutDefault = () => {
 				</div>
 
 			</div>
+
 			<div className="col-1">
 				<MessageButton toggleIsMessageWindowOpen={toggleIsMessageWindowOpen} />
 			</div>

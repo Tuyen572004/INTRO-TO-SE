@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "swiper/css";
@@ -13,13 +13,18 @@ import ImageList from "../../molecules/ImageList/ImageList";
 import { uploadFile } from "../../../utils/uploadImageFile";
 import s from "./style.module.css";
 import { useSelector } from "react-redux";
+import { NotificationContext } from "../../../context/NotificationContext";
+
 import {
-  connectWebSocket,
+  connectWebSocketChat,
   sendMessage,
   disconnectWebSocket,
 } from "../../../config/webSocket";
 
 const MessageWindow = () => {
+  const notificationHandle = useContext(NotificationContext);
+  notificationHandle.setHasMessageNotification(false);
+
   const userId = useSelector((state) => state.userSlice.user.userId);
   const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
@@ -123,7 +128,7 @@ const MessageWindow = () => {
     setPage(1);
     setHasMore(true);
 
-    const client = connectWebSocket(
+    const client = connectWebSocketChat(
       userId,
       selectedChatRoom.chatId,
       (message) => {
