@@ -1,13 +1,56 @@
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
-export const connectWebSocket = (userId, chatId, onMessageReceived) => {
+export const connectWebSocket = (userId, handleNotification) => {
     const client = new Client({
         webSocketFactory: () => new SockJS('http://localhost:8080/api/ws'),
         debug: (str) => console.log('WebSocket Debug:', str),
         reconnectDelay: 5000,
         onConnect: () => {
             console.log('WebSocket connection successful!');
+
+            const destination = `/user/${userId}/queue/notifications`;
+            client.subscribe(destination, (data) => {
+                console.log("handleNotification", handleNotification);
+
+                console.log('Received notification:', data.body);
+                const notificationBody = JSON.parse(data.body);
+
+                switch (notificationBody.notificationType) {
+                    case 'MESSAGE':
+                        handleNotification.setHasMessageNotification(true);
+                        break;
+                    case 'ADD_FRIEND':
+                        handleNotification.setHasFriendNotification(true);
+                        break;
+                    case 'POST':
+                    case 'COMMENT':
+                    case 'USER':
+                    case 'REPORT':
+                    case 'DELETED_POST':
+                        handleNotification.setHasActivityNotification(true);
+                        break;
+                    default:
+                        console.log('Unknown notification type:', notificationBody.type);
+                }
+            });
+
+            console.log(`Subscribed to notification from: ${destination}`);
+        },
+    });
+
+    client.activate();
+
+    return client;
+};
+
+export const connectWebSocketChat = (userId, chatId, onMessageReceived) => {
+    const client = new Client({
+        webSocketFactory: () => new SockJS('http://localhost:8080/api/ws'),
+        debug: (str) => console.log('WebSocket Debug:', str),
+        reconnectDelay: 5000,
+        onConnect: () => {
+            console.log('WebSocketChat connection successful!');
 
             const destination = `/user/${userId}/queue/messages${chatId}`;
             client.subscribe(destination, (message) => {
@@ -32,12 +75,12 @@ export const sendMessage = (client, message) => {
         destination,
         body: JSON.stringify(message),
     });
-    console.log(`Đã gửi tin nhắn tới: ${destination}`, message);
+    console.log(`The message has been sent to ${destination}`, message);
 };
 
 export const disconnectWebSocket = (client) => {
     if (client && client.connected) {
         client.deactivate();
-        console.log('Đã ngắt kết nối WebSocket');
+        console.log('Websocket disconnected!');
     }
 };

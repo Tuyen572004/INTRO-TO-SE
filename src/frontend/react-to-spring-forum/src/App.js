@@ -18,6 +18,7 @@ import User from "./components/pages/User/User";
 import Friend from "./components/pages/Friend/Friend";
 import RequestSent from "./components/pages/Friend/RequestSent/RequestSent";
 import RequestReceived from "./components/pages/Friend/RequestReceived/RequestRecived";
+import { NotificationProvider } from "./context/NotificationContext";
 
 const AuthorizedRoutes = () => {
     const authorized = localStorage.getItem("accessToken")?.length > 0;
@@ -46,7 +47,10 @@ const App = () => {
             <Route path="verification-success/*" element={<VerificationSuccess />} />
             <Route path="verification-failed/*" element={<VerificationFailed />} />
             <Route path="message" element={<Message />} />
-            <Route path="/" element={<LayoutDefault />}>
+            <Route path="/" element={
+                <NotificationProvider>
+                    <LayoutDefault />
+                </NotificationProvider>}>
                 <Route index element={<Dashboard />} />
 
                 <Route element={<ProtectedRoute />}>

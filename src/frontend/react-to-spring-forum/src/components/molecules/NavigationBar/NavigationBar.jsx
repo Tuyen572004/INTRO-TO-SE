@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const Navigation = ({
+  client,
   toggleIsPostFormVisible,
   toggleIsChangePasswordModalOpen,
   toggleIsChangeEmailModalOpen,
@@ -19,6 +20,7 @@ const Navigation = ({
       {user && <Menu toggleIsPostFormVisible={toggleIsPostFormVisible} />}
       {user && (
         <Setting
+          client={client}
           toggleIsChangePasswordModalOpen={toggleIsChangePasswordModalOpen}
           toggleIsChangeEmailModalOpen={toggleIsChangeEmailModalOpen}
         />

@@ -7,13 +7,21 @@ import { RiAdminFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useContext, useState } from "react";
 
 import s from "./style.module.css";
-import { useState } from "react";
 import PreviewMessage from "../../organisms/PreviewMessage/PreviewMessage";
-import { useSelector } from "react-redux";
+import NotificationDot from "../NotificationDot/NotificationDot";
+import { NotificationContext } from "../../../context/NotificationContext";
 
 const Menu = ({ toggleIsPostFormVisible }) => {
+  const {
+    hasMessageNotification,
+    hasFriendNotification,
+    hasActivityNotification,
+  } = useContext(NotificationContext);
+
   const user = useSelector((state) => state.userSlice.user);
   const role = user.role;
 
@@ -39,7 +47,7 @@ const Menu = ({ toggleIsPostFormVisible }) => {
     <div className={s.container}>
       {role === "ROLE_ADMIN" && (
         <motion.div
-          className={`${s.home} ${active === "admin" ? s.active : ""}`}
+          className={`${active === "admin" ? s.active : ""}`}
           onClick={() => {
             setActive("admin");
             navigate("/admin");
@@ -56,7 +64,7 @@ const Menu = ({ toggleIsPostFormVisible }) => {
       )}
 
       <motion.div
-        className={`${s.home} ${active === "home" ? s.active : ""}`}
+        className={`${active === "home" ? s.active : ""}`}
         onClick={() => {
           setActive("home");
           navigate("/");
@@ -72,6 +80,7 @@ const Menu = ({ toggleIsPostFormVisible }) => {
       </motion.div>
       <motion.div
         className={`${s.message} ${active === "message" ? s.active : ""}`}
+        style={{ position: "relative" }}
         onMouseEnter={() => setShowPreviewMessage(true)}
         onMouseLeave={() => setShowPreviewMessage(false)}
         onClick={() => {
@@ -85,6 +94,7 @@ const Menu = ({ toggleIsPostFormVisible }) => {
       >
         <motion.div variants={iconVariants}>
           <FiMessageSquare />
+          {hasMessageNotification && <NotificationDot />}
           {showPreviewMessage && <PreviewMessage />}
         </motion.div>
       </motion.div>
@@ -99,7 +109,8 @@ const Menu = ({ toggleIsPostFormVisible }) => {
       </motion.div>
 
       <motion.div
-        className={`${s.activity} ${active === "activity" ? s.active : ""}`}
+        className={`${active === "activity" ? s.active : ""}`}
+        style={{ position: "relative" }}
         onClick={() => {
           setActive("activity");
           navigate("/activity");
@@ -111,11 +122,13 @@ const Menu = ({ toggleIsPostFormVisible }) => {
       >
         <motion.div variants={iconVariants}>
           <FaRegHeart />
+          {hasActivityNotification && <NotificationDot />}
         </motion.div>
       </motion.div>
 
       <motion.div
-        className={`${s.friend} ${active === "friend" ? s.active : ""}`}
+        className={`${active === "friend" ? s.active : ""}`}
+        style={{ position: "relative" }}
         onClick={() => {
           setActive("friend");
           navigate("/friend");
@@ -127,11 +140,12 @@ const Menu = ({ toggleIsPostFormVisible }) => {
       >
         <motion.div variants={iconVariants}>
           <FaUserFriends />
+          {hasFriendNotification && <NotificationDot />}
         </motion.div>
       </motion.div>
 
       <motion.div
-        className={`${s.user} ${active === "user" ? s.active : ""}`}
+        className={`${active === "user" ? s.active : ""}`}
         onClick={() => {
           setActive("user");
           navigate("/my-account");
