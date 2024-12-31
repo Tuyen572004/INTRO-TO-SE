@@ -6,6 +6,8 @@ const NotificationProvider = ({ children }) => {
   const [hasMessageNotification, setHasMessageNotification] = useState(false);
   const [hasActivityNotification, setHasActivityNotification] = useState(false);
   const [hasFriendNotification, setHasFriendNotification] = useState(false);
+  const [activities, setActivities] = useState([]);
+  const [requestReceived, setRequestReceived] = useState([]);
 
   return (
     <NotificationContext.Provider
@@ -16,6 +18,10 @@ const NotificationProvider = ({ children }) => {
         setHasMessageNotification,
         setHasActivityNotification,
         setHasFriendNotification,
+        activities,
+        setActivities,
+        requestReceived,
+        setRequestReceived,
       }}
     >
       {children}

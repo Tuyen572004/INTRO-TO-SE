@@ -15,6 +15,7 @@ export const connectWebSocket = (userId, handleNotification) => {
 
                 console.log('Received notification:', data.body);
                 const notificationBody = JSON.parse(data.body);
+                console.log('Notification body:', notificationBody);
 
                 switch (notificationBody.notificationType) {
                     case 'MESSAGE':
@@ -22,13 +23,25 @@ export const connectWebSocket = (userId, handleNotification) => {
                         break;
                     case 'ADD_FRIEND':
                         handleNotification.setHasFriendNotification(true);
-                        break;
+                        handleNotification.setRequestReceived((prev) => {
+                            const exists = prev.some(request => request.id === notificationBody.actor.id);
+                            if (exists) return prev;
+                            return [notificationBody.actor, ...prev];
+                        })
                     case 'POST':
                     case 'COMMENT':
                     case 'USER':
                     case 'REPORT':
                     case 'DELETED_POST':
                         handleNotification.setHasActivityNotification(true);
+                        handleNotification.setActivities(
+                            (prev) => {
+                                const exists = prev.some(activity => activity.id === notificationBody.id);
+                                if (exists) return prev;
+                                return [notificationBody, ...prev];
+                            }
+                        );
+                        console.log('Activities:', handleNotification.activities);
                         break;
                     default:
                         console.log('Unknown notification type:', notificationBody.type);
