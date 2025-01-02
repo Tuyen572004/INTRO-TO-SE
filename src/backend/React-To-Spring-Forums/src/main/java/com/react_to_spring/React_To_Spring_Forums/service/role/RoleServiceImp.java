@@ -17,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,7 +38,12 @@ public class RoleServiceImp implements RoleService{
     PermissionMapper permissionMapper;
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse createRole(RoleCreationRequest request) {
+        if (roleRepository.existsById(request.getName())) {
+            throw new AppException(ErrorCode.ROLE_EXISTED);
+        }
+
         Role role = roleMapper.toRole(request);
         List<Permission> permissions = permissionRepository.findAllById(request.getPermissions());
         role.setPermissions(permissions);
@@ -49,6 +55,7 @@ public class RoleServiceImp implements RoleService{
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse updateRole(String name, RoleUpdateRequest request) {
         Role role = roleRepository.findById(name).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         roleMapper.updateRole(role, request);
@@ -65,6 +72,7 @@ public class RoleServiceImp implements RoleService{
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse addPermissions(String name, AddPermissionsRequest request) {
 
         Role role = roleRepository.findById(name).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
@@ -82,6 +90,7 @@ public class RoleServiceImp implements RoleService{
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<RoleResponse> getAllRoles() {
         return roleRepository.findAll().stream().map(role -> {
             RoleResponse roleResponse = roleMapper.toRoleResponse(role);
@@ -91,6 +100,7 @@ public class RoleServiceImp implements RoleService{
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteRole(String name) {
         Role role = roleRepository.findById(name).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 

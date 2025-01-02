@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +33,6 @@ public class RoleController {
     @PostMapping
     @Operation(summary = "Create a new role",
             description = "Create a new role with the provided details: name, description, permissions")
-    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<RoleResponse> createRole(@RequestBody RoleCreationRequest request) {
         return ApiResponse.<RoleResponse>builder()
                 .data(roleService.createRole(request))
@@ -44,7 +42,6 @@ public class RoleController {
     @GetMapping
     @Operation(summary = "Get all roles",
             description = "Get all roles in the systems")
-    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<List<RoleResponse>> getAllRoles() {
         return ApiResponse.<List<RoleResponse>>builder()
                 .data(roleService.getAllRoles())
@@ -54,7 +51,6 @@ public class RoleController {
     @PutMapping
     @Operation(summary = "Update role by providing name",
             description = "Update role by providing name")
-    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<RoleResponse> updateRole(@RequestParam("name") String name, @RequestBody RoleUpdateRequest request) {
         return ApiResponse.<RoleResponse>builder()
                 .data(roleService.updateRole(name, request))
@@ -73,7 +69,6 @@ public class RoleController {
     @DeleteMapping
     @Operation(summary = "Delete role",
             description = "Delete role whose name is \"name\"")
-    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<Void> deleteRole(@RequestParam("name") String name) {
         roleService.deleteRole(name);
         return ApiResponse.<Void>builder()
