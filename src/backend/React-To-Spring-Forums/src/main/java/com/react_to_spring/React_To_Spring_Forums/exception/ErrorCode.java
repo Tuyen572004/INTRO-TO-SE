@@ -45,6 +45,8 @@ public enum ErrorCode {
     USER_EXISTED(3001, HttpStatus.BAD_REQUEST, "User existed"),
     USER_PROFILE_EXISTED(3002, HttpStatus.BAD_REQUEST, "User profile existed"),
     EMAIL_EXISTED(3003, HttpStatus.BAD_REQUEST, "Email existed"),
+    ROLE_EXISTED(3004, HttpStatus.BAD_REQUEST, "Role existed"),
+    PERMISSION_EXISTED(3005, HttpStatus.BAD_REQUEST, "Permission existed"),
 //    Not Found Error 4xxx
     USER_NOT_FOUND(4001, HttpStatus.NOT_FOUND, "User not found"),
     ROLE_NOT_FOUND(4002, HttpStatus.NOT_FOUND, "Role not found"),
