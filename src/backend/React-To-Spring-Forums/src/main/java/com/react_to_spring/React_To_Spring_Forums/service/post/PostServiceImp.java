@@ -67,7 +67,7 @@ public class PostServiceImp implements PostService {
 
         return PageResponse.<PostResponse>builder()
                 .page(page)
-                .size(size)
+                .size(postResponses.size())
                 .totalElements(posts.getTotalElements())
                 .totalPages(posts.getTotalPages())
                 .data(postResponses)
@@ -88,7 +88,7 @@ public class PostServiceImp implements PostService {
 
         return PageResponse.<PostResponse>builder()
                 .page(page)
-                .size(size)
+                .size(postResponses.size())
                 .totalElements(posts.getTotalElements())
                 .totalPages(posts.getTotalPages())
                 .data(postResponses)
@@ -116,7 +116,7 @@ public class PostServiceImp implements PostService {
 
         return PageResponse.<PostResponse>builder()
                 .page(page)
-                .size(size)
+                .size(postResponses.size())
                 .totalElements(posts.getTotalElements())
                 .totalPages(posts.getTotalPages())
                 .data(postResponses)
@@ -128,15 +128,14 @@ public class PostServiceImp implements PostService {
         Sort sort = Sort.by(Sort.Order.desc("createdDate"));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
 
-        Page<Post> posts = postRepository.findByNotUserId(userId, pageable);
+
+        Page<Post> posts = postRepository.getAllBy(pageable);
         List<PostResponse> postResponses = postConverter.convertToPostResponses(posts.getContent());
 
         return PageResponse.<PostResponse>builder()
                 .page(page)
-                .size(size)
+                .size(postResponses.size())
                 .totalElements(posts.getTotalElements())
                 .totalPages(posts.getTotalPages())
                 .data(postResponses)
