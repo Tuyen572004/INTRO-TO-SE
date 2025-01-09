@@ -11,30 +11,45 @@ const RequestReceived = () => {
   const notificationHandle = useContext(NotificationContext);
   const [loading, setLoading] = useState(true);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(2);
   const [hasMore, setHasMore] = useState(true);
 
   const fetchRequestReceived = async () => {
     try {
       const response = await AddFriendAPI.getFriendRequests("RECEIVED", page);
-      console.log(response);
-      notificationHandle.setRequestReceived((prevRequests) => [
-        ...prevRequests,
-        ...response.data,
-      ]);
+      console.log("friend req", response);
+      notificationHandle.setRequestReceived((prevRequests) => {
+        const mergedRequests = [...prevRequests, ...response.data];
+
+        const uniqueRequests = Array.from(
+          new Set(mergedRequests.map((item) => item.id))
+        ).map((id) => mergedRequests.find((item) => item.id === id));
+
+        return uniqueRequests;
+      });
 
       setPage(page + 1);
       setHasMore(page < response.totalPages);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    fetchRequestReceived().then(() => {
-      setLoading(false);
-      console.log(notificationHandle.requestReceived);
-    });
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await AddFriendAPI.getFriendRequests("RECEIVED", 1);
+        notificationHandle.setRequestReceived(response.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (loading) {

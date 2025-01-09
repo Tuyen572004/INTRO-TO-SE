@@ -7,6 +7,8 @@ import PrimaryButton from "../../atoms/PrimaryButton/PrimaryButton";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../store/userSlice";
+import VerifyModal from "../../atoms/VerifyModal/VerifyModal";
+
 const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleUsernameChange = (value) => {
     setUsername(value);
@@ -55,13 +58,15 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
       if (response.code === 1000) {
         navigate("/");
         const role = decoded.scope;
-        const user = {...decoded.user, "role": role};
+        const user = { ...decoded.user, role: role };
         dispatch(setUser(user));
       }
     } catch (error) {
       if (error.response?.data?.code === 5002) {
         setErrorMessage("Invalid username or password");
         setIsInvalid(true);
+      } else if (error.response?.data?.code === 5003) {
+        setIsModalOpen(true);
       } else {
         console.log(error);
         setErrorMessage("An error occurred. Please try again.");
@@ -102,6 +107,13 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
 
         <PrimaryButton type="submit" title="Login" />
       </form>
+
+      {isModalOpen && (
+        <VerifyModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
+      )}
     </div>
   );
 };

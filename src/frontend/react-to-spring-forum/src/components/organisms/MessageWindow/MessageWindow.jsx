@@ -184,6 +184,10 @@ const MessageWindow = () => {
   };
 
   const handleSendMessage = async () => {
+    if (imageList.length > 6) {
+      return;
+    }
+
     if (message.trim() || imageList.length > 0) {
       try {
         const uploadedImageUrls = await Promise.all(
@@ -254,6 +258,22 @@ const MessageWindow = () => {
     </div>
   );
 
+  const limitImageToast = () => {
+    return (
+      <div
+        class="d-flex toast align-items-center w-100"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">
+            You can only upload up to 6 images at a time.
+          </div>
+        </div>
+      </div>
+    );
+  };
   return (
     <div className={s.container}>
       <div className={s.message_window}>
@@ -350,6 +370,7 @@ const MessageWindow = () => {
                 </InfiniteScroll>
               </div>
               <div className={s.message_bar}>
+                {imageList.length > 6 && limitImageToast()}
                 <ImageList images={imageList} removeImage={removeImage} />
                 <div className="d-flex align-items-center">
                   <div className={s.message_input_container}>
@@ -379,7 +400,10 @@ const MessageWindow = () => {
                   <button
                     className={s.send_button}
                     onClick={handleSendMessage}
-                    disabled={!message.trim() && imageList.length === 0}
+                    disabled={
+                      (!message.trim() && imageList.length === 0) ||
+                      imageList.length > 6
+                    }
                   >
                     <GrSend />
                   </button>
@@ -389,7 +413,7 @@ const MessageWindow = () => {
           </div>
         ) : (
           <div className={s.no_chat_selected}>
-            <p>Không có chat room nào được chọn hoặc chưa có chat room.</p>
+            <p>No chat room is selected or there is no chat room yet.</p>
           </div>
         )}
       </div>

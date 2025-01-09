@@ -18,10 +18,15 @@ const ActivityList = () => {
   const fetchActivities = async () => {
     try {
       const response = await NotificationAPI.getNotifications(page);
-      handleNotification.setActivities([
-        ...handleNotification.activities,
-        ...response.data,
-      ]);
+      handleNotification.setActivities((prevActivities) => {
+        const mergedActivities = [...prevActivities, ...response.data];
+
+        const uniqueActivities = Array.from(
+          new Set(mergedActivities.map((item) => item.id))
+        ).map((id) => mergedActivities.find((item) => item.id === id));
+
+        return uniqueActivities;
+      });
 
       setPage(page + 1);
       setHasMore(page < response.totalPages);
@@ -33,6 +38,22 @@ const ActivityList = () => {
 
   useEffect(() => {
     fetchActivities().then(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await NotificationAPI.getNotifications(page);
+        handleNotification.setActivities(response.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (loading) {
