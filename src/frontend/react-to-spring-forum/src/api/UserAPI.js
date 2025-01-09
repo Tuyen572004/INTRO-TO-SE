@@ -36,7 +36,7 @@ export class UserAPI {
 		});
 		return response.data;
 	}
-	
+
 	static async forgotPassword(data) {
 		const response = await Axios.post("/api/auth/forget-password", {
 			newPassword: data.newPassword,
@@ -104,6 +104,13 @@ export class UserAPI {
 
 	static async sendVerificationCode(data) {
 		const response = await Axios.post("/api/verify/send-code", {
+			email: data,
+		});
+		return response.data;
+	}
+
+	static async sendVerificationLink(data) {
+		const response = await Axios.post("/api/verify/send-link", {
 			email: data,
 		});
 		return response.data;
