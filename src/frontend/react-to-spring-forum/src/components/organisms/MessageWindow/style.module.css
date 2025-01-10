@@ -48,6 +48,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
 
 .avatar {
@@ -369,4 +370,10 @@
   align-items: center;
   flex-grow: 1;
   gap: 8px;
+}
+
+.plus_symbol {
+  position: absolute;
+  right: 0px;
+  bottom: 25px;
 }

@@ -14,6 +14,7 @@ import { uploadFile } from "../../../utils/uploadImageFile";
 import s from "./style.module.css";
 import { useSelector } from "react-redux";
 import { NotificationContext } from "../../../context/NotificationContext";
+import { PiPlusCircleFill } from "react-icons/pi";
 
 import {
   connectWebSocketChat,
@@ -25,7 +26,7 @@ const MessageWindow = () => {
   const notificationHandle = useContext(NotificationContext);
   notificationHandle.setHasMessageNotification(false);
 
-  const userId = useSelector((state) => state.userSlice.user.userId);
+  const user = useSelector((state) => state.userSlice.user);
   const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
   const [selectedChatRoom, setSelectedChatRoom] = useState(chatRooms[0]);
@@ -129,7 +130,7 @@ const MessageWindow = () => {
     setHasMore(true);
 
     const client = connectWebSocketChat(
-      userId,
+      user.userId,
       selectedChatRoom.chatId,
       (message) => {
         setMessages((prevMessages) => {
@@ -196,7 +197,7 @@ const MessageWindow = () => {
 
         const newMessage = {
           chatId: selectedChatRoom.chatId,
-          senderId: userId,
+          senderId: user.userId,
           recipientIds: selectedChatRoom.participantProfiles.map(
             (item) => item.userId
           ),
@@ -299,6 +300,25 @@ const MessageWindow = () => {
               scrollbar={{ draggable: true }}
               className={s.swiper}
             >
+              <SwiperSlide
+                className={s.user_slide}
+                onClick={() => toggleCreateModal()}
+              >
+                <div className={s.user}>
+                  <div className={s.avatar}>
+                    <img
+                      src={user.profileImgUrl}
+                      alt={user.lastName}
+                      className={s.avatar_image}
+                    />
+                  </div>
+                  <div className={s.plus_symbol}>
+                    <PiPlusCircleFill size={20} />
+                  </div>
+                  <p className={s.user_name}>New chat</p>
+                </div>
+              </SwiperSlide>
+
               {chatRooms.map((room) => (
                 <SwiperSlide
                   key={room.chatId}
@@ -359,7 +379,7 @@ const MessageWindow = () => {
                     <div
                       key={msg.id}
                       className={`${s.message} ${
-                        msg.senderProfile.userId === userId
+                        msg.senderProfile.userId === user.userId
                           ? s.message_sent
                           : s.message_received
                       }`}
