@@ -69,6 +69,7 @@ public enum ErrorCode {
     INCORRECT_PASSWORD(5004, HttpStatus.UNAUTHORIZED, "Incorrect password"),
     UNAUTHENTICATED(5005, HttpStatus.UNAUTHORIZED, "Authentication failed"),
     VERIFY_CODE_EXPIRED(5006, HttpStatus.UNAUTHORIZED, "Code is expired"),
+    NOT_VERIFIED(5007, HttpStatus.UNAUTHORIZED, "Account is not verified"),
 //    Forbidden	Client	6xxx (Unauthorized error)
     UNAUTHORIZED(6001, HttpStatus.FORBIDDEN, "Don't have permission");
 
