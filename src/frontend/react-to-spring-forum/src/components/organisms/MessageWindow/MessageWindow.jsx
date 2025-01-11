@@ -384,6 +384,17 @@ const MessageWindow = () => {
                           : s.message_received
                       }`}
                     >
+                      {msg.senderProfile.userId !== user.userId ? (
+                        <div className={`${s.avatar} me-2`}>
+                          <img
+                            src={msg.senderProfile.profileImgUrl}
+                            alt=""
+                            className={s.avatar_image}
+                          />
+                        </div>
+                      ) : (
+                        ""
+                      )}
                       <MessageContent msg={msg} />
                     </div>
                   ))}
