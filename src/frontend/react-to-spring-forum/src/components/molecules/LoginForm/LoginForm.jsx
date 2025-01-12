@@ -17,6 +17,7 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,8 +66,10 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
       if (error.response?.data?.code === 5002) {
         setErrorMessage("Invalid username or password");
         setIsInvalid(true);
-      } else if (error.response?.data?.code === 5003) {
+      } else if (error.response?.data?.code === 5007) {
         setIsModalOpen(true);
+        setEmail(error.response.data.data);
+        await UserAPI.sendVerificationLink(email);
       } else {
         console.log(error);
         setErrorMessage("An error occurred. Please try again.");
@@ -112,6 +115,7 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
         <VerifyModal
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
+          email={email}
         />
       )}
     </div>

@@ -138,6 +138,7 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
         <VerifyModal
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
+          email={email}
         />
       )}
     </div>

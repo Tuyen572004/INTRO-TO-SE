@@ -1,9 +1,10 @@
+import { motion, AnimatePresence } from "framer-motion";
 import s from "./style.module.css";
-import { UserAPI } from "../../../api/UserAPI";
 import { MessageAPI } from "../../../api/MessageAPI";
 import { useEffect, useState } from "react";
 import ErrorAlert from "../../atoms/ErrorAlert/ErrorAlert";
 import { useSelector } from "react-redux";
+import { UserProfileAPI } from "../../../api/UserProfileAPI";
 
 function CreateRoomChatModal({
   toggleCreateModal,
@@ -20,10 +21,8 @@ function CreateRoomChatModal({
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await UserAPI.getAllUsers();
-        console.log(response);
-        setAllUsers(response.data);
-        console.log(allUsers);
+        const response = await UserProfileAPI.getAllFriendsByUserId(userId);
+        setAllUsers(response);
       } catch (error) {
         setErrorMessage("Failed to fetch users. Please try again later.");
         console.error("Error fetching users:", error);
@@ -31,13 +30,16 @@ function CreateRoomChatModal({
     };
 
     fetchUsers();
-  }, []);
+  }, [userId]);
 
   const handleCreateChatRoom = async () => {
-    if (!chatRoomName.trim() || participants.length === 0) {
-      setErrorMessage(
-        "Please enter a room name and add at least one participant."
-      );
+    if (!chatRoomName.trim() && participants.length > 2) {
+      setErrorMessage("Please enter a room name and.");
+      return;
+    }
+
+    if (participants.length === 0) {
+      setErrorMessage("Please add at least one participant.");
       return;
     }
 
@@ -59,75 +61,132 @@ function CreateRoomChatModal({
   };
 
   return (
-    <div className={s.modal_overlay}>
-      <div className={s.modal}>
-        <h2>Create Chat Modal</h2>
-        {errorMessage && <ErrorAlert message={errorMessage} />}
+    <AnimatePresence>
+      <motion.div
+        className={s.modal_overlay}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className={s.modal}
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        >
+          <h2>Create New Chat Room</h2>
+          {errorMessage && <ErrorAlert message={errorMessage} />}
 
-        <div className={s.modal_body}>
-          <label>Room name:</label>
-          <input
-            type="text"
-            value={chatRoomName}
-            onChange={(e) => setChatRoomName(e.target.value)}
-            placeholder="Enter the room name"
-          />
+          <div className={s.modal_body}>
+            {participants.length > 2 && (
+              <>
+                <label>Room name:</label>
+                <div className={s.chat_room_name_container}>
+                  <input
+                    type="text"
+                    value={chatRoomName}
+                    onChange={(e) => setChatRoomName(e.target.value)}
+                    placeholder="Enter the room name"
+                    className={s.chat_room_name_input}
+                  />
+                </div>
+              </>
+            )}
 
-          <label>Participants:</label>
-          <div className={s.search_container}>
-            <input
-              type="text"
-              value={searchParticipants}
-              onChange={(e) => setSearchParticipants(e.target.value)}
-              placeholder="Search by username..."
-              className={s.search_input}
-            />
-          </div>
+            <label>Participants:</label>
+            <div className={s.search_container}>
+              <input
+                type="text"
+                value={searchParticipants}
+                onChange={(e) => setSearchParticipants(e.target.value)}
+                placeholder="Search by username..."
+                className={s.search_input}
+              />
+            </div>
 
-          <div className={s.participants_list}>
-            {allUsers
-              .filter((user) =>
-                user.username
-                  .toLowerCase()
-                  .includes(searchParticipants.toLowerCase())
-              )
-              .map((user) => {
-                const isSelected = participants.includes(user.id);
-
-                return (
-                  <div key={user.id} className={s.participant_item}>
-                    <span>{user.username}</span>
-                    <button
-                      className={`${s.toggle_button} ${
-                        isSelected ? s.selected : s.unselected
-                      }`}
-                      onClick={() => {
-                        if (isSelected) {
-                          setParticipants((prev) =>
-                            prev.filter((id) => id !== user.id)
-                          );
-                        } else {
-                          setParticipants((prev) => [...prev, user.id]);
-                        }
-                      }}
-                    >
-                      {isSelected ? "✗" : "✓"}
-                    </button>
-                  </div>
+            <div className={s.participants_list}>
+              {(() => {
+                const searchedUserList = allUsers.filter((user) =>
+                  user.username
+                    .toLowerCase()
+                    .includes(searchParticipants.toLowerCase())
                 );
-              })}
+
+                if (searchedUserList.length === 0) {
+                  return (
+                    <div className={s.participant_item}>No users found</div>
+                  );
+                }
+
+                return searchedUserList.map((user) => {
+                  const isSelected = participants.includes(user.id);
+
+                  return (
+                    <motion.div
+                      key={user.id}
+                      className={s.participant_item}
+                      initial={{ opacity: 0, x: -50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 50 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className={s.participant_info}>
+                        <div className={`${s.avatar}`}>
+                          <img
+                            src={user.avatar}
+                            alt=""
+                            className={s.avatar_image}
+                          />
+                        </div>
+                        <span>{user.username}</span>
+                      </div>
+
+                      <motion.button
+                        className={`${s.toggle_button} ${
+                          isSelected ? s.selected : s.unselected
+                        }`}
+                        onClick={() => {
+                          if (isSelected) {
+                            setParticipants((prev) =>
+                              prev.filter((id) => id !== user.id)
+                            );
+                          } else {
+                            setParticipants((prev) => [...prev, user.id]);
+                          }
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {isSelected ? "✗" : "✓"}
+                      </motion.button>
+                    </motion.div>
+                  );
+                });
+              })()}
+            </div>
           </div>
-        </div>
-        <div className={s.modal_footer}>
-          <button className={s.cancel_button} onClick={toggleCreateModal}>
-            Cancel
-          </button>
-          <button className={s.create_button} onClick={handleCreateChatRoom}>
-            Create
-          </button>
-        </div>
-      </div>
-    </div>
+          <div className={s.modal_footer}>
+            <motion.button
+              className={s.cancel_button}
+              onClick={toggleCreateModal}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Cancel
+            </motion.button>
+            <motion.button
+              className={s.create_button}
+              onClick={handleCreateChatRoom}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Create
+            </motion.button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 

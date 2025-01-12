@@ -3,10 +3,11 @@ import Modal from "react-modal";
 import { useState, useEffect } from "react";
 
 import { motion } from "framer-motion";
+import { UserAPI } from "../../../api/UserAPI";
 
 Modal.setAppElement("#root");
 
-function VerifyModal({ isModalOpen, setIsModalOpen }) {
+function VerifyModal({ isModalOpen, setIsModalOpen, email }) {
   const [countdown, setCountdown] = useState(300);
   const [isTimerActive, setIsTimerActive] = useState(true);
 
@@ -59,6 +60,7 @@ function VerifyModal({ isModalOpen, setIsModalOpen }) {
     try {
       setCountdown(300);
       setIsTimerActive(true);
+      await UserAPI.sendVerificationLink(email);
     } catch (e) {
       console.log(e);
     }
