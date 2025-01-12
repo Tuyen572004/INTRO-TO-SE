@@ -78,13 +78,15 @@ const Menu = ({ toggleIsPostFormVisible }) => {
           <GrHomeOption />
         </motion.div>
       </motion.div>
-      <motion.div
+
+      {/* <motion.div
         className={`${s.message} ${active === "message" ? s.active : ""}`}
         style={{ position: "relative" }}
-        onMouseEnter={() => setShowPreviewMessage(true)}
-        onMouseLeave={() => setShowPreviewMessage(false)}
+        // onMouseEnter={() => setShowPreviewMessage(true)}
+        // onMouseLeave={() => setShowPreviewMessage(false)}
         onClick={() => {
           setActive("message");
+          toggleIsMessageWindowOpen();
           //navigate("/message");
         }}
         variants={activeVariants}
@@ -95,7 +97,22 @@ const Menu = ({ toggleIsPostFormVisible }) => {
         <motion.div variants={iconVariants}>
           <FiMessageSquare />
           {hasMessageNotification && <NotificationDot />}
-          {showPreviewMessage && <PreviewMessage />}
+        </motion.div>
+      </motion.div> */}
+
+      <motion.div
+        className={`${active === "user" ? s.active : ""}`}
+        onClick={() => {
+          setActive("user");
+          navigate("/my-account");
+        }}
+        variants={activeVariants}
+        animate={active === "user" ? "active" : "inactive"}
+        whileHover="hover"
+        whileTap="tap"
+      >
+        <motion.div variants={iconVariants}>
+          <FaRegUser />
         </motion.div>
       </motion.div>
 
@@ -141,22 +158,6 @@ const Menu = ({ toggleIsPostFormVisible }) => {
         <motion.div variants={iconVariants}>
           <FaUserFriends />
           {hasFriendNotification && <NotificationDot />}
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        className={`${active === "user" ? s.active : ""}`}
-        onClick={() => {
-          setActive("user");
-          navigate("/my-account");
-        }}
-        variants={activeVariants}
-        animate={active === "user" ? "active" : "inactive"}
-        whileHover="hover"
-        whileTap="tap"
-      >
-        <motion.div variants={iconVariants}>
-          <FaRegUser />
         </motion.div>
       </motion.div>
     </div>
