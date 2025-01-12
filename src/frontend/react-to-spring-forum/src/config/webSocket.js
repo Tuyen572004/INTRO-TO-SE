@@ -17,6 +17,8 @@ export const connectWebSocket = (userId, handleNotification) => {
                 const notificationBody = JSON.parse(data.body);
                 console.log('Notification body:', notificationBody);
 
+                if (notificationBody.actor.id === userId) return;
+
                 switch (notificationBody.notificationType) {
                     case 'MESSAGE':
                         handleNotification.setHasMessageNotification(true);
