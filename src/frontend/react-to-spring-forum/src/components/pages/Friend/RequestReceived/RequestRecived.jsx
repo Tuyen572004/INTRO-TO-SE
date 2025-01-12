@@ -6,6 +6,7 @@ import Spinner from "react-bootstrap/Spinner";
 import s from "./style.module.css";
 import AddFriendRequestItem from "../../../molecules/AddFriendRequestItem/AddFriendRequestItem";
 import { NotificationContext } from "../../../../context/NotificationContext";
+import LoadingContent from "../../../atoms/LoadingContent/LoadingContent";
 
 const RequestReceived = () => {
   const notificationHandle = useContext(NotificationContext);
@@ -52,10 +53,6 @@ const RequestReceived = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <div className={s.container} id="request-received">
       {notificationHandle.requestReceived.length > 0 ? (
@@ -63,13 +60,7 @@ const RequestReceived = () => {
           dataLength={notificationHandle.requestReceived.length}
           next={fetchRequestReceived}
           hasMore={hasMore}
-          loader={
-            <div className="text-center">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
-            </div>
-          }
+          loader={<LoadingContent />}
           scrollableTarget="request-received"
         >
           {notificationHandle.requestReceived.map((friend) => (
@@ -82,6 +73,15 @@ const RequestReceived = () => {
         </InfiniteScroll>
       ) : (
         <div className={s.title}>No friend requests received.</div>
+      )}
+
+      {loading && (
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{ height: "50%" }}
+        >
+          <Loading />
+        </div>
       )}
     </div>
   );
