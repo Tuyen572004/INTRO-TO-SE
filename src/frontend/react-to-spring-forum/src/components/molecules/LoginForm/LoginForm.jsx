@@ -38,7 +38,7 @@ const LoginForm = ({ isNotLogIn, toggleIsForgotPasswordModalOpen }) => {
     e.preventDefault();
     try {
       const response = await UserAPI.authenticate({
-        username,
+        username: username.toLowerCase(),
         password,
       });
       console.log(response);

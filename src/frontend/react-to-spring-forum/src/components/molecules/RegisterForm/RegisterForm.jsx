@@ -61,9 +61,9 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
     }
     try {
       const response = await UserAPI.register({
-        username,
+        username: username.toLowerCase(),
         password,
-        email,
+        email: email.toLowerCase(),
         firstName,
         lastName,
         address,
