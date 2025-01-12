@@ -11,8 +11,8 @@ const Friend = () => {
     notificationHandle.setHasFriendNotification(false);
   }, []);
   return (
-    <div>
-      <div className="container-fluid">
+    <>
+      <div className="container-fluid" style={{ height: "100%" }}>
         <header>
           <nav className="d-flex justify-content-around m-3">
             <NavLink
@@ -35,11 +35,11 @@ const Friend = () => {
           </nav>
           <hr />
         </header>
-        <main>
+        <main style={{ height: "100%" }}>
           <Outlet />
         </main>
       </div>
-    </div>
+    </>
   );
 };
 

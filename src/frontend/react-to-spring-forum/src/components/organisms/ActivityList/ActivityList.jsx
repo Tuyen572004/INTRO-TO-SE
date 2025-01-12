@@ -7,6 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "react-bootstrap/Spinner";
 import { v4 } from "uuid";
 import { NotificationContext } from "../../../context/NotificationContext";
+import LoadingContent from "../../atoms/LoadingContent/LoadingContent";
 
 const ActivityList = () => {
   const handleNotification = useContext(NotificationContext);
@@ -56,22 +57,21 @@ const ActivityList = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
   return (
     <div className={s.activity_list} id="activity-list">
+      {loading && (
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{ height: "50%" }}
+        >
+          <Loading />
+        </div>
+      )}
       <InfiniteScroll
         dataLength={handleNotification.activities.length}
         next={fetchActivities}
         hasMore={hasMore}
-        loader={
-          <div className="text-center">
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          </div>
-        }
+        loader={<LoadingContent />}
         scrollableTarget="activity-list"
       >
         {handleNotification.activities.map((activity) => (
