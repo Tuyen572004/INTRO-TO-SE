@@ -1,0 +1,2 @@
+What we have changed: 
+- The start and end dates (begin and finish) of the tasks in the Project Schedule in section 4.2.4 to make them more reasonable and aligned with our current progress.

@@ -1,0 +1,7 @@
+Changes in the use case document compared to PA2:
+
+1. Change Alternative flow of Login use case : Forget password
+Reason: To make it similar to other popular social media platforms and be simpler for user.
+
+2. Change basic flow of change password and change email use cases.
+Reason: To make our code can be reused and more readable.
