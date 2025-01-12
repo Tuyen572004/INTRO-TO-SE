@@ -1,8 +1,0 @@
-Changes in the vision document compared to PA1:
-
-Added React feature to product features, including create, update, and delete reactions on posts.
-Reason: To ensure the product has full functionality for interacting with posts.
-
-Removed report comment feature in the comment section.
-Reason: To streamline the features and meet the schedule.
-
