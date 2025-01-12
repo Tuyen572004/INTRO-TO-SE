@@ -21,6 +21,7 @@ import {
   sendMessage,
   disconnectWebSocket,
 } from "../../../config/webSocket";
+import Loading from "../../atoms/Loading/Loading";
 
 const MessageWindow = () => {
   const notificationHandle = useContext(NotificationContext);
@@ -67,6 +68,8 @@ const MessageWindow = () => {
   };
 
   const fetchChatRoom = async () => {
+    setLoading(true);
+
     try {
       const response = await MessageAPI.getMyChatRooms(1, 5);
       console.log(response);
@@ -83,14 +86,14 @@ const MessageWindow = () => {
       }
     } catch (error) {
       console.error("Error fetching chat rooms:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchMessages = async () => {
-    debugger;
-    if (loading || !hasMore || !selectedChatRoom) return;
+    if (!hasMore || !selectedChatRoom) return;
 
-    setLoading(true);
     try {
       const currentPages = page + 1;
       setPage(currentPages);
@@ -118,8 +121,6 @@ const MessageWindow = () => {
       console.log("messages: ", messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -275,180 +276,194 @@ const MessageWindow = () => {
       </div>
     );
   };
+
   return (
     <div className={s.container}>
       <div className={s.message_window}>
-        <div className={s.search_bar}>
-          <SearchBar />
-        </div>
-        <div className={s.list_user}>
-          {chatRooms.length === 0 ? (
-            <div className={s.no_chat_rooms}>
-              <p>You did not have any chat room. Let's create a new one!</p>
-              <button
-                className={s.create_chat_room_button}
-                onClick={toggleCreateModal}
-              >
-                Create Chat Room
-              </button>
+        {loading ? (
+          <div
+            className="d-flex align-items-center justify-content-center"
+            style={{ height: "50%" }}
+          >
+            <Loading />
+          </div>
+        ) : (
+          <>
+            <div className={s.search_bar}>
+              <SearchBar />
             </div>
-          ) : (
-            <Swiper
-              modules={[Scrollbar]}
-              spaceBetween={10}
-              slidesPerView="5"
-              scrollbar={{ draggable: true }}
-              className={s.swiper}
-            >
-              <SwiperSlide
-                className={s.user_slide}
-                onClick={() => toggleCreateModal()}
-              >
-                <div className={s.user}>
-                  <div className={s.avatar}>
-                    <img
-                      src={user.profileImgUrl}
-                      alt={user.lastName}
-                      className={s.avatar_image}
-                    />
-                  </div>
-                  <div className={s.plus_symbol}>
-                    <PiPlusCircleFill size={20} />
-                  </div>
-                  <p className={s.user_name}>New chat</p>
+            <div className={s.list_user}>
+              {chatRooms.length === 0 ? (
+                <div className={s.no_chat_rooms}>
+                  <p>You did not have any chat room. Let's create a new one!</p>
+                  <button
+                    className={s.create_chat_room_button}
+                    onClick={toggleCreateModal}
+                  >
+                    Create Chat Room
+                  </button>
                 </div>
-              </SwiperSlide>
+              ) : (
+                <Swiper
+                  modules={[Scrollbar]}
+                  spaceBetween={10}
+                  slidesPerView="5"
+                  scrollbar={{ draggable: true }}
+                  className={s.swiper}
+                >
+                  <SwiperSlide
+                    className={s.user_slide}
+                    onClick={() => toggleCreateModal()}
+                  >
+                    <div className={s.user}>
+                      <div className={s.avatar}>
+                        <img
+                          src={user.profileImgUrl}
+                          alt={user.lastName}
+                          className={s.avatar_image}
+                        />
+                      </div>
+                      <div className={s.plus_symbol}>
+                        <PiPlusCircleFill size={20} />
+                      </div>
+                      <p className={s.user_name}>New chat</p>
+                    </div>
+                  </SwiperSlide>
 
-              {chatRooms.map((room) => (
-                <SwiperSlide
-                  key={room.chatId}
-                  className={s.user_slide}
-                  onClick={() => setSelectedChatRoom(room)}
-                >
-                  <div className={s.user}>
-                    <div className={s.avatar}>
-                      <img
-                        src={room.chatRoomUrl}
-                        alt={room.chatRoomName}
-                        className={s.avatar_image}
-                      />
-                    </div>
-                    <p className={s.user_name}>{room.chatRoomName}</p>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          )}
-        </div>
-        {selectedChatRoom ? (
-          <div className={s.box_chat}>
-            <div className={s.box_chat_header}>
-              <div className={s.avatar}>
-                <img
-                  src={selectedChatRoom.chatRoomUrl}
-                  alt={selectedChatRoom.chatRoomName}
-                  className={s.avatar_image}
-                />
-              </div>
-              <p className={s.user_name}>{selectedChatRoom.chatRoomName}</p>
-            </div>
-            <div className={s.box_chat_body}>
-              <div
-                id="scrollableDiv"
-                className={s.messages_container}
-                style={{
-                  display: "flex",
-                  flexDirection: "column-reverse",
-                }}
-              >
-                <InfiniteScroll
-                  dataLength={messages.length}
-                  next={fetchMessages}
-                  hasMore={hasMore}
-                  loader={<div className={s.loader}>Loading messages</div>}
-                  endMessage={
-                    <div className={s.end_message}>
-                      There no more messages to show.
-                    </div>
-                  }
-                  style={{ display: "flex", flexDirection: "column-reverse" }}
-                  inverse={true}
-                  scrollableTarget="scrollableDiv"
-                >
-                  {messages.map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`${s.message} ${
-                        msg.senderProfile.userId === user.userId
-                          ? s.message_sent
-                          : s.message_received
-                      }`}
+                  {chatRooms.map((room) => (
+                    <SwiperSlide
+                      key={room.chatId}
+                      className={s.user_slide}
+                      onClick={() => setSelectedChatRoom(room)}
                     >
-                      {msg.senderProfile.userId !== user.userId ? (
-                        <div className={`${s.avatar} me-2`}>
+                      <div className={s.user}>
+                        <div className={s.avatar}>
                           <img
-                            src={msg.senderProfile.profileImgUrl}
-                            alt=""
+                            src={room.chatRoomUrl}
+                            alt={room.chatRoomName}
                             className={s.avatar_image}
                           />
                         </div>
-                      ) : (
-                        ""
-                      )}
-                      <MessageContent msg={msg} />
-                    </div>
+                        <p className={s.user_name}>{room.chatRoomName}</p>
+                      </div>
+                    </SwiperSlide>
                   ))}
-                </InfiniteScroll>
-              </div>
-              <div className={s.message_bar}>
-                {imageList.length > 6 && limitImageToast()}
-                <ImageList images={imageList} removeImage={removeImage} />
-                <div className="d-flex align-items-center">
-                  <div className={s.message_input_container}>
-                    <textarea
-                      value={message}
-                      onChange={handleMessageChange}
-                      onKeyPress={handleKeyPress}
-                      className={s.message_input}
-                      placeholder="Enter the message..."
-                      rows={1}
-                    />
-                    <label
-                      htmlFor="chat-image-upload"
-                      className={s.image_upload_label}
-                    >
-                      <Images size={20} />
-                    </label>
-                    <input
-                      id="chat-image-upload"
-                      type="file"
-                      multiple
-                      onChange={handleFileUpload}
-                      className={s.hidden_input}
-                      accept="image/*"
+                </Swiper>
+              )}
+            </div>
+            {selectedChatRoom ? (
+              <div className={s.box_chat}>
+                <div className={s.box_chat_header}>
+                  <div className={s.avatar}>
+                    <img
+                      src={selectedChatRoom.chatRoomUrl}
+                      alt={selectedChatRoom.chatRoomName}
+                      className={s.avatar_image}
                     />
                   </div>
-                  <button
-                    className={s.send_button}
-                    onClick={handleSendMessage}
-                    disabled={
-                      (!message.trim() && imageList.length === 0) ||
-                      imageList.length > 6
-                    }
+                  <p className={s.user_name}>{selectedChatRoom.chatRoomName}</p>
+                </div>
+                <div className={s.box_chat_body}>
+                  <div
+                    id="scrollableDiv"
+                    className={s.messages_container}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column-reverse",
+                    }}
                   >
-                    <GrSend />
-                  </button>
+                    <InfiniteScroll
+                      dataLength={messages.length}
+                      next={fetchMessages}
+                      hasMore={hasMore}
+                      loader={<div className={s.loader}>Loading messages</div>}
+                      endMessage={
+                        <div className={s.end_message}>
+                          There no more messages to show.
+                        </div>
+                      }
+                      style={{
+                        display: "flex",
+                        flexDirection: "column-reverse",
+                      }}
+                      inverse={true}
+                      scrollableTarget="scrollableDiv"
+                    >
+                      {messages.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className={`${s.message} ${
+                            msg.senderProfile.userId === user.userId
+                              ? s.message_sent
+                              : s.message_received
+                          }`}
+                        >
+                          {msg.senderProfile.userId !== user.userId ? (
+                            <div className={`${s.avatar} me-2`}>
+                              <img
+                                src={msg.senderProfile.profileImgUrl}
+                                alt=""
+                                className={s.avatar_image}
+                              />
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          <MessageContent msg={msg} />
+                        </div>
+                      ))}
+                    </InfiniteScroll>
+                  </div>
+                  <div className={s.message_bar}>
+                    {imageList.length > 6 && limitImageToast()}
+                    <ImageList images={imageList} removeImage={removeImage} />
+                    <div className="d-flex align-items-center">
+                      <div className={s.message_input_container}>
+                        <textarea
+                          value={message}
+                          onChange={handleMessageChange}
+                          onKeyPress={handleKeyPress}
+                          className={s.message_input}
+                          placeholder="Enter the message..."
+                          rows={1}
+                        />
+                        <label
+                          htmlFor="chat-image-upload"
+                          className={s.image_upload_label}
+                        >
+                          <Images size={20} />
+                        </label>
+                        <input
+                          id="chat-image-upload"
+                          type="file"
+                          multiple
+                          onChange={handleFileUpload}
+                          className={s.hidden_input}
+                          accept="image/*"
+                        />
+                      </div>
+                      <button
+                        className={s.send_button}
+                        onClick={handleSendMessage}
+                        disabled={
+                          (!message.trim() && imageList.length === 0) ||
+                          imageList.length > 6
+                        }
+                      >
+                        <GrSend />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ) : (
-          <div className={s.no_chat_selected}>
-            <p>No chat room is selected or there is no chat room yet.</p>
-          </div>
+            ) : (
+              <div className={s.no_chat_selected}>
+                <p>No chat room is selected or there is no chat room yet.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
-
       {isOpenCreateModal && (
         <CreateRoomChatModal
           toggleCreateModal={toggleCreateModal}
