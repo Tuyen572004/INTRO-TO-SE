@@ -76,7 +76,7 @@ const RegisterForm = ({ isNotLogIn, setIsNotLogIn }) => {
       console.log(error);
       if (error.response?.data?.code === 3001) {
         setErrorMessage("Username already exists.");
-      } else if (error.response?.data?.code === 9999) {
+      } else if (error.response?.data?.code === 3003) {
         setErrorMessage("Email already exists.");
       } else if (error.response?.data?.code === 1002) {
         setErrorMessage("Cannot send mail.");
