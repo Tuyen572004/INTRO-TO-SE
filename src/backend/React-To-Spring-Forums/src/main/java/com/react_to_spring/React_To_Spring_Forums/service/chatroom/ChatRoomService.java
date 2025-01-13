@@ -12,7 +12,7 @@ public interface ChatRoomService {
 
     ChatRoomResponse getChatRoomByName(String chatRoomName);
 
-    PageResponse<ChatRoomResponse> getMyChatRooms(int page, int size);
+    PageResponse<ChatRoomResponse> getMyChatRooms(int page, int size, String chatroomName);
 
     void deleteChatRoom(String chatId);
 }

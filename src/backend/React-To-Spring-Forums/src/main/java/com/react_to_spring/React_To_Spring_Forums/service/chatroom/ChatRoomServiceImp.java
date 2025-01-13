@@ -78,12 +78,18 @@ public class ChatRoomServiceImp implements ChatRoomService {
     }
 
     @Override
-    public PageResponse<ChatRoomResponse> getMyChatRooms(int page, int size) {
+    public PageResponse<ChatRoomResponse> getMyChatRooms(int page, int size, String chatroomName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<ChatRoom> chatRooms = chatRoomRepository
-                .findChatRoomByParticipantIdsContaining(List.of(authentication.getName()), pageable);
+        Page<ChatRoom> chatRooms;
+
+        if (chatroomName.isEmpty()) {
+            chatRooms = chatRoomRepository.findChatRoomByParticipantIdsContaining(List.of(authentication.getName()), pageable);
+        } else {
+            chatRooms = chatRoomRepository.findChatRoomByParticipantIdsContainingAndChatRoomNameContaining(List.of(authentication.getName()),
+                    chatroomName, pageable);
+        }
 
         List<ChatRoomResponse> chatRoomResponses = chatRooms.getContent().stream()
                 .map(this::buildChatRoomResponse).toList();

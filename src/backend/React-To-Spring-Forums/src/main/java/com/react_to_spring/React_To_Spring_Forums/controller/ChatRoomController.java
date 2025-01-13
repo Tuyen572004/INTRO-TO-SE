@@ -42,9 +42,10 @@ public class ChatRoomController {
 
     @GetMapping("/my-chat-rooms")
     public ApiResponse<PageResponse<ChatRoomResponse>> getMyChatRooms(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                                              @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+                                                                      @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                                                                      @RequestParam(value = "chatroomName", required = false, defaultValue = "") String chatroomName) {
         return ApiResponse.<PageResponse<ChatRoomResponse>>builder()
-                .data(chatRoomService.getMyChatRooms(page, size))
+                .data(chatRoomService.getMyChatRooms(page, size, chatroomName))
                 .build();
     }
 
