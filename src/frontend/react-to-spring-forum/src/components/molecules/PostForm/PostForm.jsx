@@ -6,13 +6,14 @@ import {addNewPost as addNewPostToPostSlice} from "../../../store/postSlice";
 import {addNewPost as addNewPostToMyPostSlice} from "../../../store/myPostSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {PostAPI} from "../../../api/PostAPI";
-
+import Swal from "sweetalert2";
 import s from "./style.module.css";
 import ImageList from "../ImageList/ImageList";
 import {UserProfileAPI} from "../../../api/UserProfileAPI";
 import {UserAPI} from "../../../api/UserAPI";
 import * as promise from "axios";
 import Loading from "../../atoms/Loading/Loading";
+import Spinner from "react-bootstrap/Spinner";
 
 const PostForm = ({show, toggleIsPostFormVisible}) => {
     const userLogin = useSelector((state) => state.userSlice.user);
@@ -25,6 +26,8 @@ const PostForm = ({show, toggleIsPostFormVisible}) => {
     const [userProfile, setUserProfile] = useState({});
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
+
+    const [posting, setPosting] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -68,6 +71,8 @@ const PostForm = ({show, toggleIsPostFormVisible}) => {
     };
 
     const handlePost = async () => {
+        setPosting(true);
+
         const data = {
             title: title,
             content: content,
@@ -89,8 +94,23 @@ const PostForm = ({show, toggleIsPostFormVisible}) => {
 
                 toggleIsPostFormVisible();
             }
+
+            setPosting(false);
+            await Swal.fire({
+                icon: "success",
+                title: "Post created!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+
         } catch (error) {
-            console.error("Error creating post:", error);
+            setPosting(false);
+            await Swal.fire({
+                icon: "error",
+                title: "An error occurred!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
     };
 
@@ -100,7 +120,7 @@ const PostForm = ({show, toggleIsPostFormVisible}) => {
     };
 
     if (loading) {
-        <Loading/>;
+        return <Loading />;
     }
 
     return (
@@ -192,7 +212,11 @@ const PostForm = ({show, toggleIsPostFormVisible}) => {
                         variant="dark"
                         className={s.postButton}
                     >
-                        Post
+                        {posting ? (
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                        ) : "Post"}
                     </Button>
                 </Modal.Footer>
             </Modal>

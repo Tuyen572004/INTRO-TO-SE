@@ -20,6 +20,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import ReportModal from "../ReportModal/ReportModal";
 import { ReportPostAPI } from "../../../api/ReportPostAPI";
+import Swal from "sweetalert2";
 
 const PostItem = ({ post }) => {
 	const user = useSelector((state) => state.userSlice.user);
@@ -35,8 +36,12 @@ const PostItem = ({ post }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	const checkReport = async () => {
-		const response = await ReportPostAPI.isReported(post.id);
-		setIsReported(response.data);
+		try {
+			const response = await ReportPostAPI.isReported(post.id);
+			setIsReported(response.data);
+		} catch (error) {
+			setIsReported(true);
+		}
 	};
 
 	useEffect(() => {
@@ -63,7 +68,12 @@ const PostItem = ({ post }) => {
 			console.log("Delete report response:", response);
 			setIsReported(false);
 		} catch (error) {
-			console.error("Delete report error:", error);
+			await Swal.fire({
+				icon: "error",
+				title: "An error occurred!",
+				showConfirmButton: false,
+				timer: 1500,
+			});
 		}
 	};
 
@@ -72,12 +82,27 @@ const PostItem = ({ post }) => {
 	};
 
 	const confirmDelete = async () => {
-		const response = await PostAPI.delete(post.id);
-		console.log("Delete response:", response);
+		try {
+			const response = await PostAPI.delete(post.id);
+			dispatch(deletePost(post.id));
+			dispatch(deleteMyPost(post.id));
 
-		dispatch(deletePost(post.id));
-		dispatch(deleteMyPost(post.id));
-		setShowDeleteModal(false);
+			setShowDeleteModal(false);
+			await Swal.fire({
+				icon: "success",
+				title: "Post deleted!",
+				showConfirmButton: false,
+				timer: 1500,
+			});
+		} catch (error) {
+			setShowDeleteModal(false);
+			await Swal.fire({
+				icon: "error",
+				title: "An error occurred!",
+				showConfirmButton: false,
+				timer: 1500,
+			});
+		}
 	};
 
 	const navigateToProfile = () => {

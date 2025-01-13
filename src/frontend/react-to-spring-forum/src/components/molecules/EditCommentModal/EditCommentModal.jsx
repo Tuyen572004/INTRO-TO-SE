@@ -5,14 +5,16 @@ import { CommentAPI } from "../../../api/CommentAPI";
 import { useDispatch } from "react-redux";
 import { updateComment } from "../../../store/commentSlice";
 import {uploadFile} from "../../../utils/uploadImageFile";
-
+import Swal from "sweetalert2";
 import s from './style.module.css';
 import ImageList from "../ImageList/ImageList";
+import Spinner from "react-bootstrap/Spinner";
 
 const EditCommentModal = ({ show, onHide, comment }) => {
     const [content, setContent] = useState(comment?.content || '');
     const [images, setImages] = useState(comment?.imageList || []);
     const contentRef = useRef(null);
+    const [updating, setUpdating] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -28,6 +30,7 @@ const EditCommentModal = ({ show, onHide, comment }) => {
     };
 
     const handleSave = async () => {
+        setUpdating(true);
         const updatedComment = {
             _id: comment.id,
             content: content,
@@ -42,12 +45,24 @@ const EditCommentModal = ({ show, onHide, comment }) => {
             const response = await CommentAPI.update(updatedComment);
             dispatch(updateComment(response.data));
 
-            console.log('Post response:', response);
+            onHide();
+            setUpdating(false);
+            await Swal.fire({
+                icon: 'success',
+                title: 'Comment updated!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         } catch (error) {
-            console.error('Error:', error);
+            onHide();
+            setUpdating(false);
+            await Swal.fire({
+                icon: 'error',
+                title: 'An error occurred!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
-
-        onHide();
     };
 
     const adjustHeight = (ref) => {
@@ -123,7 +138,11 @@ const EditCommentModal = ({ show, onHide, comment }) => {
                     variant={content ? 'primary' : 'secondary'}
                     disabled={!content}
                 >
-                    Save
+                    {updating ? (
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    ) : 'Save'}
                 </Button>
             </Modal.Footer>
         </Modal>

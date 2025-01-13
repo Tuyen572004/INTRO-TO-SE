@@ -9,10 +9,9 @@ import {useDispatch, useSelector} from "react-redux";
 import { removeComment } from "../../../store/commentSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
-
+import Swal from "sweetalert2";
 import s from "./style.module.css";
 import {useNavigate} from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
 
 function CommentItem({ comment }) {
     const user = useSelector((state) => state.userSlice.user);
@@ -33,10 +32,30 @@ function CommentItem({ comment }) {
     };
 
     const confirmDelete = async () => {
-        await CommentAPI.delete(comment.id);
-        dispatch(removeComment(comment.id));
+        // await CommentAPI.delete(comment.id);
+        // dispatch(removeComment(comment.id));
+        //
+        // setShowDeleteModal(false);
 
-        setShowDeleteModal(false);
+        try {
+            await CommentAPI.delete(comment.id);
+            dispatch(removeComment(comment.id));
+            setShowDeleteModal(false);
+
+            await Swal.fire({
+                icon: "success",
+                title: "Comment deleted!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        } catch (error) {
+            await Swal.fire({
+                icon: "error",
+                title: "An error occurred!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
     };
 
     const navigateToProfile = () => {
