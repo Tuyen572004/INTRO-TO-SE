@@ -49,5 +49,11 @@ public class ChatRoomController {
                 .build();
     }
 
-
+    @DeleteMapping("/{chatId}")
+    public ApiResponse<Void> deleteChatRoom(@PathVariable String chatId) {
+        chatRoomService.deleteChatRoom(chatId);
+        return ApiResponse.<Void>builder()
+                .message("Chat room deleted successfully")
+                .build();
+    }
 }
