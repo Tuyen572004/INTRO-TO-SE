@@ -41,7 +41,7 @@ export class PostAPI {
 		}
 	}
 
-	static async getAll(page = 1, size = 10) {
+	static async getAll(page = 1, size = 20) {
 		try {
 			const response = await AuthorizedAxios.get(`/api/posts/dashboard?page=${page}&size=${size}`);
 			console.log(response.data.data);
