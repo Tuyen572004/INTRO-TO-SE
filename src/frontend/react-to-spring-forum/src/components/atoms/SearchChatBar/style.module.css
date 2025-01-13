@@ -1,0 +1,37 @@
+.container {
+	display: flex;
+	position: relative;
+	width: 100%;
+	justify-content: center;
+}
+
+.search_bar_container {
+	display: flex;
+	flex-direction: row;
+	width: 80%;
+	padding: 0px 12px 0px 12px;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+	border-radius: 16px;
+	align-items: center;
+	background-color: #d3d3d3;
+	z-index: 999;
+}
+
+.search_bar {
+	display: flex;
+	width: 100%;
+	border: 0;
+	padding: 10px;
+	font-size: small;
+	position: relative;
+	background-color: transparent;
+
+}
+
+.search_bar:focus {
+	outline: none;
+}
+
+.clear_button {
+	display: none;
+}

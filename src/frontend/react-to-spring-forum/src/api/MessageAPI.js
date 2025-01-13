@@ -1,9 +1,9 @@
 import Axios from "./Axios";
 import AuthorizedAxios from "./AuthorizedAxios";
 export class MessageAPI {
-	static async getMyChatRooms(page, size) {
+	static async getMyChatRooms(page, size, search = '') {
 		try {
-			const response = await AuthorizedAxios.get(`/api/chat-rooms/my-chat-rooms?page=${page}&size=${size}`);
+			const response = await AuthorizedAxios.get(`/api/chat-rooms/my-chat-rooms?page=${page}&size=${size}&chatroomName=${search}`);
 			return response.data;
 		}
 		catch (error) {

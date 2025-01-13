@@ -302,10 +302,6 @@
   font-size: 1rem;
 }
 
-.create_chat_room_button:hover {
-  background-color: #0056b3;
-}
-
 @keyframes loading-dots {
 
   0%,

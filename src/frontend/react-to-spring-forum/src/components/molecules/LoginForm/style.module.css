@@ -35,6 +35,10 @@
 	margin-right: 5px;
 }
 
+.forgot_password {
+	cursor: pointer;
+}
+
 .forgot_password>* {
 	text-decoration: none;
 	color: black;

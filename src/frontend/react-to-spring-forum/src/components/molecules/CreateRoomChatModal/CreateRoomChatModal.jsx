@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import ErrorAlert from "../../atoms/ErrorAlert/ErrorAlert";
 import { useSelector } from "react-redux";
 import { UserProfileAPI } from "../../../api/UserProfileAPI";
+import { Button } from "react-bootstrap";
+import { uploadFile } from "../../../utils/uploadImageFile";
 
 function CreateRoomChatModal({
   toggleCreateModal,
@@ -17,6 +19,8 @@ function CreateRoomChatModal({
   const [allUsers, setAllUsers] = useState([]);
   const [searchParticipants, setSearchParticipants] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [newChatRoomImg, setNewChatRoomImg] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -32,13 +36,24 @@ function CreateRoomChatModal({
     fetchUsers();
   }, [userId]);
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setSelectedFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setNewChatRoomImg(previewUrl);
+    } else {
+      alert("Please select a valid image file.");
+    }
+  };
+
   const handleCreateChatRoom = async () => {
     if (!chatRoomName.trim() && participants.length > 2) {
       setErrorMessage("Please enter a room name and.");
       return;
     }
 
-    if (participants.length === 0) {
+    if (participants.length === 1) {
       setErrorMessage("Please add at least one participant.");
       return;
     }
@@ -46,7 +61,8 @@ function CreateRoomChatModal({
     try {
       const response = await MessageAPI.createChatRoom(
         chatRoomName,
-        participants
+        participants,
+        (await uploadFile(selectedFile)) || null
       );
       const newChatRoom = response.data;
 
@@ -75,7 +91,7 @@ function CreateRoomChatModal({
           exit={{ y: -100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
-          <h2>Create New Chat Room</h2>
+          <h2>New Chat Room</h2>
           {errorMessage && <ErrorAlert message={errorMessage} />}
 
           <div className={s.modal_body}>
@@ -90,6 +106,37 @@ function CreateRoomChatModal({
                     placeholder="Enter the room name"
                     className={s.chat_room_name_input}
                   />
+                </div>
+
+                <div className="d-flex justify-content-center mt-2">
+                  <div className={s.chatRoomImage}>
+                    <img
+                      src={
+                        newChatRoomImg
+                          ? newChatRoomImg
+                          : "https://res.cloudinary.com/duf2t1pkp/image/upload/v1736772336/img_holder_wide_gzkx8z.png"
+                      }
+                      alt="chatRoomImage"
+                    />
+                  </div>
+                </div>
+                <div className="d-flex justify-content-center mt-2">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                    id="chatRoomImageUpload"
+                  />
+                  <Button
+                    size="sm"
+                    variant="dark"
+                    style={{ borderRadius: "15px" }}
+                    onClick={() =>
+                      document.getElementById("chatRoomImageUpload").click()
+                    }
+                  >
+                    Change
+                  </Button>
                 </div>
               </>
             )}
@@ -125,10 +172,14 @@ function CreateRoomChatModal({
                   return (
                     <motion.div
                       key={user.id}
-                      className={s.participant_item}
+                      className={`${s.participant_item} ${
+                        isSelected ? s.selected : ""
+                      }`}
                       initial={{ opacity: 0, x: -50 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 50 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       transition={{ duration: 0.3 }}
                     >
                       <div className={s.participant_info}>
@@ -151,6 +202,11 @@ function CreateRoomChatModal({
                             setParticipants((prev) =>
                               prev.filter((id) => id !== user.id)
                             );
+                            if (participants.length === 1) {
+                              setChatRoomName("");
+                              setNewChatRoomImg("");
+                              setSelectedFile(null);
+                            }
                           } else {
                             setParticipants((prev) => [...prev, user.id]);
                           }
