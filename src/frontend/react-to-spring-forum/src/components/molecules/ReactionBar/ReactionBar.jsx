@@ -1,15 +1,19 @@
 import { useState, useEffect } from "react";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { PiShareFat } from "react-icons/pi";
-import { Link } from "react-router-dom";
+import {Link, redirect, useNavigate} from "react-router-dom";
 import { ReactAPI } from "../../../api/ReactAPI";
 import { PostAPI } from "../../../api/PostAPI";
 import s from "./style.module.css";
 import {useSelector} from "react-redux";
 
 const ReactBar = ({ postId }) => {
+    const user = useSelector((state) => state.userSlice.user);
+
     const [post, setPost] = useState(null);
     const reloadReactBar = useSelector(state => state.commentSlice.reloadReactBar);
+
+    const navigate = useNavigate();
 
     const fetchPost = async () => {
         try {
@@ -25,15 +29,19 @@ const ReactBar = ({ postId }) => {
     }, [postId, reloadReactBar]);
 
     const handleReactClick = async () => {
-        try {
-            if (post.isReacted) {
-                await ReactAPI.delete(postId);
-            } else {
-                await ReactAPI.create(postId);
+        if (user) {
+            try {
+                if (post.isReacted) {
+                    await ReactAPI.delete(postId);
+                } else {
+                    await ReactAPI.create(postId);
+                }
+                fetchPost();
+            } catch (error) {
+                console.error("Error handling react:", error);
             }
-            fetchPost();
-        } catch (error) {
-            console.error("Error handling react:", error);
+        } else {
+            navigate("/login");
         }
     };
 
