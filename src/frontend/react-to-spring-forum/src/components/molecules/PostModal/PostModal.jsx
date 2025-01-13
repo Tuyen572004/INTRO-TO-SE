@@ -24,7 +24,10 @@ const PostModal = ({ post, reportID, show, onHide, navigateToPost, setViolatingP
                 }
             );
             onHide();
-            setViolatingPosts((prev) => prev.filter((item) => item.id !== reportID));
+
+            setViolatingPosts((prev) =>
+                prev.filter((item) => item.postId !== post.postId)
+            );
             console.log(response);
         } catch (error) {
             console.error(error);

@@ -6,6 +6,7 @@ import com.react_to_spring.React_To_Spring_Forums.dto.response.PageResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.PostResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.ReportViolatingPostRequestResponse;
 import com.react_to_spring.React_To_Spring_Forums.dto.response.UserInfoResponse;
+import com.react_to_spring.React_To_Spring_Forums.entity.Post;
 import com.react_to_spring.React_To_Spring_Forums.entity.ReportViolatingPostRequest;
 import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
@@ -77,10 +78,11 @@ public class ReportViolatingPostsServiceImpl implements ReportViolatingPostsServ
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(request.isAccepted()) {
-           notificationService.sendAcceptReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
+            notificationService.sendAcceptReportViolatingPostNotification(authentication.getName(), reportViolatingPostRequest.getId());
+            postRepository.deleteById(reportViolatingPostRequest.getPostId());
         }
 
-        reportViolatingPostRequestRepository.deleteById(reportViolatingPostRequest.getId());
+        reportViolatingPostRequestRepository.deleteAllByPostId(reportViolatingPostRequest.getPostId());
     }
 
     @Override
