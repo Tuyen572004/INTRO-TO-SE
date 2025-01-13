@@ -6,7 +6,6 @@ import "swiper/css/scrollbar";
 import { GrSend } from "react-icons/gr";
 import { Images } from "lucide-react";
 import { Scrollbar } from "swiper/modules";
-import SearchBar from "../../atoms/SearchBar/SearchBar";
 import { MessageAPI } from "../../../api/MessageAPI";
 import CreateRoomChatModal from "../../molecules/CreateRoomChatModal/CreateRoomChatModal";
 import ImageList from "../../molecules/ImageList/ImageList";
@@ -23,6 +22,7 @@ import {
   sendMessage,
   disconnectWebSocket,
 } from "../../../config/webSocket";
+import SearchChatBar from "../../atoms/SearchChatBar/SearchChatBar";
 
 const MessageWindow = () => {
   const notificationHandle = useContext(NotificationContext);
@@ -39,6 +39,7 @@ const MessageWindow = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [client, setClient] = useState(null);
+  const [searchChatRoom, setSearchChatRoom] = useState("");
   const messagesEndRef = useRef(null);
 
   const sortMessagesByTime = (messages) => {
@@ -73,13 +74,9 @@ const MessageWindow = () => {
 
     try {
       const response = await MessageAPI.getMyChatRooms(1, 5);
-      console.log(response);
-
       const rooms = response.data.data || [];
-      console.log("rooms: ", rooms);
       setChatRooms(rooms);
 
-      console.log(rooms);
       if (rooms.length > 0) {
         setSelectedChatRoom(rooms[0]);
       } else {
@@ -89,6 +86,22 @@ const MessageWindow = () => {
       console.error("Error fetching chat rooms:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSearchedChatRoom = async () => {
+    try {
+      const response = await MessageAPI.getMyChatRooms(1, 5, searchChatRoom);
+      const rooms = response.data.data || [];
+      console.log("rooms: ", rooms);
+      setChatRooms(rooms);
+      if (rooms.length > 0) {
+        setSelectedChatRoom(rooms[0]);
+      } else {
+        setSelectedChatRoom(null);
+      }
+    } catch (error) {
+      console.error("Error fetching chat rooms:", error);
     }
   };
 
@@ -151,6 +164,10 @@ const MessageWindow = () => {
 
       const sortedMessages = sortMessagesByTime(response.data || []);
       setMessages(sortedMessages);
+      console.log("sortedMessages: ", sortedMessages);
+      if (sortedMessages.length === 0) {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
@@ -159,6 +176,10 @@ const MessageWindow = () => {
   useEffect(() => {
     fetchChatRoom();
   }, []);
+
+  useEffect(() => {
+    fetchSearchedChatRoom();
+  }, [searchChatRoom]);
 
   useEffect(() => {
     if (selectedChatRoom) {
@@ -291,7 +312,10 @@ const MessageWindow = () => {
         ) : (
           <>
             <div className={s.search_bar}>
-              <SearchBar />
+              <SearchChatBar
+                searchChatRoom={searchChatRoom}
+                setSearchChatRoom={setSearchChatRoom}
+              />
             </div>
             <div className={s.list_user}>
               {chatRooms.length === 0 ? (

@@ -110,7 +110,14 @@ function CreateRoomChatModal({
 
                 <div className="d-flex justify-content-center mt-2">
                   <div className={s.chatRoomImage}>
-                    <img src={newChatRoomImg} alt="chatRoomImage" />
+                    <img
+                      src={
+                        newChatRoomImg
+                          ? newChatRoomImg
+                          : "https://res.cloudinary.com/duf2t1pkp/image/upload/v1736772336/img_holder_wide_gzkx8z.png"
+                      }
+                      alt="chatRoomImage"
+                    />
                   </div>
                 </div>
                 <div className="d-flex justify-content-center mt-2">
