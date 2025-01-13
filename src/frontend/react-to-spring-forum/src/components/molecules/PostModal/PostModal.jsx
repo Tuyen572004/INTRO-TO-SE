@@ -25,9 +25,9 @@ const PostModal = ({ post, reportID, show, onHide, navigateToPost, setViolatingP
             );
             onHide();
 
-            setViolatingPosts((prev) =>
-                prev.filter((item) => item.postId !== post.postId)
-            );
+            // Update the interface, remove the report posts that have just been deleted
+            setViolatingPosts((prev) => prev.filter((item) => item.post.id !== post.id));
+
             console.log(response);
         } catch (error) {
             console.error(error);
