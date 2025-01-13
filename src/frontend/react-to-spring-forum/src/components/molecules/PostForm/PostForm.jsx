@@ -12,7 +12,6 @@ import ImageList from "../ImageList/ImageList";
 import {UserProfileAPI} from "../../../api/UserProfileAPI";
 import {UserAPI} from "../../../api/UserAPI";
 import * as promise from "axios";
-import Loading from "../../atoms/Loading/Loading";
 import Spinner from "react-bootstrap/Spinner";
 
 const PostForm = ({show, toggleIsPostFormVisible}) => {
@@ -118,10 +117,6 @@ const PostForm = ({show, toggleIsPostFormVisible}) => {
         ref.current.style.height = "auto";
         ref.current.style.height = ref.current.scrollHeight + "px";
     };
-
-    if (loading) {
-        return <Loading />;
-    }
 
     return (
         <>

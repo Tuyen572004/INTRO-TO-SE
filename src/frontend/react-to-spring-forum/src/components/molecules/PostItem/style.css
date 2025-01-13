@@ -18,3 +18,8 @@
 .dropdown {
 	flex-shrink: 0;
 }
+
+.dropdown-item:focus {
+	background-color: #f5f5f5;
+	color: black;
+}

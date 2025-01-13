@@ -59,14 +59,6 @@ const ActivityList = () => {
 
   return (
     <div className={s.activity_list} id="activity-list">
-      {loading && (
-        <div
-          className="d-flex align-items-center justify-content-center"
-          style={{ height: "50%" }}
-        >
-          <Loading />
-        </div>
-      )}
       <InfiniteScroll
         dataLength={handleNotification.activities.length}
         next={fetchActivities}

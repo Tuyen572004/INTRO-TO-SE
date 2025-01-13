@@ -91,7 +91,8 @@ function CommentItem({ comment }) {
                             <Dropdown.Toggle as={CustomToggle} />
                             <Dropdown.Menu>
                                 <Dropdown.Item onClick={handleEditClick}> Edit </Dropdown.Item>
-                                <Dropdown.Item onClick={handleDeleteClick}> Delete </Dropdown.Item>
+                                <Dropdown.Item onClick={handleDeleteClick}> <span style={{color: "red"}}>Delete</span>
+                                </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     ) : (
