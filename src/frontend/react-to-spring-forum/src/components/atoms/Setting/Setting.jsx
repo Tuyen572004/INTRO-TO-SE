@@ -29,8 +29,8 @@ const Setting = ({
   const [showSettingOption, setShowSettingOption] = useState(false);
 
   const iconVariants = {
-    hover: { scale: 1.2, transition: { type: "spring", stiffness: 300 } },
-    tap: { scale: 0.9 },
+    hover: { scale: 1.1, transition: { type: "spring", stiffness: 100 } },
+    tap: { scale: 0.95 },
   };
   return (
     <div className={s.container}>

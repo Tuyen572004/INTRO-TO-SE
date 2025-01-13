@@ -14,14 +14,15 @@ import { uploadFile } from "../../../utils/uploadImageFile";
 import s from "./style.module.css";
 import { useSelector } from "react-redux";
 import { NotificationContext } from "../../../context/NotificationContext";
+import Loading from "../../atoms/Loading/Loading";
 import { PiPlusCircleFill } from "react-icons/pi";
+import { motion } from "framer-motion";
 
 import {
   connectWebSocketChat,
   sendMessage,
   disconnectWebSocket,
 } from "../../../config/webSocket";
-import Loading from "../../atoms/Loading/Loading";
 
 const MessageWindow = () => {
   const notificationHandle = useContext(NotificationContext);
@@ -296,12 +297,14 @@ const MessageWindow = () => {
               {chatRooms.length === 0 ? (
                 <div className={s.no_chat_rooms}>
                   <p>You did not have any chat room. Let's create a new one!</p>
-                  <button
+                  <motion.button
                     className={s.create_chat_room_button}
                     onClick={toggleCreateModal}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     Create Chat Room
-                  </button>
+                  </motion.button>
                 </div>
               ) : (
                 <Swiper

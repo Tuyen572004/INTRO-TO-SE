@@ -38,7 +38,7 @@ function CreateRoomChatModal({
       return;
     }
 
-    if (participants.length === 0) {
+    if (participants.length === 1) {
       setErrorMessage("Please add at least one participant.");
       return;
     }
@@ -75,7 +75,7 @@ function CreateRoomChatModal({
           exit={{ y: -100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
-          <h2>Create New Chat Room</h2>
+          <h2>New Chat Room</h2>
           {errorMessage && <ErrorAlert message={errorMessage} />}
 
           <div className={s.modal_body}>
