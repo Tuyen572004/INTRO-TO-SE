@@ -10,6 +10,8 @@ public interface ChatRoomService {
 
     ChatRoomResponse getDirectChatRoom(String senderId, String recipientId);
 
+    ChatRoomResponse getChatRoomByName(String chatRoomName);
+
     PageResponse<ChatRoomResponse> getMyChatRooms(int page, int size);
 
     void deleteChatRoom(String chatId);

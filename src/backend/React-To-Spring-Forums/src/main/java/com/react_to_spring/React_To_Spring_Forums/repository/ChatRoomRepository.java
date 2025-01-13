@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
     Optional<ChatRoom> findByChatId(String chatId);
 
+    Optional<ChatRoom> findByChatRoomName(String chatRoomName);
+
     Optional<ChatRoom> findByParticipantIds(List<String> participantIds);
 
     Page<ChatRoom> findChatRoomByParticipantIdsContaining(List<String> participantIds, Pageable pageable);

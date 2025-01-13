@@ -25,6 +25,13 @@ public class ChatRoomController {
                 .build();
     }
 
+    @GetMapping("/chat-room-name/{chatRoomName}")
+    public ApiResponse<ChatRoomResponse> getChatRoomByName(@PathVariable String chatRoomName) {
+        return ApiResponse.<ChatRoomResponse>builder()
+                .data(chatRoomService.getChatRoomByName(chatRoomName))
+                .build();
+    }
+
     @GetMapping
     public ApiResponse<ChatRoomResponse> getDirectChatRoom(@RequestParam("senderId") String senderId,
                                                            @RequestParam("recipientId") String recipientId) {
@@ -40,5 +47,6 @@ public class ChatRoomController {
                 .data(chatRoomService.getMyChatRooms(page, size))
                 .build();
     }
+
 
 }

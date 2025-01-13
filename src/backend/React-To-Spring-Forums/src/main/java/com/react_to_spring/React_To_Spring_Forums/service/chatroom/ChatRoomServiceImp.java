@@ -70,6 +70,14 @@ public class ChatRoomServiceImp implements ChatRoomService {
     }
 
     @Override
+    public ChatRoomResponse getChatRoomByName(String chatRoomName) {
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomName(chatRoomName)
+                .orElseThrow(() -> new AppException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        return buildChatRoomResponse(chatRoom);
+    }
+
+    @Override
     public PageResponse<ChatRoomResponse> getMyChatRooms(int page, int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Pageable pageable = PageRequest.of(page - 1, size);
