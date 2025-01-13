@@ -95,15 +95,15 @@ function CommentItem({ comment }) {
                 <div className={s.engagementMetrics}>
                     <div className={s.metricItem}>
                         <Heart className={s.metricIcon} size={20} />
-                        <span className={s.metricCount}>12</span>
+                        <span className={s.metricCount}>0</span>
                     </div>
                     <div className={s.metricItem}>
                         <MessageCircle className={s.metricIcon} size={20} />
-                        <span className={s.metricCount}>9</span>
+                        <span className={s.metricCount}>0</span>
                     </div>
                     <div className={s.metricItem}>
                         <Send className={s.metricIcon} size={20} />
-                        <span className={s.metricCount}>21</span>
+                        <span className={s.metricCount}>0</span>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import s from './style.module.css';
 import PostModal from "../PostModal/PostModal";
 import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
+import UserIcon from "./../../../assets/User_Icon.png";
 
 function ViolatingPostItem({item, setViolatingPosts}) {
     const myProfile = useSelector((state) => state.userSlice.user);
@@ -27,9 +28,13 @@ function ViolatingPostItem({item, setViolatingPosts}) {
     return (
         <>
             <div className={s.violatingPostItem}>
-                <div className={s.postContainer}>
+                <div className={s.postContainer + " align-items-center"}>
                     <div className={s.avatarWrapper}>
-                        <img src={user.avatar} alt={user.name} className={s.avatar}/>
+                        {user.avatar ? (
+                            <img src={user.avatar} alt={user.name} className={s.avatar}/>
+                        ) : (
+                            <img src={UserIcon} alt={user.name} className={s.avatar}/>
+                        )}
                     </div>
 
                     <div className={s.contentWrapper}>
@@ -38,7 +43,7 @@ function ViolatingPostItem({item, setViolatingPosts}) {
                                 <span className={s.username}>
                                     <b onClick={() => navigateToPost(user.id)}>
                                         @{user.username}
-                                    </b> reported the
+                                    </b> reported the&nbsp;
                                     <b onClick={() => navigateToPost(post.user.id)}>
                                         @{post.user.username}
                                     </b>'s post
@@ -53,7 +58,7 @@ function ViolatingPostItem({item, setViolatingPosts}) {
                     </div>
 
                     <div className={s.buttonBlack} onClick={() => setShowPostModal(true)}>
-                        View Details
+                        Details
                     </div>
                 </div>
             </div>

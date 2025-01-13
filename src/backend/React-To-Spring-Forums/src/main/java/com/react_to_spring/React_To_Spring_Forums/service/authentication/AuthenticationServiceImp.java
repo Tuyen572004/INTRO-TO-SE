@@ -13,6 +13,7 @@ import com.react_to_spring.React_To_Spring_Forums.entity.User;
 import com.react_to_spring.React_To_Spring_Forums.entity.UserProfile;
 import com.react_to_spring.React_To_Spring_Forums.exception.AppException;
 import com.react_to_spring.React_To_Spring_Forums.exception.ErrorCode;
+import com.react_to_spring.React_To_Spring_Forums.exception.NotVerifiedException;
 import com.react_to_spring.React_To_Spring_Forums.repository.InvalidatedTokenRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserProfileRepository;
 import com.react_to_spring.React_To_Spring_Forums.repository.UserRepository;
@@ -90,7 +91,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_USERNAME_PASSWORD));
 
         if (verifyCodeService.checkAuthorizedCodeExistsByUserId(user.getId())) {
-            throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFIED);
+            throw new NotVerifiedException(user.getEmail());
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -146,6 +147,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findById(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.INCORRECT_PASSWORD);

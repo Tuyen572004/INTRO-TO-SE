@@ -47,6 +47,16 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(NotVerifiedException.class)
+    public ResponseEntity<ApiResponse<String>> handleNotVerifiedException(NotVerifiedException e) {
+        return ResponseEntity.status(e.getErrorCode().getStatus())
+                .body(ApiResponse.<String>builder()
+                        .code(e.getErrorCode().getCode())
+                        .message(e.getMessage())
+                        .data(e.getEmail())
+                        .build());
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiResponse<Void>> handleConstraintViolationException(ConstraintViolationException exception) {
         ErrorCode errorCode = ErrorCode.INVALID_KEY;

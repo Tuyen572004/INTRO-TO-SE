@@ -75,9 +75,10 @@
 }
 
 .buttonBlack {
-    width: 130px;
+    font-size: 14px;
+    width: 80px;
     height: 40px;
-    padding: 5px 16px;
+    padding: 5px 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -86,7 +87,7 @@
     cursor: pointer;
     color: white;
     background-color: black;
-    margin-right: 10px;
+    transition: background-color 0.2s ease;
 }
 
 .buttonBlack:hover {

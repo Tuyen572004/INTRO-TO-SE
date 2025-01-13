@@ -25,6 +25,13 @@ public class ChatRoomController {
                 .build();
     }
 
+    @GetMapping("/chat-room-name/{chatRoomName}")
+    public ApiResponse<ChatRoomResponse> getChatRoomByName(@PathVariable String chatRoomName) {
+        return ApiResponse.<ChatRoomResponse>builder()
+                .data(chatRoomService.getChatRoomByName(chatRoomName))
+                .build();
+    }
+
     @GetMapping
     public ApiResponse<ChatRoomResponse> getDirectChatRoom(@RequestParam("senderId") String senderId,
                                                            @RequestParam("recipientId") String recipientId) {
@@ -35,10 +42,18 @@ public class ChatRoomController {
 
     @GetMapping("/my-chat-rooms")
     public ApiResponse<PageResponse<ChatRoomResponse>> getMyChatRooms(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                                              @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+                                                                      @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                                                                      @RequestParam(value = "chatroomName", required = false, defaultValue = "") String chatroomName) {
         return ApiResponse.<PageResponse<ChatRoomResponse>>builder()
-                .data(chatRoomService.getMyChatRooms(page, size))
+                .data(chatRoomService.getMyChatRooms(page, size, chatroomName))
                 .build();
     }
 
+    @DeleteMapping("/{chatId}")
+    public ApiResponse<Void> deleteChatRoom(@PathVariable String chatId) {
+        chatRoomService.deleteChatRoom(chatId);
+        return ApiResponse.<Void>builder()
+                .message("Chat room deleted successfully")
+                .build();
+    }
 }

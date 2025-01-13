@@ -1,8 +1,9 @@
 import s from "./style.module.css";
 import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
+import UserIcon from "./../../../assets/User_Icon.png";
 
-const ActivityItem = ({ activity }) => {
+const ActivityItem = ({activity}) => {
     const user = useSelector((state) => state.userSlice.user);
     const myId = user.userId;
 
@@ -16,7 +17,11 @@ const ActivityItem = ({ activity }) => {
         return (
             <div className={s.activity_item}>
                 <div className={s.avatar} onClick={navigateToProfile}>
-                    <img src={activity.actor.avatar} alt={activity.actor.name} />
+                    {activity.actor.avatar ? (
+                        <img src={activity.actor.avatar} alt={activity.actor.name}/>
+                    ) : (
+                        <img src={UserIcon} alt={activity.actor.name}/>
+                    )}
                 </div>
                 <div className={s.content}>
                     <div className={s.header}>
@@ -35,7 +40,11 @@ const ActivityItem = ({ activity }) => {
         return (
             <div className={s.activity_item}>
                 <div className={s.avatar} onClick={navigateToProfile}>
-                    <img src={activity.actor.avatar} alt={activity.actor.name}/>
+                    {activity.actor.avatar ? (
+                        <img src={activity.actor.avatar} alt={activity.actor.name}/>
+                    ) : (
+                        <img src={UserIcon} alt={activity.actor.name}/>
+                    )}
                 </div>
                 <div className={s.content}>
                     <div className={s.header} onClick={navigateToProfile}>
@@ -53,7 +62,11 @@ const ActivityItem = ({ activity }) => {
         return (
             <div className={s.activity_item}>
                 <div className={s.avatar} onClick={navigateToProfile}>
-                    <img src={activity.actor.avatar} alt={activity.actor.name} />
+                    {activity.actor.avatar ? (
+                        <img src={activity.actor.avatar} alt={activity.actor.name}/>
+                    ) : (
+                        <img src={UserIcon} alt={activity.actor.name}/>
+                    )}
                 </div>
                 <div className={s.content}>
                     <div className={s.header}>
@@ -68,8 +81,7 @@ const ActivityItem = ({ activity }) => {
                 </div>
             </div>
         );
-    }
-    else {
+    } else {
         return null;
     }
 };

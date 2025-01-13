@@ -1,6 +1,6 @@
 import { Modal, Button, Form } from 'react-bootstrap';
 import s from './style.module.css';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ReportPostAPI} from "../../../api/ReportPostAPI";
 
 const ReportModal = ({ show, onHide, postId, setIsReported }) => {
@@ -22,10 +22,17 @@ const ReportModal = ({ show, onHide, postId, setIsReported }) => {
         }
     }
 
+    useEffect(() => {
+        if (!show) {
+            setReason('');
+        }
+    }, [show]);
+
     const adjustHeight = (ref) => {
         ref.current.style.height = "auto";
         ref.current.style.height = ref.current.scrollHeight + "px";
     };
+
     return (
         <Modal
             show={show}
