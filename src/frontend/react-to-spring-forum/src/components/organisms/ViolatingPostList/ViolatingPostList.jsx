@@ -36,26 +36,33 @@ function ViolatingPostList() {
         return <Loading />;
     }
     return (
-        <div className={s.violatingPostList} id="violating-post-list">
-            <InfiniteScroll
-                dataLength={violatingPosts.length}
-                next={fetchViolatingPosts}
-                hasMore={hasMore}
-                loader={
-                    <div className="text-center">
-                        <Spinner animation="border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                    </div>
-                }
-                scrollableTarget="violating-post-list"
-            >
-                {violatingPosts && violatingPosts.map(violatingPost =>
-                    <ViolatingPostItem key={v4()} item={violatingPost} setViolatingPosts={setViolatingPosts}/>
-                )}
-            </InfiniteScroll>
-
-        </div>
+        <>
+            {violatingPosts.length > 0 ? (
+                <div className={s.violatingPostList} id="violating-post-list">
+                    <InfiniteScroll
+                        dataLength={violatingPosts.length}
+                        next={fetchViolatingPosts}
+                        hasMore={hasMore}
+                        loader={
+                            <div className="text-center">
+                                <Spinner animation="border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </Spinner>
+                            </div>
+                        }
+                        scrollableTarget="violating-post-list"
+                    >
+                        {violatingPosts && violatingPosts.map(violatingPost =>
+                            <ViolatingPostItem key={v4()} item={violatingPost} setViolatingPosts={setViolatingPosts}/>
+                        )}
+                    </InfiniteScroll>
+                </div>
+            ) : (
+                <div className={s.noViolatingPost}>
+                    No violating posts
+                </div>
+            )}
+        </>
     );
 }
 
