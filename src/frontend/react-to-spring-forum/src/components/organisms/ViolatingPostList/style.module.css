@@ -5,4 +5,15 @@
     border-radius: 12px;
     overflow-y: auto;
     max-height: 40rem;
+
+}
+
+.noViolatingPost {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #666;
 }

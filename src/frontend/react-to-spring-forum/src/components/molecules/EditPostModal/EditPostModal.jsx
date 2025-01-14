@@ -6,9 +6,10 @@ import {updatePost} from "../../../store/postSlice";
 import {updateMyPost} from "../../../store/myPostSlice";
 import {uploadFile} from "../../../utils/uploadImageFile";
 import {Images} from "lucide-react";
-
+import Swal from "sweetalert2";
 import s from "./style.module.css";
 import ImageList from "../ImageList/ImageList";
+import Spinner from "react-bootstrap/Spinner";
 
 const EditPostModal = ({ show, onHide, post }) => {
     const [title, setTitle] = useState(post?.title || '');
@@ -16,6 +17,8 @@ const EditPostModal = ({ show, onHide, post }) => {
     const [images, setImages] = useState(post?.imageList || []);
     const titleRef = useRef(null);
     const contentRef = useRef(null);
+
+    const [posting, setPosting] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -31,6 +34,8 @@ const EditPostModal = ({ show, onHide, post }) => {
     };
 
     const handleSave = async () => {
+        setPosting(true);
+
         const updatedPost = {
             _id: post.id,
             title: title,
@@ -48,11 +53,25 @@ const EditPostModal = ({ show, onHide, post }) => {
 
             dispatch(updatePost(response.data));
             dispatch(updateMyPost(response.data));
-        } catch (error) {
-            console.error('Error:', error);
-        }
 
-        onHide();
+            onHide();
+            setPosting(false);
+            await Swal.fire({
+                icon: 'success',
+                title: 'Post updated!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        } catch (error) {
+            onHide();
+            setPosting(false);
+            await Swal.fire({
+                icon: 'error',
+                title: 'An error occurred!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
     };
 
     const adjustHeight = (ref) => {
@@ -154,7 +173,11 @@ const EditPostModal = ({ show, onHide, post }) => {
                     variant={title || content ? 'primary' : 'secondary'}
                     disabled={!title && !content}
                 >
-                    Save
+                    {posting ? (
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    ) : 'Save'}
                 </Button>
             </Modal.Footer>
         </Modal>

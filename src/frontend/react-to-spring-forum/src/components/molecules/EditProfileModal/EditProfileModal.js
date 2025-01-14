@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import {UserProfileAPI} from "../../../api/UserProfileAPI";
+import Swal from "sweetalert2";
 
 import s from './style.module.css';
+import Spinner from "react-bootstrap/Spinner";
 
 const EditProfileModal = ({ show, onHide, userProfile, setUserProfile }) => {
     const [firstName, setFirstName] = useState(userProfile?.firstName || '');
@@ -11,6 +13,8 @@ const EditProfileModal = ({ show, onHide, userProfile, setUserProfile }) => {
     const [address, setAddress] = useState(userProfile?.address || '');
     const [newProfileImg, setNewProfileImg] = useState(userProfile?.profileImgUrl || '');
     const [selectedFile, setSelectedFile] = useState(null);
+
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         if (show) {
@@ -52,6 +56,8 @@ const EditProfileModal = ({ show, onHide, userProfile, setUserProfile }) => {
     };
 
     const handleSave = async () => {
+        setUpdating(true);
+
         const updatedProfile = {
             firstName: firstName,
             lastName: lastName,
@@ -70,10 +76,22 @@ const EditProfileModal = ({ show, onHide, userProfile, setUserProfile }) => {
             console.log('Profile response:', response);
 
             setUserProfile(response.data);
-
+            setUpdating(false);
             onHide();
+            await Swal.fire({
+                icon: 'success',
+                title: 'Profile updated!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         } catch (error) {
-            console.error('Error:', error);
+            setUpdating(false);
+            await Swal.fire({
+                icon: 'error',
+                title: 'An error occurred!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
     };
 
@@ -132,7 +150,11 @@ const EditProfileModal = ({ show, onHide, userProfile, setUserProfile }) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={handleSave} variant="dark" style={{ width: '100%', borderRadius: '15px' }}>
-                    Save
+                    {updating ? (
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    ) : 'Save'}
                 </Button>
             </Modal.Footer>
         </Modal>

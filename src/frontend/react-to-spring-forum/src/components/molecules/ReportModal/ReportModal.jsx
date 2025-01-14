@@ -1,7 +1,8 @@
 import { Modal, Button, Form } from 'react-bootstrap';
 import s from './style.module.css';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ReportPostAPI} from "../../../api/ReportPostAPI";
+const Swal = require('sweetalert2');
 
 const ReportModal = ({ show, onHide, postId, setIsReported }) => {
     const [reason, setReason] = useState('');
@@ -16,16 +17,36 @@ const ReportModal = ({ show, onHide, postId, setIsReported }) => {
 
             console.log("Report response:", response);
             setIsReported(true);
+
             onHide();
+            await Swal.fire({
+                icon: 'success',
+                title: 'Post reported!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         } catch (error) {
-            console.error("Report error:", error);
+            onHide();
+            await Swal.fire({
+                icon: 'error',
+                title: 'An error occurred!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
     }
+
+    useEffect(() => {
+        if (!show) {
+            setReason('');
+        }
+    }, [show]);
 
     const adjustHeight = (ref) => {
         ref.current.style.height = "auto";
         ref.current.style.height = ref.current.scrollHeight + "px";
     };
+
     return (
         <Modal
             show={show}

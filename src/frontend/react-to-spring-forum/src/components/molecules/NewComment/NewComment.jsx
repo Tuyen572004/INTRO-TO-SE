@@ -8,8 +8,9 @@ import {CommentAPI} from "../../../api/CommentAPI";
 import {addComment} from "../../../store/commentSlice";
 import ImageList from "../ImageList/ImageList";
 import {useDispatch} from "react-redux";
-
+import Swal from "sweetalert2";
 import s from "./style.module.css";
+import Spinner from "react-bootstrap/Spinner";
 
 function NewComment({ postId }) {
     const [userProfile, setUserProfile] = useState({});
@@ -18,6 +19,8 @@ function NewComment({ postId }) {
     const [imageList, setImageList] = useState([]);
     const textareaRef = useRef(null);
     const dispatch = useDispatch();
+
+    const [commenting, setCommenting] = useState(false);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -53,6 +56,8 @@ function NewComment({ postId }) {
             return;
         }
 
+        setCommenting(true);
+
         const data = {
             content: content,
             image_url: [],
@@ -73,9 +78,15 @@ function NewComment({ postId }) {
                 setContent("");
                 setImageList([]);
 
+                setCommenting(false);
             }
         } catch (error) {
-            console.error("Error creating comment:", error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'An error occurred!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
     };
 
@@ -133,16 +144,22 @@ function NewComment({ postId }) {
                 </div>
                 <div className="col-1 m-0 p-0">
                     <div>
-                        <motion.button
-                            className={s.commentButton}
-                            variants="primary"
-                            type="button"
-                            whileHover={{scale: 1.2}}
-                            whileTap={{scale: 0.8}}
-                            onClick={handleSubmit}
-                        >
-                            <SendHorizontal size={30} strokeWidth={2}/>
-                        </motion.button>
+                        {commenting ? (
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                        ) : (
+                            <motion.button
+                                className={s.commentButton}
+                                variants="primary"
+                                type="button"
+                                whileHover={{scale: 1.2}}
+                                whileTap={{scale: 0.8}}
+                                onClick={handleSubmit}
+                            >
+                                <SendHorizontal size={30} strokeWidth={2}/>
+                            </motion.button>
+                        )}
                     </div>
                 </div>
             </div>

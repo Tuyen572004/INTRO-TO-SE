@@ -6,9 +6,15 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {EffectCoverflow, Pagination} from "swiper/modules";
 import React, {useState} from "react";
 import {ReportPostAPI} from "../../../api/ReportPostAPI";
+import {useDispatch} from "react-redux";
+import {deletePost} from "../../../store/postSlice";
+import {deleteMyPost} from "../../../store/myPostSlice";
+import Swal from "sweetalert2";
 
 const PostModal = ({ post, reportID, show, onHide, navigateToPost, setViolatingPosts }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+
+    const dispatch = useDispatch();
 
     const toggleReadMore = () => {
         setIsExpanded(!isExpanded);
@@ -24,10 +30,27 @@ const PostModal = ({ post, reportID, show, onHide, navigateToPost, setViolatingP
                 }
             );
             onHide();
-            setViolatingPosts((prev) => prev.filter((item) => item.id !== reportID));
-            console.log(response);
+
+            // Update the interface, remove the report posts that have just been deleted
+            setViolatingPosts((prev) => prev.filter((item) => item.post.id !== post.id));
+
+            if (status) {
+                dispatch(deletePost(post.id));
+                dispatch(deleteMyPost(post.id));
+                await Swal.fire({
+                    icon: "success",
+                    title: "Post deleted!",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
         } catch (error) {
-            console.error(error);
+            await Swal.fire({
+                icon: "error",
+                title: "An error occurred!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
     }
 

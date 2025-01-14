@@ -9,10 +9,9 @@ import {useDispatch, useSelector} from "react-redux";
 import { removeComment } from "../../../store/commentSlice";
 import UserIcon from './../../../assets/User_Icon.png';
 import { formatDistanceToNow } from "date-fns";
-
+import Swal from "sweetalert2";
 import s from "./style.module.css";
 import {useNavigate} from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
 
 function CommentItem({ comment }) {
     const user = useSelector((state) => state.userSlice.user);
@@ -33,10 +32,30 @@ function CommentItem({ comment }) {
     };
 
     const confirmDelete = async () => {
-        await CommentAPI.delete(comment.id);
-        dispatch(removeComment(comment.id));
+        // await CommentAPI.delete(comment.id);
+        // dispatch(removeComment(comment.id));
+        //
+        // setShowDeleteModal(false);
 
-        setShowDeleteModal(false);
+        try {
+            await CommentAPI.delete(comment.id);
+            dispatch(removeComment(comment.id));
+            setShowDeleteModal(false);
+
+            await Swal.fire({
+                icon: "success",
+                title: "Comment deleted!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        } catch (error) {
+            await Swal.fire({
+                icon: "error",
+                title: "An error occurred!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
     };
 
     const navigateToProfile = () => {
@@ -72,7 +91,8 @@ function CommentItem({ comment }) {
                             <Dropdown.Toggle as={CustomToggle} />
                             <Dropdown.Menu>
                                 <Dropdown.Item onClick={handleEditClick}> Edit </Dropdown.Item>
-                                <Dropdown.Item onClick={handleDeleteClick}> Delete </Dropdown.Item>
+                                <Dropdown.Item onClick={handleDeleteClick}> <span style={{color: "red"}}>Delete</span>
+                                </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     ) : (
@@ -95,15 +115,15 @@ function CommentItem({ comment }) {
                 <div className={s.engagementMetrics}>
                     <div className={s.metricItem}>
                         <Heart className={s.metricIcon} size={20} />
-                        <span className={s.metricCount}>12</span>
+                        <span className={s.metricCount}>0</span>
                     </div>
                     <div className={s.metricItem}>
                         <MessageCircle className={s.metricIcon} size={20} />
-                        <span className={s.metricCount}>9</span>
+                        <span className={s.metricCount}>0</span>
                     </div>
                     <div className={s.metricItem}>
                         <Send className={s.metricIcon} size={20} />
-                        <span className={s.metricCount}>21</span>
+                        <span className={s.metricCount}>0</span>
                     </div>
                 </div>
             </div>

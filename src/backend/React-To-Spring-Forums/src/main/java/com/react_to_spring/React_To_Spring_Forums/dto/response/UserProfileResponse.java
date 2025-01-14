@@ -18,6 +18,7 @@ public class UserProfileResponse {
     String firstName;
     String lastName;
     String address;
-    String profileImgUrl;
+    @Builder.Default
+    String profileImgUrl = "https://res.cloudinary.com/duf2t1pkp/image/upload/v1736754684/User_Icon_e0jwww.png";
     List<String> friendIds;
 }
